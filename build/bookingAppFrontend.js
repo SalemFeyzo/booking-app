@@ -2,10 +2,10 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./src/backend/App.jsx":
-/*!*****************************!*\
-  !*** ./src/backend/App.jsx ***!
-  \*****************************/
+/***/ "./src/frontend/App.jsx":
+/*!******************************!*\
+  !*** ./src/frontend/App.jsx ***!
+  \******************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
@@ -17,22 +17,19 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const App = () => {
-  console.log("object");
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: " "
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h1", {
     className: "text-color-text font-body"
-  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Admin App", "booking-app")));
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h1", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("App", "booking-app")));
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (App);
 
 /***/ }),
 
-/***/ "./src/backend/bookingAppAdmin.css":
-/*!*****************************************!*\
-  !*** ./src/backend/bookingAppAdmin.css ***!
-  \*****************************************/
+/***/ "./src/frontend/bookingAppFrontend.css":
+/*!*********************************************!*\
+  !*** ./src/frontend/bookingAppFrontend.css ***!
+  \*********************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
@@ -152,9 +149,9 @@ module.exports = window["wp"]["i18n"];
 var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 !function() {
-/*!****************************************!*\
-  !*** ./src/backend/bookingAppAdmin.js ***!
-  \****************************************/
+/*!********************************************!*\
+  !*** ./src/frontend/bookingAppFrontend.js ***!
+  \********************************************/
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
@@ -162,15 +159,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-dom */ "react-dom");
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _App__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./App */ "./src/backend/App.jsx");
-/* harmony import */ var _bookingAppAdmin_css__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./bookingAppAdmin.css */ "./src/backend/bookingAppAdmin.css");
+/* harmony import */ var _App__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./App */ "./src/frontend/App.jsx");
+/* harmony import */ var _bookingAppFrontend_css__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./bookingAppFrontend.css */ "./src/frontend/bookingAppFrontend.css");
 
 
 
 
 
-react_dom__WEBPACK_IMPORTED_MODULE_2___default().render((0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_App__WEBPACK_IMPORTED_MODULE_3__["default"], null), document.getElementById("booking-app-admin-settings"));
+react_dom__WEBPACK_IMPORTED_MODULE_2___default().render((0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_App__WEBPACK_IMPORTED_MODULE_3__["default"], null), document.getElementById("booking-app"));
 }();
 /******/ })()
 ;
-//# sourceMappingURL=bookingAppAdmin.js.map
+//# sourceMappingURL=bookingAppFrontend.js.map

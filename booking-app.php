@@ -32,7 +32,7 @@ class BookingApp
 		wp_register_script(
 			'frontendReactJS',
 			plugin_dir_url(__FILE__) . 'build/bookingAppFrontend.js',
-			array('wp-element'),
+			array('wp-element', 'wp-i18n'),
 			null,
 			true
 		);
@@ -66,7 +66,7 @@ class BookingApp
 	{
 		global $pagenow;
 		wp_enqueue_media();
-		wp_register_script('react-admin-script', plugins_url('build/bookingAppAdmin.js', __FILE__), array('wp-element'), '1.0', true);
+		wp_register_script('react-admin-script', plugins_url('build/bookingAppAdmin.js', __FILE__), array('wp-element', 'wp-i18n'), '1.0', true);
 		wp_register_style("react-admin-css", plugins_url("build/bookingAppAdmin.css", __FILE__), array(), "1.0", "all");
 
 		if ($pagenow == 'admin.php') {
@@ -83,10 +83,10 @@ class BookingApp
 	function admin_menu()
 	{
 		add_menu_page(
-			'Booking App Settings',
-			'Booking App',
+			__('Booking App Settings', 'booking-app'),
+			__('Booking App', 'booking-app'),
 			'manage_options',
-			'booking_app_settings',
+			__('booking_app_settings', 'booking-app'),
 			[$this, 'admin_ui_html'],
 			'',
 			6

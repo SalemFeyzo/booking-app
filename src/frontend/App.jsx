@@ -1,9 +1,9 @@
-import React from "react";
+import { __ } from "@wordpress/i18n";
 
 const App = () => {
 	return (
-		<div className="bg-gray-200">
-			<h1>App</h1>
+		<div className="text-color-text font-body">
+			<h1>{__("App", "booking-app")}</h1>
 		</div>
 	);
 };
