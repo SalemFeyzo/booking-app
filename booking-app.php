@@ -31,7 +31,7 @@ class BookingApp
 	{
 		wp_register_script(
 			'frontendReactJS',
-			plugin_dir_url(__FILE__) . 'build/index.js',
+			plugin_dir_url(__FILE__) . 'build/bookingAppFrontend.js',
 			array('wp-element'),
 			null,
 			true
@@ -39,7 +39,7 @@ class BookingApp
 		wp_register_style(
 			'frontendReactCSS',
 			plugin_dir_url(__FILE__) .
-				'build/index.css',
+				'build/bookingAppFrontend.css',
 			array(),
 			null,
 			"all"
