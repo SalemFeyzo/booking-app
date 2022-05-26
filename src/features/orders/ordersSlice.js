@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import ordersService from "./ordersService";
 
 const initialState = {
 	orders: [],
@@ -9,9 +10,22 @@ const initialState = {
 };
 
 //get orders
-export const getOrders = createAsyncThunk((thunkAPI) => {
-	console.log("first");
-});
+export const getOrders = createAsyncThunk(
+	"orders/getOrders",
+	async (__, thunkAPI) => {
+		try {
+			return await ordersService.getOrders();
+		} catch (error) {
+			const message =
+				(error.response &&
+					error.response.data &&
+					error.response.data.message) ||
+				error.message ||
+				error.toString();
+			return thunkAPI.rejectWithValue(message);
+		}
+	}
+);
 
 export const ordersSlice = createSlice({
 	name: "orders",
@@ -24,7 +38,23 @@ export const ordersSlice = createSlice({
 			state.message = "";
 		},
 	},
-	extraReducers: () => {},
+	extraReducers: (builder) => {
+		builder
+			.addCase(getOrders.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(getOrders.fulfilled, (state, action) => {
+				state.isLoading = false;
+				state.isSuccess = true;
+				state.orders = action.payload;
+			})
+			.addCase(getOrders.rejected, (state, action) => {
+				state.isLoading = false;
+				state.isError = true;
+				state.message = action.payload;
+				state.orders = [];
+			});
+	},
 });
 
 export const { reset } = ordersSlice.actions;

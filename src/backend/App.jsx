@@ -1,7 +1,14 @@
 import { __ } from "@wordpress/i18n";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { getOrders, reset } from "../features/orders/ordersSlice";
 
 const App = () => {
-	console.log("object");
+	const dispatch = useDispatch();
+	useEffect(() => {
+		dispatch(getOrders);
+	}, [dispatch]);
+
 	return (
 		<div className=" ">
 			<h1 className="text-color-text font-body">
