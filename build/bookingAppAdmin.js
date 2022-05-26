@@ -18,7 +18,9 @@ __webpack_require__.r(__webpack_exports__);
 
 const App = () => {
   console.log("object");
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h1", null, "Admin App"));
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "bg-gray-200"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h1", null, "Admin App"));
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (App);
