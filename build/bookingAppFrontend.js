@@ -4284,6 +4284,74 @@ module.exports = {
 
 /***/ }),
 
+/***/ "./src/backend/constants/pageNamesConstants.js":
+/*!*****************************************************!*\
+  !*** ./src/backend/constants/pageNamesConstants.js ***!
+  \*****************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "ITEMS": function() { return /* binding */ ITEMS; },
+/* harmony export */   "NEW_ITEM": function() { return /* binding */ NEW_ITEM; },
+/* harmony export */   "NEW_ORDERS": function() { return /* binding */ NEW_ORDERS; },
+/* harmony export */   "NEW_OTHER": function() { return /* binding */ NEW_OTHER; },
+/* harmony export */   "NEW_SERVICE": function() { return /* binding */ NEW_SERVICE; },
+/* harmony export */   "NEW_VEHICLE": function() { return /* binding */ NEW_VEHICLE; },
+/* harmony export */   "OTHERS": function() { return /* binding */ OTHERS; },
+/* harmony export */   "SERVICES": function() { return /* binding */ SERVICES; },
+/* harmony export */   "VEHICLES": function() { return /* binding */ VEHICLES; },
+/* harmony export */   "VIEWED_ORDERS": function() { return /* binding */ VIEWED_ORDERS; }
+/* harmony export */ });
+const NEW_ORDERS = "NEW_ORDERS";
+const VIEWED_ORDERS = "VIEWED_ORDERS";
+const ITEMS = "ITEMS";
+const NEW_ITEM = "NEW_ITEM";
+const SERVICES = "SERVICES";
+const NEW_SERVICE = "NEW_SERVICE";
+const VEHICLES = "VEHICLES";
+const NEW_VEHICLE = "NEW_VEHICLE";
+const OTHERS = "OTHERS";
+const NEW_OTHER = "NEW_OTHER";
+
+/***/ }),
+
+/***/ "./src/features/backend-pages/pagesSlice.js":
+/*!**************************************************!*\
+  !*** ./src/features/backend-pages/pagesSlice.js ***!
+  \**************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "pagesSlice": function() { return /* binding */ pagesSlice; },
+/* harmony export */   "setPage": function() { return /* binding */ setPage; }
+/* harmony export */ });
+/* harmony import */ var _reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @reduxjs/toolkit */ "./node_modules/@reduxjs/toolkit/dist/redux-toolkit.esm.js");
+/* harmony import */ var _backend_constants_pageNamesConstants__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../backend/constants/pageNamesConstants */ "./src/backend/constants/pageNamesConstants.js");
+
+
+const initialState = {
+  page: _backend_constants_pageNamesConstants__WEBPACK_IMPORTED_MODULE_0__.NEW_ORDERS
+};
+const pagesSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__.createSlice)({
+  name: "backend-pages",
+  initialState,
+  reducers: {
+    setPage: (state, action) => {
+      state.page = action.payload;
+    }
+  }
+});
+const {
+  setPage
+} = pagesSlice.actions;
+/* harmony default export */ __webpack_exports__["default"] = (pagesSlice.reducer);
+
+/***/ }),
+
 /***/ "./src/features/orders/ordersService.js":
 /*!**********************************************!*\
   !*** ./src/features/orders/ordersService.js ***!
@@ -4407,13 +4475,16 @@ const App = () => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @reduxjs/toolkit */ "./node_modules/@reduxjs/toolkit/dist/redux-toolkit.esm.js");
+/* harmony import */ var _reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @reduxjs/toolkit */ "./node_modules/@reduxjs/toolkit/dist/redux-toolkit.esm.js");
 /* harmony import */ var _features_orders_ordersSlice__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./features/orders/ordersSlice */ "./src/features/orders/ordersSlice.js");
+/* harmony import */ var _features_backend_pages_pagesSlice__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./features/backend-pages/pagesSlice */ "./src/features/backend-pages/pagesSlice.js");
 
 
-const store = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__.configureStore)({
+
+const store = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_2__.configureStore)({
   reducer: {
-    orders: _features_orders_ordersSlice__WEBPACK_IMPORTED_MODULE_0__["default"]
+    orders: _features_orders_ordersSlice__WEBPACK_IMPORTED_MODULE_0__["default"],
+    backendPage: _features_backend_pages_pagesSlice__WEBPACK_IMPORTED_MODULE_1__["default"]
   }
 });
 /* harmony default export */ __webpack_exports__["default"] = (store);

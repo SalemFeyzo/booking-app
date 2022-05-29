@@ -1,0 +1,10 @@
+export const NEW_ORDERS = "NEW_ORDERS";
+export const VIEWED_ORDERS = "VIEWED_ORDERS";
+export const ITEMS = "ITEMS";
+export const NEW_ITEM = "NEW_ITEM";
+export const SERVICES = "SERVICES";
+export const NEW_SERVICE = "NEW_SERVICE";
+export const VEHICLES = "VEHICLES";
+export const NEW_VEHICLE = "NEW_VEHICLE";
+export const OTHERS = "OTHERS";
+export const NEW_OTHER = "NEW_OTHER";
