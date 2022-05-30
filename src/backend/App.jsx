@@ -2,16 +2,16 @@ import { __ } from "@wordpress/i18n";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Layout from "./components/Layout";
-import NewOrdersPage from "./components/pages/orders/NewOrdersPage";
-import ViewedOrdersPage from "./components/pages/orders/ViewedOrdersPage";
-import ItemsPage from "./components/pages/items/ItemsPage";
-import NewItemPage from "./components/pages/items/NewItemPage";
-import ServicesPage from "./components/pages/services/ServicesPage";
-import NewServicePage from "./components/pages/services/NewServicePage";
-import VehiclesPage from "./components/pages/vehicles/VehiclesPage";
-import NewVehiclePage from "./components/pages/vehicles/NewVehiclePage";
-import OthersPage from "./components/pages/others/OthersPage";
-import NewOtherPage from "./components/pages/others/NewOtherPage";
+import NewOrdersPage from "./pages/orders/NewOrdersPage";
+import ViewedOrdersPage from "./pages/orders/ViewedOrdersPage";
+import ItemsPage from "./pages/items/ItemsPage";
+import NewItemPage from "./pages/items/NewItemPage";
+import ServicesPage from "./pages/services/ServicesPage";
+import NewServicePage from "./pages/services/NewServicePage";
+import VehiclesPage from "./pages/vehicles/VehiclesPage";
+import NewVehiclePage from "./pages/vehicles/NewVehiclePage";
+import OthersPage from "./pages/others/OthersPage";
+import NewOtherPage from "./pages/others/NewOtherPage";
 import {
 	ITEMS,
 	NEW_ITEM,
