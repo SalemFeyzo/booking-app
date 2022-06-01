@@ -4896,6 +4896,99 @@ const {
 
 /***/ }),
 
+/***/ "./src/features/services/serviceSlice.js":
+/*!***********************************************!*\
+  !*** ./src/features/services/serviceSlice.js ***!
+  \***********************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "getServices": function() { return /* binding */ getServices; },
+/* harmony export */   "reset": function() { return /* binding */ reset; },
+/* harmony export */   "servicesSlice": function() { return /* binding */ servicesSlice; }
+/* harmony export */ });
+/* harmony import */ var _reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @reduxjs/toolkit */ "./node_modules/@reduxjs/toolkit/dist/redux-toolkit.esm.js");
+/* harmony import */ var _servicesService__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./servicesService */ "./src/features/services/servicesService.js");
+
+
+const initialState = {
+  services: [],
+  isError: false,
+  isSuccess: false,
+  isLoading: false,
+  message: ""
+}; //get orders
+
+const getServices = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__.createAsyncThunk)("services/getServices", async (__, thunkAPI) => {
+  try {
+    return await _servicesService__WEBPACK_IMPORTED_MODULE_0__["default"].getServices();
+  } catch (error) {
+    const message = error.response && error.response.data && error.response.data.message || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+const servicesSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__.createSlice)({
+  name: "services",
+  initialState,
+  reducers: {
+    reset: state => {
+      state.isError = false;
+      state.isSuccess = false;
+      state.isLoading = false;
+      state.message = "";
+    }
+  },
+  extraReducers: builder => {
+    builder.addCase(getServices.pending, state => {
+      state.isLoading = true;
+    }).addCase(getServices.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.isSuccess = true;
+      state.services = action.payload;
+    }).addCase(getServices.rejected, (state, action) => {
+      state.isLoading = false;
+      state.isError = true;
+      state.message = action.payload;
+      state.services = [];
+    });
+  }
+});
+const {
+  reset
+} = servicesSlice.actions;
+/* harmony default export */ __webpack_exports__["default"] = (servicesSlice.reducer);
+
+/***/ }),
+
+/***/ "./src/features/services/servicesService.js":
+/*!**************************************************!*\
+  !*** ./src/features/services/servicesService.js ***!
+  \**************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+
+const API_URL = `${window.location.origin}/wordpress/wp-json/booking-app/api/v1`;
+
+const getServices = async () => {
+  const {
+    data
+  } = await axios__WEBPACK_IMPORTED_MODULE_0___default().get(`${API_URL}/services`);
+  return data;
+};
+
+const servicesService = {
+  getServices
+};
+/* harmony default export */ __webpack_exports__["default"] = (servicesService);
+
+/***/ }),
+
 /***/ "./src/store.js":
 /*!**********************!*\
   !*** ./src/store.js ***!
@@ -4904,16 +4997,19 @@ const {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @reduxjs/toolkit */ "./node_modules/@reduxjs/toolkit/dist/redux-toolkit.esm.js");
+/* harmony import */ var _reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @reduxjs/toolkit */ "./node_modules/@reduxjs/toolkit/dist/redux-toolkit.esm.js");
 /* harmony import */ var _features_orders_ordersSlice__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./features/orders/ordersSlice */ "./src/features/orders/ordersSlice.js");
 /* harmony import */ var _features_backend_pages_pagesSlice__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./features/backend-pages/pagesSlice */ "./src/features/backend-pages/pagesSlice.js");
+/* harmony import */ var _features_services_serviceSlice__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./features/services/serviceSlice */ "./src/features/services/serviceSlice.js");
 
 
 
-const store = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_2__.configureStore)({
+
+const store = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_3__.configureStore)({
   reducer: {
     orders: _features_orders_ordersSlice__WEBPACK_IMPORTED_MODULE_0__["default"],
-    backendPage: _features_backend_pages_pagesSlice__WEBPACK_IMPORTED_MODULE_1__["default"]
+    backendPage: _features_backend_pages_pagesSlice__WEBPACK_IMPORTED_MODULE_1__["default"],
+    services: _features_services_serviceSlice__WEBPACK_IMPORTED_MODULE_2__["default"]
   }
 });
 /* harmony default export */ __webpack_exports__["default"] = (store);
@@ -5238,6 +5334,19 @@ exports.typeOf = typeOf;
 if (false) {} else {
   module.exports = __webpack_require__(/*! ./cjs/react-is.development.js */ "./node_modules/hoist-non-react-statics/node_modules/react-is/cjs/react-is.development.js");
 }
+
+
+/***/ }),
+
+/***/ "./node_modules/react-loading-skeleton/dist/skeleton.css":
+/*!***************************************************************!*\
+  !*** ./node_modules/react-loading-skeleton/dist/skeleton.css ***!
+  \***************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
 
 
 /***/ }),
@@ -11989,6 +12098,13 @@ var IconsManifest = [
     "projectUrl": "https://github.com/microsoft/vscode-codicons",
     "license": "CC BY 4.0",
     "licenseUrl": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  {
+    "id": "tb",
+    "name": "Tabler Icons",
+    "projectUrl": "https://github.com/tabler/tabler-icons",
+    "license": "MIT",
+    "licenseUrl": "https://opensource.org/licenses/MIT"
   }
 ]
 
@@ -15974,6 +16090,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../store */ "./src/store.js");
 /* harmony import */ var _App__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./App */ "./src/backend/App.jsx");
 /* harmony import */ var _bookingAppAdmin_css__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./bookingAppAdmin.css */ "./src/backend/bookingAppAdmin.css");
+/* harmony import */ var react_loading_skeleton_dist_skeleton_css__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react-loading-skeleton/dist/skeleton.css */ "./node_modules/react-loading-skeleton/dist/skeleton.css");
+
 
 
 

@@ -21,11 +21,11 @@ const App = () => {
 	return (
 		<div id="bookingAppLAyout">
 			<Layout>
-				<div className="col-span-3 px-10 pt-7 bg-white border-2 border-gray-100 rounded-md ">
+				<div className="col-span-3 px-10 pt-7 bg-white border-2 border-gray-100 rounded-md shadow-md">
 					<ChooseService />
 				</div>
 				{screenWidth > 770 && (
-					<div className="col-span-2 px-10 pt-7 bg-white border-2 border-gray-100 rounded-md  ">
+					<div className="col-span-2 px-10 pt-7 bg-white border-2 border-gray-100 rounded-md shadow-md ">
 						<PriceQuote />
 					</div>
 				)}

@@ -307,3 +307,7 @@ class BookingApp
 
 
 $booking_app = new BookingApp();
+
+//Service Routes
+require_once ABSPATH . "wp-content/plugins/booking-app/api/services_routes.php";
+$routes = new ServiceRoutes();
