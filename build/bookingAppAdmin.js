@@ -4839,9 +4839,11 @@ const ordersService = {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "getDefaultOrderService": function() { return /* binding */ getDefaultOrderService; },
 /* harmony export */   "getOrders": function() { return /* binding */ getOrders; },
 /* harmony export */   "ordersSlice": function() { return /* binding */ ordersSlice; },
-/* harmony export */   "reset": function() { return /* binding */ reset; }
+/* harmony export */   "reset": function() { return /* binding */ reset; },
+/* harmony export */   "setOrder": function() { return /* binding */ setOrder; }
 /* harmony export */ });
 /* harmony import */ var _reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @reduxjs/toolkit */ "./node_modules/@reduxjs/toolkit/dist/redux-toolkit.esm.js");
 /* harmony import */ var _ordersService__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ordersService */ "./src/features/orders/ordersService.js");
@@ -4852,7 +4854,28 @@ const initialState = {
   isError: false,
   isSuccess: false,
   isLoading: false,
-  message: ""
+  message: "",
+  order: {
+    service: null,
+    servicePrice: null,
+    date: null,
+    time: null,
+    frequency: null,
+    vehicleType: "Pick - Up Truck",
+    vehicleTotal: 15,
+    stairsNumber: 0,
+    stairsTotal: 0,
+    dismantlingNumber: 0,
+    dismantlingTotal: 0,
+    description: null,
+    companyName: null,
+    address: null,
+    firstName: null,
+    lastName: null,
+    email: null,
+    mobileNumber: null,
+    total: 90
+  }
 }; //get orders
 
 const getOrders = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__.createAsyncThunk)("orders/getOrders", async (__, thunkAPI) => {
@@ -4863,6 +4886,11 @@ const getOrders = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__.createAsyncTh
     return thunkAPI.rejectWithValue(message);
   }
 });
+const getDefaultOrderService = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__.createAsyncThunk)("orders/setupInitialOrderService", async (serviceId, thunkAPI) => {
+  const services = await thunkAPI.getState().services.find(service => Number(service.id) === 1);
+  const service = services.find(service => Number(service.id) === 1);
+  return await service;
+});
 const ordersSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__.createSlice)({
   name: "orders",
   initialState,
@@ -4872,6 +4900,9 @@ const ordersSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__.createSlice
       state.isSuccess = false;
       state.isLoading = false;
       state.message = "";
+    },
+    setOrder: (state, action) => {
+      state.order = action.payload;
     }
   },
   extraReducers: builder => {
@@ -4890,9 +4921,103 @@ const ordersSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__.createSlice
   }
 });
 const {
-  reset
+  reset,
+  setOrder
 } = ordersSlice.actions;
 /* harmony default export */ __webpack_exports__["default"] = (ordersSlice.reducer);
+
+/***/ }),
+
+/***/ "./src/features/orders/userOrderSlice.js":
+/*!***********************************************!*\
+  !*** ./src/features/orders/userOrderSlice.js ***!
+  \***********************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "getDefaultOrderService": function() { return /* binding */ getDefaultOrderService; },
+/* harmony export */   "reset": function() { return /* binding */ reset; },
+/* harmony export */   "setOrder": function() { return /* binding */ setOrder; },
+/* harmony export */   "userOrderSlice": function() { return /* binding */ userOrderSlice; }
+/* harmony export */ });
+/* harmony import */ var _reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @reduxjs/toolkit */ "./node_modules/@reduxjs/toolkit/dist/redux-toolkit.esm.js");
+
+const initialState = {
+  isError: false,
+  isSuccess: false,
+  isLoading: false,
+  message: "",
+  order: {
+    service: null,
+    servicePrice: 0,
+    date: null,
+    time: null,
+    frequency: null,
+    vehicleType: null,
+    vehicleTotal: 0,
+    stairsNumber: 0,
+    stairsTotal: 0,
+    dismantlingNumber: 0,
+    dismantlingTotal: 0,
+    description: null,
+    companyName: null,
+    address: null,
+    firstName: null,
+    lastName: null,
+    email: null,
+    mobileNumber: null,
+    total: 0
+  }
+};
+const getDefaultOrderService = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createAsyncThunk)("userOrder/setupInitialOrderService", async (serviceId, thunkAPI) => {
+  try {
+    const services = await thunkAPI.getState().services;
+    return services;
+  } catch (error) {
+    const message = error.response && error.response.data && error.response.data.message || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+const userOrderSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createSlice)({
+  name: "userOrder",
+  initialState,
+  reducers: {
+    reset: state => {
+      state.isError = false;
+      state.isSuccess = false;
+      state.isLoading = false;
+      state.message = "";
+    },
+    setOrder: (state, action) => {
+      state.order = action.payload;
+    }
+  },
+  extraReducers: builder => {
+    builder.addCase(getDefaultOrderService.pending, state => {
+      state.isLoading = true;
+    }).addCase(getDefaultOrderService.fulfilled, (state, action) => {
+      state.isSuccess = true;
+      state.isLoading = false;
+      state.isSuccess = true;
+      const services = action.payload.services;
+      const service = services.find(s => s.service_id === "1");
+      state.order.service = service.name;
+      state.order.servicePrice = Number(service.min_price);
+      state.order.total = state.order.service === "Dump Trailer" ? (state.order.servicePrice + state.order.stairsTotal + state.order.dismantlingTotal).toFixed(2) : (state.order.servicePrice + state.order.vehicleTotal + state.order.stairsTotal + state.order.dismantlingTotal).toFixed(2);
+    }).addCase(getDefaultOrderService.rejected, (state, action) => {
+      state.isLoading = false;
+      state.isError = true;
+      state.message = action.payload;
+    });
+  }
+});
+const {
+  reset,
+  setOrder
+} = userOrderSlice.actions;
+/* harmony default export */ __webpack_exports__["default"] = (userOrderSlice.reducer);
 
 /***/ }),
 
@@ -4997,19 +5122,22 @@ const servicesService = {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @reduxjs/toolkit */ "./node_modules/@reduxjs/toolkit/dist/redux-toolkit.esm.js");
+/* harmony import */ var _reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @reduxjs/toolkit */ "./node_modules/@reduxjs/toolkit/dist/redux-toolkit.esm.js");
 /* harmony import */ var _features_orders_ordersSlice__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./features/orders/ordersSlice */ "./src/features/orders/ordersSlice.js");
 /* harmony import */ var _features_backend_pages_pagesSlice__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./features/backend-pages/pagesSlice */ "./src/features/backend-pages/pagesSlice.js");
 /* harmony import */ var _features_services_serviceSlice__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./features/services/serviceSlice */ "./src/features/services/serviceSlice.js");
+/* harmony import */ var _features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./features/orders/userOrderSlice */ "./src/features/orders/userOrderSlice.js");
 
 
 
 
-const store = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_3__.configureStore)({
+
+const store = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_4__.configureStore)({
   reducer: {
     orders: _features_orders_ordersSlice__WEBPACK_IMPORTED_MODULE_0__["default"],
     backendPage: _features_backend_pages_pagesSlice__WEBPACK_IMPORTED_MODULE_1__["default"],
-    services: _features_services_serviceSlice__WEBPACK_IMPORTED_MODULE_2__["default"]
+    services: _features_services_serviceSlice__WEBPACK_IMPORTED_MODULE_2__["default"],
+    userOrder: _features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_3__["default"]
   }
 });
 /* harmony default export */ __webpack_exports__["default"] = (store);

@@ -1,26 +1,35 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Skeleton from "react-loading-skeleton";
-import { getServices } from "../../features/services/serviceSlice";
 import JunkRemoval from "../assets/junk-removal.svg";
 import CardboardRemoval from "../assets/cardboard-removal.svg";
 import DumpsterRental from "../assets/dumpster-rental.svg";
+import { getServices } from "../../features/services/serviceSlice";
+import {
+	setOrder,
+	getDefaultOrderService,
+} from "../../features/orders/userOrderSlice";
 
 const ChooseService = () => {
-	const [selected, setSelected] = useState("1");
+	const { order } = useSelector((state) => state.userOrder);
 	const dispatch = useDispatch();
-	const { isError, isLoading, message, services } = useSelector(
+	const { isError, isSuccess, isLoading, message, services } = useSelector(
 		(state) => state.services
 	);
 
 	useEffect(() => {
 		dispatch(getServices());
 	}, [dispatch]);
+	useEffect(() => {
+		if (isSuccess) {
+			dispatch(getDefaultOrderService());
+		}
+	}, [dispatch, isSuccess]);
 
 	return (
 		<div>
 			<p className="text-2xl">Choose a service</p>
-			<p>What do you need?</p>
+			<p className="text-lg">What do you need?</p>
 
 			{isLoading ? (
 				<Skeleton count={3} className=" w-full min-w-max" />
@@ -38,15 +47,36 @@ const ChooseService = () => {
 							cursor-pointer 
 							border-2 
 							${
-								selected === service.service_id
+								order.service === service.name
 									? "border-color-accent text-color-accent hover:bg-yellow-100"
 									: "border-gray-200 hover:bg-gray-100"
 							}
 							rounded-md 
-							p-5 
-							
+							p-4
+							px-10
 							`}
-							onClick={(e) => setSelected(service.service_id)}
+							onClick={(e) => {
+								dispatch(
+									setOrder({
+										...order,
+										service: service.name,
+										servicePrice: Number(service.min_price),
+										total:
+											order.service === "Dump Trailer"
+												? (
+														Number(service.min_price) +
+														order.stairsTotal +
+														order.dismantlingTotal
+												  ).toFixed(2)
+												: (
+														Number(service.min_price) +
+														order.vehicleTotal +
+														order.stairsTotal +
+														order.dismantlingTotal
+												  ).toFixed(2),
+									})
+								);
+							}}
 						>
 							<img
 								src={
@@ -61,11 +91,42 @@ const ChooseService = () => {
 								alt={service.name}
 							/>
 							<b>{service.name}</b>
-							<span>${service.min_price}</span>
+							<span>${Number(service.min_price).toFixed(2)}</span>
 						</div>
 					))}
 				</div>
 			)}
+			<span
+				onClick={(e) => {
+					dispatch(
+						setOrder({
+							...order,
+							vehicleTotal: 5,
+							total:
+								order.service === "Dump Trailer"
+									? (
+											order.servicePrice +
+											order.stairsTotal +
+											order.dismantlingTotal
+									  ).toFixed(2)
+									: (
+											order.servicePrice +
+											5 +
+											order.stairsTotal +
+											order.dismantlingTotal
+									  ).toFixed(2),
+						})
+					);
+				}}
+			>
+				total:{" "}
+				{(
+					order.servicePrice +
+					order.vehicleTotal +
+					order.stairsTotal +
+					order.dismantlingTotal
+				).toFixed(2)}
+			</span>
 		</div>
 	);
 };

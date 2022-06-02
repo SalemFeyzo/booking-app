@@ -1,18 +1,27 @@
-import React from "react";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
 
 const PriceQuote = () => {
+	const { order } = useSelector((state) => state.userOrder);
+	useEffect(() => {}, [order.vehicleTotal]);
+
 	return (
 		<div>
 			<b className="text-2xl">Price Quote</b>
 			<ul className="flex flex-col justify-between  divide-y">
 				<li className="flex flex-row justify-between items-center m-1">
-					<span>Junk Removal</span>
-					<span>$80</span>
+					<span>{order.service}</span>
+					<span>${Number(order.servicePrice).toFixed(2)}</span>
 				</li>
-				<li className="flex flex-row justify-between items-center m-1">
-					<span>Vehicle Size: Pick - Up Truck</span>
-					<span>$15</span>
-				</li>
+				{order.service === "Dump Trailer" ? (
+					""
+				) : (
+					<li className="flex flex-row justify-between items-center m-1">
+						<span>Vehicle Size: Pick - Up Truck</span>
+						<span>${order.vehicleTotal}</span>
+					</li>
+				)}
+
 				<li>
 					<b className="text-md text-color-accent">Booking Details:</b>
 					<ul className="divide-y text-sm">
@@ -29,7 +38,7 @@ const PriceQuote = () => {
 				<li className="flex flex-row justify-between items-center m-1">
 					<b className="text-lg">Total</b>
 					<span>
-						<b>$95.00</b>
+						<b>${order.total}</b>
 					</span>
 				</li>
 			</ul>

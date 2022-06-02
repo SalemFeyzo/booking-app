@@ -7,6 +7,27 @@ const initialState = {
 	isSuccess: false,
 	isLoading: false,
 	message: "",
+	order: {
+		service: null,
+		servicePrice: null,
+		date: null,
+		time: null,
+		frequency: null,
+		vehicleType: "Pick - Up Truck",
+		vehicleTotal: 15,
+		stairsNumber: 0,
+		stairsTotal: 0,
+		dismantlingNumber: 0,
+		dismantlingTotal: 0,
+		description: null,
+		companyName: null,
+		address: null,
+		firstName: null,
+		lastName: null,
+		email: null,
+		mobileNumber: null,
+		total: 90,
+	},
 };
 
 //get orders
@@ -26,7 +47,17 @@ export const getOrders = createAsyncThunk(
 		}
 	}
 );
+export const getDefaultOrderService = createAsyncThunk(
+	"orders/setupInitialOrderService",
+	async (serviceId, thunkAPI) => {
+		const services = await thunkAPI
+			.getState()
+			.services.find((service) => Number(service.id) === 1);
+		const service = services.find((service) => Number(service.id) === 1);
 
+		return await service;
+	}
+);
 export const ordersSlice = createSlice({
 	name: "orders",
 	initialState,
@@ -36,6 +67,9 @@ export const ordersSlice = createSlice({
 			state.isSuccess = false;
 			state.isLoading = false;
 			state.message = "";
+		},
+		setOrder: (state, action) => {
+			state.order = action.payload;
 		},
 	},
 	extraReducers: (builder) => {
@@ -57,5 +91,5 @@ export const ordersSlice = createSlice({
 	},
 });
 
-export const { reset } = ordersSlice.actions;
+export const { reset, setOrder } = ordersSlice.actions;
 export default ordersSlice.reducer;
