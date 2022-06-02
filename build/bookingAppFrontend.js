@@ -6020,22 +6020,28 @@ const PriceQuote = () => {
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("b", {
     className: "text-2xl"
   }, "Price Quote"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("ul", {
-    className: "flex flex-col justify-between  divide-y"
+    className: "flex flex-col justify-between"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", {
-    className: "flex flex-row justify-between items-center m-1"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, order.service), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, "$", Number(order.servicePrice).toFixed(2))), order.service === "Dump Trailer" ? "" : (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", {
-    className: "flex flex-row justify-between items-center m-1"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, "Vehicle Size: Pick - Up Truck"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, "$", order.vehicleTotal)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("b", {
+    className: " m-1 "
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "flex flex-row justify-between items-center border-b-2 border-gray-100 w-full "
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, order.service), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, "$", Number(order.servicePrice).toFixed(2)))), order.service === "Dump Trailer" ? "" : (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", {
+    className: " m-1"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "flex flex-row justify-between items-center border-b-2 border-gray-100 w-full "
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, "Vehicle Size: Pick - Up Truck"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, "$", order.vehicleTotal))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("b", {
     className: "text-md text-color-accent"
   }, "Booking Details:"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("ul", {
     className: "divide-y text-sm"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "border-b-2 border-gray-100 w-full text-sm"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", null, "10005 Greenbrier Road, Hopkins, MN, USA"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", null, "Tuesday, May 31 at 12 PM"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", {
     className: "grid grid-cols-2 grid-rows-1  m-1"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "will-change-transform col-span-1"
   }, "Basketball Hoop (unattached to the ground) (x1)"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "col-span-1 text-right"
-  }, "$35")))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", {
+  }, "$35"))))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", {
     className: "flex flex-row justify-between items-center m-1"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("b", {
     className: "text-lg"
