@@ -28,11 +28,11 @@ const initialState = {
 	},
 };
 
-export const getDefaultOrderService = createAsyncThunk(
-	"userOrder/setupInitialOrderService",
-	async (serviceId, thunkAPI) => {
+export const setOrder = createAsyncThunk(
+	"userOrder/setOrder",
+	async (__, thunkAPI) => {
 		try {
-			const services = await thunkAPI.getState().services;
+			const { services } = await thunkAPI.getState().services;
 			return services;
 		} catch (error) {
 			const message =
@@ -49,31 +49,47 @@ export const userOrderSlice = createSlice({
 	name: "userOrder",
 	initialState,
 	reducers: {
-		reset: (state) => {
-			state.isError = false;
-			state.isSuccess = false;
-			state.isLoading = false;
-			state.message = "";
+		reset: () => initialState,
+		setOrderService: (state, action) => {
+			state.order.service = action.payload;
 		},
-		setOrder: (state, action) => {
-			state.order = action.payload;
+		setOrderServicePrice: (state, action) => {
+			state.order.servicePrice = action.payload;
+		},
+		restOrderTotal: (state, action) => {
+			state.order.total =
+				state.order.service == "Dump Trailer"
+					? (
+							state.order.servicePrice +
+							state.order.stairsTotal +
+							state.order.dismantlingTotal
+					  ).toFixed(2)
+					: (
+							state.order.servicePrice +
+							state.order.vehicleTotal +
+							state.order.stairsTotal +
+							state.order.dismantlingTotal
+					  ).toFixed(2);
+		},
+		setOrderVehicleTotal: (state, action) => {
+			state.order.vehicleTotal = action.payload;
 		},
 	},
 	extraReducers: (builder) => {
 		builder
-			.addCase(getDefaultOrderService.pending, (state) => {
+			.addCase(setOrder.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(getDefaultOrderService.fulfilled, (state, action) => {
+			.addCase(setOrder.fulfilled, (state, action) => {
 				state.isSuccess = true;
 				state.isLoading = false;
 				state.isSuccess = true;
-				const services = action.payload.services;
+				const services = action.payload;
 				const service = services.find((s) => s.service_id === "1");
 				state.order.service = service.name;
 				state.order.servicePrice = Number(service.min_price);
 				state.order.total =
-					state.order.service === "Dump Trailer"
+					state.order.service == "Dump Trailer"
 						? (
 								state.order.servicePrice +
 								state.order.stairsTotal +
@@ -86,7 +102,7 @@ export const userOrderSlice = createSlice({
 								state.order.dismantlingTotal
 						  ).toFixed(2);
 			})
-			.addCase(getDefaultOrderService.rejected, (state, action) => {
+			.addCase(setOrder.rejected, (state, action) => {
 				state.isLoading = false;
 				state.isError = true;
 				state.message = action.payload;
@@ -94,5 +110,11 @@ export const userOrderSlice = createSlice({
 	},
 });
 
-export const { reset, setOrder } = userOrderSlice.actions;
+export const {
+	reset,
+	setOrderService,
+	setOrderServicePrice,
+	restOrderTotal,
+	setOrderVehicleTotal,
+} = userOrderSlice.actions;
 export default userOrderSlice.reducer;

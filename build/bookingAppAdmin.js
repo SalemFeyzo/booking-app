@@ -4910,9 +4910,12 @@ const {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "getDefaultOrderService": function() { return /* binding */ getDefaultOrderService; },
 /* harmony export */   "reset": function() { return /* binding */ reset; },
+/* harmony export */   "restOrderTotal": function() { return /* binding */ restOrderTotal; },
 /* harmony export */   "setOrder": function() { return /* binding */ setOrder; },
+/* harmony export */   "setOrderService": function() { return /* binding */ setOrderService; },
+/* harmony export */   "setOrderServicePrice": function() { return /* binding */ setOrderServicePrice; },
+/* harmony export */   "setOrderVehicleTotal": function() { return /* binding */ setOrderVehicleTotal; },
 /* harmony export */   "userOrderSlice": function() { return /* binding */ userOrderSlice; }
 /* harmony export */ });
 /* harmony import */ var _reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @reduxjs/toolkit */ "./node_modules/@reduxjs/toolkit/dist/redux-toolkit.esm.js");
@@ -4944,9 +4947,11 @@ const initialState = {
     total: 0
   }
 };
-const getDefaultOrderService = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createAsyncThunk)("userOrder/setupInitialOrderService", async (serviceId, thunkAPI) => {
+const setOrder = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createAsyncThunk)("userOrder/setOrder", async (__, thunkAPI) => {
   try {
-    const services = await thunkAPI.getState().services;
+    const {
+      services
+    } = await thunkAPI.getState().services;
     return services;
   } catch (error) {
     const message = error.response && error.response.data && error.response.data.message || error.message || error.toString();
@@ -4957,29 +4962,33 @@ const userOrderSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createSl
   name: "userOrder",
   initialState,
   reducers: {
-    reset: state => {
-      state.isError = false;
-      state.isSuccess = false;
-      state.isLoading = false;
-      state.message = "";
+    reset: () => initialState,
+    setOrderService: (state, action) => {
+      state.order.service = action.payload;
     },
-    setOrder: (state, action) => {
-      state.order = action.payload;
+    setOrderServicePrice: (state, action) => {
+      state.order.servicePrice = action.payload;
+    },
+    restOrderTotal: (state, action) => {
+      state.order.total = state.order.service == "Dump Trailer" ? (state.order.servicePrice + state.order.stairsTotal + state.order.dismantlingTotal).toFixed(2) : (state.order.servicePrice + state.order.vehicleTotal + state.order.stairsTotal + state.order.dismantlingTotal).toFixed(2);
+    },
+    setOrderVehicleTotal: (state, action) => {
+      state.order.vehicleTotal = action.payload;
     }
   },
   extraReducers: builder => {
-    builder.addCase(getDefaultOrderService.pending, state => {
+    builder.addCase(setOrder.pending, state => {
       state.isLoading = true;
-    }).addCase(getDefaultOrderService.fulfilled, (state, action) => {
+    }).addCase(setOrder.fulfilled, (state, action) => {
       state.isSuccess = true;
       state.isLoading = false;
       state.isSuccess = true;
-      const services = action.payload.services;
+      const services = action.payload;
       const service = services.find(s => s.service_id === "1");
       state.order.service = service.name;
       state.order.servicePrice = Number(service.min_price);
-      state.order.total = state.order.service === "Dump Trailer" ? (state.order.servicePrice + state.order.stairsTotal + state.order.dismantlingTotal).toFixed(2) : (state.order.servicePrice + state.order.vehicleTotal + state.order.stairsTotal + state.order.dismantlingTotal).toFixed(2);
-    }).addCase(getDefaultOrderService.rejected, (state, action) => {
+      state.order.total = state.order.service == "Dump Trailer" ? (state.order.servicePrice + state.order.stairsTotal + state.order.dismantlingTotal).toFixed(2) : (state.order.servicePrice + state.order.vehicleTotal + state.order.stairsTotal + state.order.dismantlingTotal).toFixed(2);
+    }).addCase(setOrder.rejected, (state, action) => {
       state.isLoading = false;
       state.isError = true;
       state.message = action.payload;
@@ -4988,7 +4997,10 @@ const userOrderSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createSl
 });
 const {
   reset,
-  setOrder
+  setOrderService,
+  setOrderServicePrice,
+  restOrderTotal,
+  setOrderVehicleTotal
 } = userOrderSlice.actions;
 /* harmony default export */ __webpack_exports__["default"] = (userOrderSlice.reducer);
 

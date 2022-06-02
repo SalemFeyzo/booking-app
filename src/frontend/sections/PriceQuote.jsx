@@ -1,9 +1,7 @@
-import { useEffect } from "react";
 import { useSelector } from "react-redux";
 
 const PriceQuote = () => {
 	const { order } = useSelector((state) => state.userOrder);
-	useEffect(() => {}, [order.vehicleTotal]);
 
 	return (
 		<div>

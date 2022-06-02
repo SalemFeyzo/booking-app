@@ -5513,9 +5513,12 @@ const {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "getDefaultOrderService": function() { return /* binding */ getDefaultOrderService; },
 /* harmony export */   "reset": function() { return /* binding */ reset; },
+/* harmony export */   "restOrderTotal": function() { return /* binding */ restOrderTotal; },
 /* harmony export */   "setOrder": function() { return /* binding */ setOrder; },
+/* harmony export */   "setOrderService": function() { return /* binding */ setOrderService; },
+/* harmony export */   "setOrderServicePrice": function() { return /* binding */ setOrderServicePrice; },
+/* harmony export */   "setOrderVehicleTotal": function() { return /* binding */ setOrderVehicleTotal; },
 /* harmony export */   "userOrderSlice": function() { return /* binding */ userOrderSlice; }
 /* harmony export */ });
 /* harmony import */ var _reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @reduxjs/toolkit */ "./node_modules/@reduxjs/toolkit/dist/redux-toolkit.esm.js");
@@ -5547,9 +5550,11 @@ const initialState = {
     total: 0
   }
 };
-const getDefaultOrderService = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createAsyncThunk)("userOrder/setupInitialOrderService", async (serviceId, thunkAPI) => {
+const setOrder = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createAsyncThunk)("userOrder/setOrder", async (__, thunkAPI) => {
   try {
-    const services = await thunkAPI.getState().services;
+    const {
+      services
+    } = await thunkAPI.getState().services;
     return services;
   } catch (error) {
     const message = error.response && error.response.data && error.response.data.message || error.message || error.toString();
@@ -5560,29 +5565,33 @@ const userOrderSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createSl
   name: "userOrder",
   initialState,
   reducers: {
-    reset: state => {
-      state.isError = false;
-      state.isSuccess = false;
-      state.isLoading = false;
-      state.message = "";
+    reset: () => initialState,
+    setOrderService: (state, action) => {
+      state.order.service = action.payload;
     },
-    setOrder: (state, action) => {
-      state.order = action.payload;
+    setOrderServicePrice: (state, action) => {
+      state.order.servicePrice = action.payload;
+    },
+    restOrderTotal: (state, action) => {
+      state.order.total = state.order.service == "Dump Trailer" ? (state.order.servicePrice + state.order.stairsTotal + state.order.dismantlingTotal).toFixed(2) : (state.order.servicePrice + state.order.vehicleTotal + state.order.stairsTotal + state.order.dismantlingTotal).toFixed(2);
+    },
+    setOrderVehicleTotal: (state, action) => {
+      state.order.vehicleTotal = action.payload;
     }
   },
   extraReducers: builder => {
-    builder.addCase(getDefaultOrderService.pending, state => {
+    builder.addCase(setOrder.pending, state => {
       state.isLoading = true;
-    }).addCase(getDefaultOrderService.fulfilled, (state, action) => {
+    }).addCase(setOrder.fulfilled, (state, action) => {
       state.isSuccess = true;
       state.isLoading = false;
       state.isSuccess = true;
-      const services = action.payload.services;
+      const services = action.payload;
       const service = services.find(s => s.service_id === "1");
       state.order.service = service.name;
       state.order.servicePrice = Number(service.min_price);
-      state.order.total = state.order.service === "Dump Trailer" ? (state.order.servicePrice + state.order.stairsTotal + state.order.dismantlingTotal).toFixed(2) : (state.order.servicePrice + state.order.vehicleTotal + state.order.stairsTotal + state.order.dismantlingTotal).toFixed(2);
-    }).addCase(getDefaultOrderService.rejected, (state, action) => {
+      state.order.total = state.order.service == "Dump Trailer" ? (state.order.servicePrice + state.order.stairsTotal + state.order.dismantlingTotal).toFixed(2) : (state.order.servicePrice + state.order.vehicleTotal + state.order.stairsTotal + state.order.dismantlingTotal).toFixed(2);
+    }).addCase(setOrder.rejected, (state, action) => {
       state.isLoading = false;
       state.isError = true;
       state.message = action.payload;
@@ -5591,7 +5600,10 @@ const userOrderSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createSl
 });
 const {
   reset,
-  setOrder
+  setOrderService,
+  setOrderServicePrice,
+  restOrderTotal,
+  setOrderVehicleTotal
 } = userOrderSlice.actions;
 /* harmony default export */ __webpack_exports__["default"] = (userOrderSlice.reducer);
 
@@ -5926,7 +5938,8 @@ __webpack_require__.r(__webpack_exports__);
 
 const ChooseService = () => {
   const {
-    order
+    order,
+    isSuccess: isSuccessOrder
   } = (0,react_redux__WEBPACK_IMPORTED_MODULE_2__.useSelector)(state => state.userOrder);
   const dispatch = (0,react_redux__WEBPACK_IMPORTED_MODULE_2__.useDispatch)();
   const {
@@ -5941,9 +5954,11 @@ const ChooseService = () => {
   }, [dispatch]);
   (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
     if (isSuccess) {
-      dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_7__.getDefaultOrderService)());
+      dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_7__.setOrder)({ ...order
+      }));
     }
   }, [dispatch, isSuccess]);
+  console.log(order);
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
     className: "text-2xl"
   }, "Choose a service"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
@@ -5969,23 +5984,15 @@ const ChooseService = () => {
 							px-10
 							`,
     onClick: e => {
-      dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_7__.setOrder)({ ...order,
-        service: service.name,
-        servicePrice: Number(service.min_price),
-        total: order.service === "Dump Trailer" ? (Number(service.min_price) + order.stairsTotal + order.dismantlingTotal).toFixed(2) : (Number(service.min_price) + order.vehicleTotal + order.stairsTotal + order.dismantlingTotal).toFixed(2)
-      }));
+      dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_7__.setOrderService)(service.name) // servicePrice: Number(service.min_price),
+      );
+      dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_7__.setOrderServicePrice)(Number(service.min_price)));
+      dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_7__.restOrderTotal)());
     }
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("img", {
     src: service.name === "Junk Removal" ? _assets_junk_removal_svg__WEBPACK_IMPORTED_MODULE_3__["default"] : service.name === "Cardboard Removal" ? _assets_cardboard_removal_svg__WEBPACK_IMPORTED_MODULE_4__["default"] : service.name === "Dump Trailer" ? _assets_dumpster_rental_svg__WEBPACK_IMPORTED_MODULE_5__["default"] : _assets_junk_removal_svg__WEBPACK_IMPORTED_MODULE_3__["default"],
     alt: service.name
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("b", null, service.name), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, "$", Number(service.min_price).toFixed(2))))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
-    onClick: e => {
-      dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_7__.setOrder)({ ...order,
-        vehicleTotal: 5,
-        total: order.service === "Dump Trailer" ? (order.servicePrice + order.stairsTotal + order.dismantlingTotal).toFixed(2) : (order.servicePrice + 5 + order.stairsTotal + order.dismantlingTotal).toFixed(2)
-      }));
-    }
-  }, "total:", " ", (order.servicePrice + order.vehicleTotal + order.stairsTotal + order.dismantlingTotal).toFixed(2)));
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("b", null, service.name), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, "$", Number(service.min_price).toFixed(2))))));
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (ChooseService);
@@ -6002,18 +6009,14 @@ const ChooseService = () => {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "react");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
-
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
 
 
 
 const PriceQuote = () => {
   const {
     order
-  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_2__.useSelector)(state => state.userOrder);
-  (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {}, [order.vehicleTotal]);
+  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_1__.useSelector)(state => state.userOrder);
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("b", {
     className: "text-2xl"
   }, "Price Quote"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("ul", {

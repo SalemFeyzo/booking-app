@@ -7,11 +7,16 @@ import DumpsterRental from "../assets/dumpster-rental.svg";
 import { getServices } from "../../features/services/serviceSlice";
 import {
 	setOrder,
-	getDefaultOrderService,
+	setOrderService,
+	setOrderServicePrice,
+	restOrderTotal,
+	setOrderVehicleTotal,
 } from "../../features/orders/userOrderSlice";
 
 const ChooseService = () => {
-	const { order } = useSelector((state) => state.userOrder);
+	const { order, isSuccess: isSuccessOrder } = useSelector(
+		(state) => state.userOrder
+	);
 	const dispatch = useDispatch();
 	const { isError, isSuccess, isLoading, message, services } = useSelector(
 		(state) => state.services
@@ -22,10 +27,10 @@ const ChooseService = () => {
 	}, [dispatch]);
 	useEffect(() => {
 		if (isSuccess) {
-			dispatch(getDefaultOrderService());
+			dispatch(setOrder({ ...order }));
 		}
 	}, [dispatch, isSuccess]);
-
+	console.log(order);
 	return (
 		<div>
 			<p className="text-2xl">Choose a service</p>
@@ -57,25 +62,11 @@ const ChooseService = () => {
 							`}
 							onClick={(e) => {
 								dispatch(
-									setOrder({
-										...order,
-										service: service.name,
-										servicePrice: Number(service.min_price),
-										total:
-											order.service === "Dump Trailer"
-												? (
-														Number(service.min_price) +
-														order.stairsTotal +
-														order.dismantlingTotal
-												  ).toFixed(2)
-												: (
-														Number(service.min_price) +
-														order.vehicleTotal +
-														order.stairsTotal +
-														order.dismantlingTotal
-												  ).toFixed(2),
-									})
+									setOrderService(service.name)
+									// servicePrice: Number(service.min_price),
 								);
+								dispatch(setOrderServicePrice(Number(service.min_price)));
+								dispatch(restOrderTotal());
 							}}
 						>
 							<img
@@ -96,37 +87,6 @@ const ChooseService = () => {
 					))}
 				</div>
 			)}
-			<span
-				onClick={(e) => {
-					dispatch(
-						setOrder({
-							...order,
-							vehicleTotal: 5,
-							total:
-								order.service === "Dump Trailer"
-									? (
-											order.servicePrice +
-											order.stairsTotal +
-											order.dismantlingTotal
-									  ).toFixed(2)
-									: (
-											order.servicePrice +
-											5 +
-											order.stairsTotal +
-											order.dismantlingTotal
-									  ).toFixed(2),
-						})
-					);
-				}}
-			>
-				total:{" "}
-				{(
-					order.servicePrice +
-					order.vehicleTotal +
-					order.stairsTotal +
-					order.dismantlingTotal
-				).toFixed(2)}
-			</span>
 		</div>
 	);
 };
