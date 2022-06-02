@@ -5442,7 +5442,6 @@ const ordersService = {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "getDefaultOrderService": function() { return /* binding */ getDefaultOrderService; },
 /* harmony export */   "getOrders": function() { return /* binding */ getOrders; },
 /* harmony export */   "ordersSlice": function() { return /* binding */ ordersSlice; },
 /* harmony export */   "reset": function() { return /* binding */ reset; },
@@ -5457,28 +5456,7 @@ const initialState = {
   isError: false,
   isSuccess: false,
   isLoading: false,
-  message: "",
-  order: {
-    service: null,
-    servicePrice: null,
-    date: null,
-    time: null,
-    frequency: null,
-    vehicleType: "Pick - Up Truck",
-    vehicleTotal: 15,
-    stairsNumber: 0,
-    stairsTotal: 0,
-    dismantlingNumber: 0,
-    dismantlingTotal: 0,
-    description: null,
-    companyName: null,
-    address: null,
-    firstName: null,
-    lastName: null,
-    email: null,
-    mobileNumber: null,
-    total: 90
-  }
+  message: ""
 }; //get orders
 
 const getOrders = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__.createAsyncThunk)("orders/getOrders", async (__, thunkAPI) => {
@@ -5488,11 +5466,6 @@ const getOrders = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__.createAsyncTh
     const message = error.response && error.response.data && error.response.data.message || error.message || error.toString();
     return thunkAPI.rejectWithValue(message);
   }
-});
-const getDefaultOrderService = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__.createAsyncThunk)("orders/setupInitialOrderService", async (serviceId, thunkAPI) => {
-  const services = await thunkAPI.getState().services.find(service => Number(service.id) === 1);
-  const service = services.find(service => Number(service.id) === 1);
-  return await service;
 });
 const ordersSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__.createSlice)({
   name: "orders",
