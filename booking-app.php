@@ -311,3 +311,6 @@ $booking_app = new BookingApp();
 //Service Routes
 require_once ABSPATH . "wp-content/plugins/booking-app/api/services_routes.php";
 $routes = new ServiceRoutes();
+//Vehicles Routes
+require_once ABSPATH . "wp-content/plugins/booking-app/api/vehicles_routes.php";
+$vehicles = new VehiclesRoutes();
