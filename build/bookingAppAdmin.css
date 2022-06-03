@@ -457,9 +457,6 @@ Ensure the default browser behavior of the `hidden` attribute.
 .m-1 {
   margin: 0.25rem;
 }
-.m-3 {
-  margin: 0.75rem;
-}
 .mx-auto {
   margin-left: auto;
   margin-right: auto;
@@ -467,14 +464,6 @@ Ensure the default browser behavior of the `hidden` attribute.
 .my-3 {
   margin-top: 0.75rem;
   margin-bottom: 0.75rem;
-}
-.my-5 {
-  margin-top: 1.25rem;
-  margin-bottom: 1.25rem;
-}
-.my-20 {
-  margin-top: 5rem;
-  margin-bottom: 5rem;
 }
 .mt-2 {
   margin-top: 0.5rem;
@@ -584,41 +573,10 @@ Ensure the default browser behavior of the `hidden` attribute.
 .gap-2 {
   gap: 0.5rem;
 }
-.\!divide-y-2 > :not([hidden]) ~ :not([hidden]) {
-  --tw-divide-y-reverse: 0 !important;
-  border-top-width: calc(2px * calc(1 - var(--tw-divide-y-reverse))) !important;
-  border-bottom-width: calc(2px * var(--tw-divide-y-reverse)) !important;
-}
 .divide-y > :not([hidden]) ~ :not([hidden]) {
   --tw-divide-y-reverse: 0;
   border-top-width: calc(1px * calc(1 - var(--tw-divide-y-reverse)));
   border-bottom-width: calc(1px * var(--tw-divide-y-reverse));
-}
-.divide-y-2 > :not([hidden]) ~ :not([hidden]) {
-  --tw-divide-y-reverse: 0;
-  border-top-width: calc(2px * calc(1 - var(--tw-divide-y-reverse)));
-  border-bottom-width: calc(2px * var(--tw-divide-y-reverse));
-}
-.divide-x > :not([hidden]) ~ :not([hidden]) {
-  --tw-divide-x-reverse: 0;
-  border-right-width: calc(1px * var(--tw-divide-x-reverse));
-  border-left-width: calc(1px * calc(1 - var(--tw-divide-x-reverse)));
-}
-.divide-y-8 > :not([hidden]) ~ :not([hidden]) {
-  --tw-divide-y-reverse: 0;
-  border-top-width: calc(8px * calc(1 - var(--tw-divide-y-reverse)));
-  border-bottom-width: calc(8px * var(--tw-divide-y-reverse));
-}
-.divide-double > :not([hidden]) ~ :not([hidden]) {
-  border-style: double;
-}
-.\!divide-yellow-200 > :not([hidden]) ~ :not([hidden]) {
-  --tw-divide-opacity: 1 !important;
-  border-color: rgb(254 240 138 / var(--tw-divide-opacity)) !important;
-}
-.divide-yellow-200 > :not([hidden]) ~ :not([hidden]) {
-  --tw-divide-opacity: 1;
-  border-color: rgb(254 240 138 / var(--tw-divide-opacity));
 }
 .overflow-hidden {
   overflow: hidden;
@@ -658,26 +616,6 @@ Ensure the default browser behavior of the `hidden` attribute.
 .border-gray-200 {
   --tw-border-opacity: 1;
   border-color: rgb(229 231 235 / var(--tw-border-opacity));
-}
-.border-yellow-100 {
-  --tw-border-opacity: 1;
-  border-color: rgb(254 249 195 / var(--tw-border-opacity));
-}
-.border-yellow-500 {
-  --tw-border-opacity: 1;
-  border-color: rgb(234 179 8 / var(--tw-border-opacity));
-}
-.border-gray-600 {
-  --tw-border-opacity: 1;
-  border-color: rgb(75 85 99 / var(--tw-border-opacity));
-}
-.border-gray-400 {
-  --tw-border-opacity: 1;
-  border-color: rgb(156 163 175 / var(--tw-border-opacity));
-}
-.border-gray-500 {
-  --tw-border-opacity: 1;
-  border-color: rgb(107 114 128 / var(--tw-border-opacity));
 }
 .bg-white {
   --tw-bg-opacity: 1;

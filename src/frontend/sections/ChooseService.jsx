@@ -11,26 +11,33 @@ import {
 	setOrderServicePrice,
 	restOrderTotal,
 	setOrderVehicleTotal,
+	setVehicleType,
 } from "../../features/orders/userOrderSlice";
+import { getVehicles } from "../../features/vehicles/vehiclesSlice";
 
 const ChooseService = () => {
-	const { order, isSuccess: isSuccessOrder } = useSelector(
-		(state) => state.userOrder
-	);
+	const { order } = useSelector((state) => state.userOrder);
 	const dispatch = useDispatch();
-	const { isError, isSuccess, isLoading, message, services } = useSelector(
-		(state) => state.services
+	const {
+		isError,
+		isSuccess: isSuccessServices,
+		isLoading,
+		message,
+		services,
+	} = useSelector((state) => state.services);
+	const { vehicles, isSuccess: isSuccessVehicles } = useSelector(
+		(state) => state.vehicles
 	);
 
 	useEffect(() => {
 		dispatch(getServices());
+		dispatch(getVehicles());
 	}, [dispatch]);
 	useEffect(() => {
-		if (isSuccess) {
+		if (isSuccessVehicles && isSuccessServices) {
 			dispatch(setOrder({ ...order }));
 		}
-	}, [dispatch, isSuccess]);
-	console.log(order);
+	}, [dispatch, isSuccessVehicles, isSuccessServices]);
 	return (
 		<div>
 			<p className="text-2xl">Choose a service</p>

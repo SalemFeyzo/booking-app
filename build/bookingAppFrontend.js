@@ -5555,7 +5555,13 @@ const setOrder = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createAsyncThu
     const {
       services
     } = await thunkAPI.getState().services;
-    return services;
+    const {
+      vehicles
+    } = await thunkAPI.getState().vehicles;
+    return {
+      vehicles,
+      services
+    };
   } catch (error) {
     const message = error.response && error.response.data && error.response.data.message || error.message || error.toString();
     return thunkAPI.rejectWithValue(message);
@@ -5575,6 +5581,9 @@ const userOrderSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createSl
     restOrderTotal: (state, action) => {
       state.order.total = state.order.service == "Dump Trailer" ? (state.order.servicePrice + state.order.stairsTotal + state.order.dismantlingTotal).toFixed(2) : (state.order.servicePrice + state.order.vehicleTotal + state.order.stairsTotal + state.order.dismantlingTotal).toFixed(2);
     },
+    setVehicleType: (state, action) => {
+      state.order.vehicleType = action.payload;
+    },
     setOrderVehicleTotal: (state, action) => {
       state.order.vehicleTotal = action.payload;
     }
@@ -5586,10 +5595,14 @@ const userOrderSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createSl
       state.isSuccess = true;
       state.isLoading = false;
       state.isSuccess = true;
-      const services = action.payload;
+      const services = action.payload.services;
+      const vehicles = action.payload.vehicles;
+      const vehicle = vehicles.find(v => v.vehicle_id === "1");
       const service = services.find(s => s.service_id === "1");
       state.order.service = service.name;
       state.order.servicePrice = Number(service.min_price);
+      state.order.vehicleType = vehicle.type;
+      state.order.vehicleTotal = Number(vehicle.price);
       state.order.total = state.order.service == "Dump Trailer" ? (state.order.servicePrice + state.order.stairsTotal + state.order.dismantlingTotal).toFixed(2) : (state.order.servicePrice + state.order.vehicleTotal + state.order.stairsTotal + state.order.dismantlingTotal).toFixed(2);
     }).addCase(setOrder.rejected, (state, action) => {
       state.isLoading = false;
@@ -5699,6 +5712,99 @@ const servicesService = {
   getServices
 };
 /* harmony default export */ __webpack_exports__["default"] = (servicesService);
+
+/***/ }),
+
+/***/ "./src/features/vehicles/vehiclesService.js":
+/*!**************************************************!*\
+  !*** ./src/features/vehicles/vehiclesService.js ***!
+  \**************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+
+const API_URL = `${window.location.origin}/wordpress/wp-json/booking-app/api/v1`;
+
+const getVehicles = async () => {
+  const {
+    data
+  } = await axios__WEBPACK_IMPORTED_MODULE_0___default().get(`${API_URL}/vehicles`);
+  return data;
+};
+
+const vehiclesService = {
+  getVehicles
+};
+/* harmony default export */ __webpack_exports__["default"] = (vehiclesService);
+
+/***/ }),
+
+/***/ "./src/features/vehicles/vehiclesSlice.js":
+/*!************************************************!*\
+  !*** ./src/features/vehicles/vehiclesSlice.js ***!
+  \************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "getVehicles": function() { return /* binding */ getVehicles; },
+/* harmony export */   "reset": function() { return /* binding */ reset; },
+/* harmony export */   "vehiclesSlice": function() { return /* binding */ vehiclesSlice; }
+/* harmony export */ });
+/* harmony import */ var _reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @reduxjs/toolkit */ "./node_modules/@reduxjs/toolkit/dist/redux-toolkit.esm.js");
+/* harmony import */ var _vehiclesService__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./vehiclesService */ "./src/features/vehicles/vehiclesService.js");
+
+
+const initialState = {
+  vehicles: [],
+  isError: false,
+  isSuccess: false,
+  isLoading: false,
+  message: ""
+}; //get orders
+
+const getVehicles = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__.createAsyncThunk)("vehicles/getVehicles", async (__, thunkAPI) => {
+  try {
+    return await _vehiclesService__WEBPACK_IMPORTED_MODULE_0__["default"].getVehicles();
+  } catch (error) {
+    const message = error.response && error.response.data && error.response.data.message || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+const vehiclesSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__.createSlice)({
+  name: "vehicles",
+  initialState,
+  reducers: {
+    reset: state => {
+      state.isError = false;
+      state.isSuccess = false;
+      state.isLoading = false;
+      state.message = "";
+    }
+  },
+  extraReducers: builder => {
+    builder.addCase(getVehicles.pending, state => {
+      state.isLoading = true;
+    }).addCase(getVehicles.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.isSuccess = true;
+      state.vehicles = action.payload;
+    }).addCase(getVehicles.rejected, (state, action) => {
+      state.isLoading = false;
+      state.isError = true;
+      state.message = action.payload;
+      state.vehicles = [];
+    });
+  }
+});
+const {
+  reset
+} = vehiclesSlice.actions;
+/* harmony default export */ __webpack_exports__["default"] = (vehiclesSlice.reducer);
 
 /***/ }),
 
@@ -5920,12 +6026,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
-/* harmony import */ var react_loading_skeleton__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! react-loading-skeleton */ "./node_modules/react-loading-skeleton/dist/index.mjs");
+/* harmony import */ var react_loading_skeleton__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! react-loading-skeleton */ "./node_modules/react-loading-skeleton/dist/index.mjs");
 /* harmony import */ var _assets_junk_removal_svg__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../assets/junk-removal.svg */ "./src/frontend/assets/junk-removal.svg");
 /* harmony import */ var _assets_cardboard_removal_svg__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../assets/cardboard-removal.svg */ "./src/frontend/assets/cardboard-removal.svg");
 /* harmony import */ var _assets_dumpster_rental_svg__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../assets/dumpster-rental.svg */ "./src/frontend/assets/dumpster-rental.svg");
 /* harmony import */ var _features_services_serviceSlice__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../features/services/serviceSlice */ "./src/features/services/serviceSlice.js");
 /* harmony import */ var _features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../features/orders/userOrderSlice */ "./src/features/orders/userOrderSlice.js");
+/* harmony import */ var _features_vehicles_vehiclesSlice__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../features/vehicles/vehiclesSlice */ "./src/features/vehicles/vehiclesSlice.js");
+
 
 
 
@@ -5938,32 +6046,35 @@ __webpack_require__.r(__webpack_exports__);
 
 const ChooseService = () => {
   const {
-    order,
-    isSuccess: isSuccessOrder
+    order
   } = (0,react_redux__WEBPACK_IMPORTED_MODULE_2__.useSelector)(state => state.userOrder);
   const dispatch = (0,react_redux__WEBPACK_IMPORTED_MODULE_2__.useDispatch)();
   const {
     isError,
-    isSuccess,
+    isSuccess: isSuccessServices,
     isLoading,
     message,
     services
   } = (0,react_redux__WEBPACK_IMPORTED_MODULE_2__.useSelector)(state => state.services);
+  const {
+    vehicles,
+    isSuccess: isSuccessVehicles
+  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_2__.useSelector)(state => state.vehicles);
   (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
     dispatch((0,_features_services_serviceSlice__WEBPACK_IMPORTED_MODULE_6__.getServices)());
+    dispatch((0,_features_vehicles_vehiclesSlice__WEBPACK_IMPORTED_MODULE_8__.getVehicles)());
   }, [dispatch]);
   (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
-    if (isSuccess) {
+    if (isSuccessVehicles && isSuccessServices) {
       dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_7__.setOrder)({ ...order
       }));
     }
-  }, [dispatch, isSuccess]);
-  console.log(order);
+  }, [dispatch, isSuccessVehicles, isSuccessServices]);
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
     className: "text-2xl"
   }, "Choose a service"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
     className: "text-lg"
-  }, "What do you need?"), isLoading ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_loading_skeleton__WEBPACK_IMPORTED_MODULE_8__["default"], {
+  }, "What do you need?"), isLoading ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_loading_skeleton__WEBPACK_IMPORTED_MODULE_9__["default"], {
     count: 3,
     className: " w-full min-w-max"
   }) : isError ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
@@ -6029,19 +6140,13 @@ const PriceQuote = () => {
     className: " m-1"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "flex flex-row justify-between items-center border-b-2 border-gray-100 w-full "
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, "Vehicle Size: Pick - Up Truck"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, "$", order.vehicleTotal))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("b", {
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, "Vehicle Size: ", order.vehicleType), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, "$", order.vehicleTotal.toFixed(2)))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("b", {
     className: "text-md text-color-accent"
   }, "Booking Details:"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("ul", {
     className: "divide-y text-sm"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "border-b-2 border-gray-100 w-full text-sm"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", null, "10005 Greenbrier Road, Hopkins, MN, USA"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", null, "Tuesday, May 31 at 12 PM"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", {
-    className: "grid grid-cols-2 grid-rows-1  m-1"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
-    className: "will-change-transform col-span-1"
-  }, "Basketball Hoop (unattached to the ground) (x1)"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
-    className: "col-span-1 text-right"
-  }, "$35"))))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", {
+  }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", {
     className: "flex flex-row justify-between items-center m-1"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("b", {
     className: "text-lg"
@@ -6060,22 +6165,25 @@ const PriceQuote = () => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @reduxjs/toolkit */ "./node_modules/@reduxjs/toolkit/dist/redux-toolkit.esm.js");
+/* harmony import */ var _reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @reduxjs/toolkit */ "./node_modules/@reduxjs/toolkit/dist/redux-toolkit.esm.js");
 /* harmony import */ var _features_orders_ordersSlice__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./features/orders/ordersSlice */ "./src/features/orders/ordersSlice.js");
 /* harmony import */ var _features_backend_pages_pagesSlice__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./features/backend-pages/pagesSlice */ "./src/features/backend-pages/pagesSlice.js");
 /* harmony import */ var _features_services_serviceSlice__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./features/services/serviceSlice */ "./src/features/services/serviceSlice.js");
 /* harmony import */ var _features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./features/orders/userOrderSlice */ "./src/features/orders/userOrderSlice.js");
+/* harmony import */ var _features_vehicles_vehiclesSlice__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./features/vehicles/vehiclesSlice */ "./src/features/vehicles/vehiclesSlice.js");
 
 
 
 
 
-const store = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_4__.configureStore)({
+
+const store = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_5__.configureStore)({
   reducer: {
     orders: _features_orders_ordersSlice__WEBPACK_IMPORTED_MODULE_0__["default"],
     backendPage: _features_backend_pages_pagesSlice__WEBPACK_IMPORTED_MODULE_1__["default"],
     services: _features_services_serviceSlice__WEBPACK_IMPORTED_MODULE_2__["default"],
-    userOrder: _features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_3__["default"]
+    userOrder: _features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_3__["default"],
+    vehicles: _features_vehicles_vehiclesSlice__WEBPACK_IMPORTED_MODULE_4__["default"]
   }
 });
 /* harmony default export */ __webpack_exports__["default"] = (store);

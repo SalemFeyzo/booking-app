@@ -33,7 +33,8 @@ export const setOrder = createAsyncThunk(
 	async (__, thunkAPI) => {
 		try {
 			const { services } = await thunkAPI.getState().services;
-			return services;
+			const { vehicles } = await thunkAPI.getState().vehicles;
+			return { vehicles, services };
 		} catch (error) {
 			const message =
 				(error.response &&
@@ -71,6 +72,9 @@ export const userOrderSlice = createSlice({
 							state.order.dismantlingTotal
 					  ).toFixed(2);
 		},
+		setVehicleType: (state, action) => {
+			state.order.vehicleType = action.payload;
+		},
 		setOrderVehicleTotal: (state, action) => {
 			state.order.vehicleTotal = action.payload;
 		},
@@ -84,10 +88,14 @@ export const userOrderSlice = createSlice({
 				state.isSuccess = true;
 				state.isLoading = false;
 				state.isSuccess = true;
-				const services = action.payload;
+				const services = action.payload.services;
+				const vehicles = action.payload.vehicles;
+				const vehicle = vehicles.find((v) => v.vehicle_id === "1");
 				const service = services.find((s) => s.service_id === "1");
 				state.order.service = service.name;
 				state.order.servicePrice = Number(service.min_price);
+				state.order.vehicleType = vehicle.type;
+				state.order.vehicleTotal = Number(vehicle.price);
 				state.order.total =
 					state.order.service == "Dump Trailer"
 						? (
