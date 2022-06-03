@@ -14,6 +14,7 @@ import {
 	setVehicleType,
 } from "../../features/orders/userOrderSlice";
 import { getVehicles } from "../../features/vehicles/vehiclesSlice";
+import SelectAddress from "../components/SelectAddress";
 
 const ChooseService = () => {
 	const { order } = useSelector((state) => state.userOrder);
@@ -42,7 +43,6 @@ const ChooseService = () => {
 		<div>
 			<p className="text-2xl">Choose a service</p>
 			<p className="text-lg">What do you need?</p>
-
 			{isLoading ? (
 				<Skeleton count={3} className=" w-full min-w-max" />
 			) : isError ? (
@@ -94,6 +94,7 @@ const ChooseService = () => {
 					))}
 				</div>
 			)}
+			<SelectAddress />
 		</div>
 	);
 };
