@@ -1,10 +1,16 @@
+import { useEffect } from "react";
 import Select from "react-select";
-
-const options = [
-	{ label: "option1", value: 1 },
-	{ label: "option2", value: 2 },
-	{ label: "option3", value: 3 },
-];
+import Skeleton from "react-loading-skeleton";
+import { useDispatch, useSelector } from "react-redux";
+import {
+	getAddresses,
+	setSelectedAddress,
+} from "../../features/addresses/addressesSlice";
+import { setServicesPrices } from "../../features/services/serviceSlice";
+import {
+	setOrderServicePrice,
+	restOrderTotal,
+} from "../../features/orders/userOrderSlice";
 
 const customStyles = {
 	menu: (provided, state) => ({
@@ -44,26 +50,73 @@ const customStyles = {
 };
 
 const SelectAddress = () => {
+	const dispatch = useDispatch();
+	const { addresses, isLoading, isSuccess, isError, message, selectedAddress } =
+		useSelector((state) => state.addresses);
+	const { selectedService } = useSelector((state) => state.services);
+
+	useEffect(() => {
+		dispatch(getAddresses());
+	}, [dispatch]);
+
+	const options = addresses?.map((address) => {
+		const label = ` ${address.zip} ${address.county}, ${address.city}, USA `;
+		const value = address.address_id;
+		return { label, value };
+	});
+	const selectOrderAddress = (option) => {
+		const address = addresses.find((a) => a.address_id === option.value);
+		const prices = {
+			junkRemovalPrice: Number(address.junk_removal),
+			cardboardRemovalPrice: Number(address.cardboard_removal),
+			dumpTrailerPrice: Number(address.dump_trailer),
+		};
+
+		dispatch(setServicesPrices(prices));
+		dispatch(setSelectedAddress(address));
+
+		dispatch(
+			setOrderServicePrice(
+				selectedService.name === "Junk Removal"
+					? prices.junkRemovalPrice
+					: selectedService.name === "Cardboard Removal"
+					? prices.cardboardRemovalPrice
+					: prices.dumpTrailerPrice
+			)
+		);
+		dispatch(restOrderTotal());
+	};
+
 	return (
 		<div className="my-5 md:min-w-fit">
-			<p>Check if we serve in your area</p>
-			<form>
-				<label className="focus:text-color-accent" htmlFor="address">
-					Enter Your ZIP Code:
-				</label>
+			{isLoading ? (
+				<Skeleton count={4} />
+			) : isError ? (
+				<span>{message}</span>
+			) : (
+				<>
+					<p>Check if we serve in your area</p>
+					<form>
+						<label className="focus:text-color-accent" htmlFor="address">
+							Enter Your ZIP Code:
+						</label>
 
-				<Select
-					options={options}
-					id="address"
-					name="address"
-					placeholder="Search places ..."
-					styles={customStyles}
-					isClearable={true}
-					noOptionsMessage={({ inputValue }) =>
-						!inputValue ? noOptionsText : "Sorry! We don't serve your area."
-					}
-				/>
-			</form>
+						<Select
+							options={options}
+							id="address"
+							name="address"
+							placeholder="Search places ..."
+							styles={customStyles}
+							isClearable={true}
+							value={options.value}
+							noOptionsMessage={({ inputValue }) =>
+								!inputValue ? noOptionsText : "Sorry! We don't serve your area."
+							}
+							onChange={selectOrderAddress}
+						/>
+					</form>
+				</>
+			)}
 		</div>
 	);
 };

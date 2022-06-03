@@ -7161,6 +7161,117 @@ const NEW_OTHER = "NEW_OTHER";
 
 /***/ }),
 
+/***/ "./src/features/addresses/addressesService.js":
+/*!****************************************************!*\
+  !*** ./src/features/addresses/addressesService.js ***!
+  \****************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+
+const API_URL = `${window.location.origin}/wordpress/wp-json/booking-app/api/v1`;
+
+const getAddresses = async () => {
+  const {
+    data
+  } = await axios__WEBPACK_IMPORTED_MODULE_0___default().get(`${API_URL}/addresses`);
+  return data;
+};
+
+const addressesService = {
+  getAddresses
+};
+/* harmony default export */ __webpack_exports__["default"] = (addressesService);
+
+/***/ }),
+
+/***/ "./src/features/addresses/addressesSlice.js":
+/*!**************************************************!*\
+  !*** ./src/features/addresses/addressesSlice.js ***!
+  \**************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "addressesSlice": function() { return /* binding */ addressesSlice; },
+/* harmony export */   "getAddresses": function() { return /* binding */ getAddresses; },
+/* harmony export */   "reset": function() { return /* binding */ reset; },
+/* harmony export */   "setSelectedAddress": function() { return /* binding */ setSelectedAddress; }
+/* harmony export */ });
+/* harmony import */ var _reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @reduxjs/toolkit */ "./node_modules/@reduxjs/toolkit/dist/redux-toolkit.esm.js");
+/* harmony import */ var _addressesService__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./addressesService */ "./src/features/addresses/addressesService.js");
+
+
+const initialState = {
+  addresses: [],
+  selectedAddress: {
+    county: null,
+    city: null,
+    zip: null,
+    junkRemoval: null,
+    cardboardRemoval: null,
+    dumpTrailer: null
+  },
+  isError: false,
+  isSuccess: false,
+  isLoading: false,
+  message: ""
+}; //get orders
+
+const getAddresses = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__.createAsyncThunk)("addresses/getAddresses", async (__, thunkAPI) => {
+  try {
+    return await _addressesService__WEBPACK_IMPORTED_MODULE_0__["default"].getAddresses();
+  } catch (error) {
+    const message = error.response && error.response.data && error.response.data.message || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+const addressesSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__.createSlice)({
+  name: "addresses",
+  initialState,
+  reducers: {
+    reset: state => {
+      state.isError = false;
+      state.isSuccess = false;
+      state.isLoading = false;
+      state.message = "";
+    },
+    setSelectedAddress: (state, action) => {
+      state.selectedAddress.county = action.payload.county;
+      state.selectedAddress.city = action.payload.city;
+      state.selectedAddress.zip = action.payload.zip;
+      state.selectedAddress.junkRemoval = Number(action.payload.junk_removal);
+      state.selectedAddress.cardboardRemoval = Number(action.payload.cardboard_removal);
+      state.selectedAddress.dumpTrailer = Number(action.payload.dump_trailer);
+    }
+  },
+  extraReducers: builder => {
+    builder.addCase(getAddresses.pending, state => {
+      state.isLoading = true;
+    }).addCase(getAddresses.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.isSuccess = true;
+      state.addresses = action.payload;
+    }).addCase(getAddresses.rejected, (state, action) => {
+      state.isLoading = false;
+      state.isError = true;
+      state.message = action.payload;
+      state.addresses = [];
+    });
+  }
+});
+const {
+  reset,
+  setSelectedAddress
+} = addressesSlice.actions;
+/* harmony default export */ __webpack_exports__["default"] = (addressesSlice.reducer);
+
+/***/ }),
+
 /***/ "./src/features/backend-pages/pagesSlice.js":
 /*!**************************************************!*\
   !*** ./src/features/backend-pages/pagesSlice.js ***!
@@ -7339,15 +7450,13 @@ const initialState = {
 };
 const setOrder = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createAsyncThunk)("userOrder/setOrder", async (__, thunkAPI) => {
   try {
-    const {
-      services
-    } = await thunkAPI.getState().services;
+    const service = await thunkAPI.getState().services.selectedService;
     const {
       vehicles
     } = await thunkAPI.getState().vehicles;
     return {
       vehicles,
-      services
+      service
     };
   } catch (error) {
     const message = error.response && error.response.data && error.response.data.message || error.message || error.toString();
@@ -7382,10 +7491,9 @@ const userOrderSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createSl
       state.isSuccess = true;
       state.isLoading = false;
       state.isSuccess = true;
-      const services = action.payload.services;
+      const service = action.payload.service;
       const vehicles = action.payload.vehicles;
       const vehicle = vehicles.find(v => v.vehicle_id === "1");
-      const service = services.find(s => s.service_id === "1");
       state.order.service = service.name;
       state.order.servicePrice = Number(service.min_price);
       state.order.vehicleType = vehicle.type;
@@ -7420,7 +7528,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "getServices": function() { return /* binding */ getServices; },
 /* harmony export */   "reset": function() { return /* binding */ reset; },
-/* harmony export */   "servicesSlice": function() { return /* binding */ servicesSlice; }
+/* harmony export */   "servicesSlice": function() { return /* binding */ servicesSlice; },
+/* harmony export */   "setSelectedService": function() { return /* binding */ setSelectedService; },
+/* harmony export */   "setServicesPrices": function() { return /* binding */ setServicesPrices; }
 /* harmony export */ });
 /* harmony import */ var _reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @reduxjs/toolkit */ "./node_modules/@reduxjs/toolkit/dist/redux-toolkit.esm.js");
 /* harmony import */ var _servicesService__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./servicesService */ "./src/features/services/servicesService.js");
@@ -7428,6 +7538,10 @@ __webpack_require__.r(__webpack_exports__);
 
 const initialState = {
   services: [],
+  selectedService: {
+    name: null,
+    min_price: null
+  },
   isError: false,
   isSuccess: false,
   isLoading: false,
@@ -7451,6 +7565,28 @@ const servicesSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__.createSli
       state.isSuccess = false;
       state.isLoading = false;
       state.message = "";
+    },
+    setSelectedService: (state, action) => {
+      state.selectedService.name = action.payload.name;
+      state.selectedService.min_price = action.payload.min_price;
+    },
+    setServicesPrices: (state, action) => {
+      state.services = state.services.map(service => {
+        const {
+          junkRemovalPrice,
+          cardboardRemovalPrice,
+          dumpTrailerPrice
+        } = action.payload;
+        return { ...service,
+          min_price: service.name === "Junk Removal" ? junkRemovalPrice : service.name === "Cardboard Removal" ? cardboardRemovalPrice : dumpTrailerPrice
+        };
+      });
+      const {
+        junkRemovalPrice,
+        cardboardRemovalPrice,
+        dumpTrailerPrice
+      } = action.payload;
+      state.selectedService.min_price = state.selectedService.name === "Junk Removal" ? junkRemovalPrice : state.selectedService.name === "Cardboard Removal" ? cardboardRemovalPrice : dumpTrailerPrice;
     }
   },
   extraReducers: builder => {
@@ -7460,6 +7596,9 @@ const servicesSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__.createSli
       state.isLoading = false;
       state.isSuccess = true;
       state.services = action.payload;
+      const defaultService = action.payload.find(s => s.service_id === "1");
+      state.selectedService.name = defaultService.name;
+      state.selectedService.min_price = Number(defaultService.min_price);
     }).addCase(getServices.rejected, (state, action) => {
       state.isLoading = false;
       state.isError = true;
@@ -7469,7 +7608,9 @@ const servicesSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__.createSli
   }
 });
 const {
-  reset
+  reset,
+  setSelectedService,
+  setServicesPrices
 } = servicesSlice.actions;
 /* harmony default export */ __webpack_exports__["default"] = (servicesSlice.reducer);
 
@@ -7810,19 +7951,22 @@ function PriceQouteModal(_ref) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var react_select__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-select */ "./node_modules/react-select/dist/react-select.esm.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var react_select__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react-select */ "./node_modules/react-select/dist/react-select.esm.js");
+/* harmony import */ var react_loading_skeleton__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react-loading-skeleton */ "./node_modules/react-loading-skeleton/dist/index.mjs");
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
+/* harmony import */ var _features_addresses_addressesSlice__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../features/addresses/addressesSlice */ "./src/features/addresses/addressesSlice.js");
+/* harmony import */ var _features_services_serviceSlice__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../features/services/serviceSlice */ "./src/features/services/serviceSlice.js");
+/* harmony import */ var _features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../features/orders/userOrderSlice */ "./src/features/orders/userOrderSlice.js");
 
 
-const options = [{
-  label: "option1",
-  value: 1
-}, {
-  label: "option2",
-  value: 2
-}, {
-  label: "option3",
-  value: 3
-}];
+
+
+
+
+
+
 const customStyles = {
   menu: (provided, state) => ({ ...provided,
     width: "100%",
@@ -7858,25 +8002,66 @@ const customStyles = {
 };
 
 const SelectAddress = () => {
+  const dispatch = (0,react_redux__WEBPACK_IMPORTED_MODULE_2__.useDispatch)();
+  const {
+    addresses,
+    isLoading,
+    isSuccess,
+    isError,
+    message,
+    selectedAddress
+  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_2__.useSelector)(state => state.addresses);
+  const {
+    selectedService
+  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_2__.useSelector)(state => state.services);
+  (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
+    dispatch((0,_features_addresses_addressesSlice__WEBPACK_IMPORTED_MODULE_3__.getAddresses)());
+  }, [dispatch]);
+  const options = addresses === null || addresses === void 0 ? void 0 : addresses.map(address => {
+    const label = ` ${address.zip} ${address.county}, ${address.city}, USA `;
+    const value = address.address_id;
+    return {
+      label,
+      value
+    };
+  });
+
+  const selectOrderAddress = option => {
+    const address = addresses.find(a => a.address_id === option.value);
+    const prices = {
+      junkRemovalPrice: Number(address.junk_removal),
+      cardboardRemovalPrice: Number(address.cardboard_removal),
+      dumpTrailerPrice: Number(address.dump_trailer)
+    };
+    dispatch((0,_features_services_serviceSlice__WEBPACK_IMPORTED_MODULE_4__.setServicesPrices)(prices));
+    dispatch((0,_features_addresses_addressesSlice__WEBPACK_IMPORTED_MODULE_3__.setSelectedAddress)(address));
+    dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_5__.setOrderServicePrice)(selectedService.name === "Junk Removal" ? prices.junkRemovalPrice : selectedService.name === "Cardboard Removal" ? prices.cardboardRemovalPrice : prices.dumpTrailerPrice));
+    dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_5__.restOrderTotal)());
+  };
+
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "my-5 md:min-w-fit"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Check if we serve in your area"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("form", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+  }, isLoading ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_loading_skeleton__WEBPACK_IMPORTED_MODULE_6__["default"], {
+    count: 4
+  }) : isError ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, message) : (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Check if we serve in your area"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("form", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
     className: "focus:text-color-accent",
     htmlFor: "address"
-  }, "Enter Your ZIP Code:"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_select__WEBPACK_IMPORTED_MODULE_1__["default"], {
+  }, "Enter Your ZIP Code:"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_select__WEBPACK_IMPORTED_MODULE_7__["default"], {
     options: options,
     id: "address",
     name: "address",
     placeholder: "Search places ...",
     styles: customStyles,
     isClearable: true,
+    value: options.value,
     noOptionsMessage: _ref => {
       let {
         inputValue
       } = _ref;
       return !inputValue ? noOptionsText : "Sorry! We don't serve your area.";
-    }
-  })));
+    },
+    onChange: selectOrderAddress
+  }))));
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (SelectAddress);
@@ -7897,13 +8082,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
 /* harmony import */ var react_loading_skeleton__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! react-loading-skeleton */ "./node_modules/react-loading-skeleton/dist/index.mjs");
-/* harmony import */ var _assets_junk_removal_svg__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../assets/junk-removal.svg */ "./src/frontend/assets/junk-removal.svg");
-/* harmony import */ var _assets_cardboard_removal_svg__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../assets/cardboard-removal.svg */ "./src/frontend/assets/cardboard-removal.svg");
-/* harmony import */ var _assets_dumpster_rental_svg__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../assets/dumpster-rental.svg */ "./src/frontend/assets/dumpster-rental.svg");
-/* harmony import */ var _features_services_serviceSlice__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../features/services/serviceSlice */ "./src/features/services/serviceSlice.js");
-/* harmony import */ var _features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../features/orders/userOrderSlice */ "./src/features/orders/userOrderSlice.js");
-/* harmony import */ var _features_vehicles_vehiclesSlice__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../features/vehicles/vehiclesSlice */ "./src/features/vehicles/vehiclesSlice.js");
-/* harmony import */ var _components_SelectAddress__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../components/SelectAddress */ "./src/frontend/components/SelectAddress.jsx");
+/* harmony import */ var _components_SelectAddress__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/SelectAddress */ "./src/frontend/components/SelectAddress.jsx");
+/* harmony import */ var _assets_junk_removal_svg__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../assets/junk-removal.svg */ "./src/frontend/assets/junk-removal.svg");
+/* harmony import */ var _assets_cardboard_removal_svg__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../assets/cardboard-removal.svg */ "./src/frontend/assets/cardboard-removal.svg");
+/* harmony import */ var _assets_dumpster_rental_svg__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../assets/dumpster-rental.svg */ "./src/frontend/assets/dumpster-rental.svg");
+/* harmony import */ var _features_services_serviceSlice__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../features/services/serviceSlice */ "./src/features/services/serviceSlice.js");
+/* harmony import */ var _features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../features/orders/userOrderSlice */ "./src/features/orders/userOrderSlice.js");
+/* harmony import */ var _features_vehicles_vehiclesSlice__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../features/vehicles/vehiclesSlice */ "./src/features/vehicles/vehiclesSlice.js");
 
 
 
@@ -7933,12 +8118,12 @@ const ChooseService = () => {
     isSuccess: isSuccessVehicles
   } = (0,react_redux__WEBPACK_IMPORTED_MODULE_2__.useSelector)(state => state.vehicles);
   (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
-    dispatch((0,_features_services_serviceSlice__WEBPACK_IMPORTED_MODULE_6__.getServices)());
-    dispatch((0,_features_vehicles_vehiclesSlice__WEBPACK_IMPORTED_MODULE_8__.getVehicles)());
+    dispatch((0,_features_services_serviceSlice__WEBPACK_IMPORTED_MODULE_7__.getServices)());
+    dispatch((0,_features_vehicles_vehiclesSlice__WEBPACK_IMPORTED_MODULE_9__.getVehicles)());
   }, [dispatch]);
   (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
     if (isSuccessVehicles && isSuccessServices) {
-      dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_7__.setOrder)({ ...order
+      dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_8__.setOrder)({ ...order
       }));
     }
   }, [dispatch, isSuccessVehicles, isSuccessServices]);
@@ -7967,15 +8152,22 @@ const ChooseService = () => {
 							px-10
 							`,
     onClick: e => {
-      dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_7__.setOrderService)(service.name) // servicePrice: Number(service.min_price),
+      dispatch((0,_features_services_serviceSlice__WEBPACK_IMPORTED_MODULE_7__.setSelectedService)({
+        name: service.name,
+        min_price: Number(service.min_price)
+      }));
+      dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_8__.setOrderService)(service.name) // servicePrice: Number(service.min_price),
       );
-      dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_7__.setOrderServicePrice)(Number(service.min_price)));
-      dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_7__.restOrderTotal)());
+      dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_8__.setOrderServicePrice)(Number(service.min_price)));
+      dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_8__.restOrderTotal)());
     }
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("img", {
-    src: service.name === "Junk Removal" ? _assets_junk_removal_svg__WEBPACK_IMPORTED_MODULE_3__["default"] : service.name === "Cardboard Removal" ? _assets_cardboard_removal_svg__WEBPACK_IMPORTED_MODULE_4__["default"] : service.name === "Dump Trailer" ? _assets_dumpster_rental_svg__WEBPACK_IMPORTED_MODULE_5__["default"] : _assets_junk_removal_svg__WEBPACK_IMPORTED_MODULE_3__["default"],
+    src: service.name === "Junk Removal" ? _assets_junk_removal_svg__WEBPACK_IMPORTED_MODULE_4__["default"] : service.name === "Cardboard Removal" ? _assets_cardboard_removal_svg__WEBPACK_IMPORTED_MODULE_5__["default"] : service.name === "Dump Trailer" ? _assets_dumpster_rental_svg__WEBPACK_IMPORTED_MODULE_6__["default"] : _assets_junk_removal_svg__WEBPACK_IMPORTED_MODULE_4__["default"],
     alt: service.name
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("b", null, service.name), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, "$", Number(service.min_price).toFixed(2))))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_SelectAddress__WEBPACK_IMPORTED_MODULE_9__["default"], null));
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("b", null, service.name), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, "$", Number(service.min_price).toFixed(2))))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_SelectAddress__WEBPACK_IMPORTED_MODULE_3__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    type: "button",
+    className: "inline-flex justify-center rounded-md border border-transparent bg-color-accent px-4 py-2 text-sm font-medium text-white hover:bg-yellow-500  cursor-pointer p-10"
+  }, "Continue"));
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (ChooseService);
@@ -8037,25 +8229,28 @@ const PriceQuote = () => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @reduxjs/toolkit */ "./node_modules/@reduxjs/toolkit/dist/redux-toolkit.esm.js");
+/* harmony import */ var _reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @reduxjs/toolkit */ "./node_modules/@reduxjs/toolkit/dist/redux-toolkit.esm.js");
 /* harmony import */ var _features_orders_ordersSlice__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./features/orders/ordersSlice */ "./src/features/orders/ordersSlice.js");
 /* harmony import */ var _features_backend_pages_pagesSlice__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./features/backend-pages/pagesSlice */ "./src/features/backend-pages/pagesSlice.js");
 /* harmony import */ var _features_services_serviceSlice__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./features/services/serviceSlice */ "./src/features/services/serviceSlice.js");
 /* harmony import */ var _features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./features/orders/userOrderSlice */ "./src/features/orders/userOrderSlice.js");
 /* harmony import */ var _features_vehicles_vehiclesSlice__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./features/vehicles/vehiclesSlice */ "./src/features/vehicles/vehiclesSlice.js");
+/* harmony import */ var _features_addresses_addressesSlice__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./features/addresses/addressesSlice */ "./src/features/addresses/addressesSlice.js");
 
 
 
 
 
 
-const store = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_5__.configureStore)({
+
+const store = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_6__.configureStore)({
   reducer: {
     orders: _features_orders_ordersSlice__WEBPACK_IMPORTED_MODULE_0__["default"],
     backendPage: _features_backend_pages_pagesSlice__WEBPACK_IMPORTED_MODULE_1__["default"],
     services: _features_services_serviceSlice__WEBPACK_IMPORTED_MODULE_2__["default"],
     userOrder: _features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_3__["default"],
-    vehicles: _features_vehicles_vehiclesSlice__WEBPACK_IMPORTED_MODULE_4__["default"]
+    vehicles: _features_vehicles_vehiclesSlice__WEBPACK_IMPORTED_MODULE_4__["default"],
+    addresses: _features_addresses_addressesSlice__WEBPACK_IMPORTED_MODULE_5__["default"]
   }
 });
 /* harmony default export */ __webpack_exports__["default"] = (store);

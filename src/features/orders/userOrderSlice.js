@@ -32,9 +32,9 @@ export const setOrder = createAsyncThunk(
 	"userOrder/setOrder",
 	async (__, thunkAPI) => {
 		try {
-			const { services } = await thunkAPI.getState().services;
+			const service = await thunkAPI.getState().services.selectedService;
 			const { vehicles } = await thunkAPI.getState().vehicles;
-			return { vehicles, services };
+			return { vehicles, service };
 		} catch (error) {
 			const message =
 				(error.response &&
@@ -88,10 +88,9 @@ export const userOrderSlice = createSlice({
 				state.isSuccess = true;
 				state.isLoading = false;
 				state.isSuccess = true;
-				const services = action.payload.services;
+				const service = action.payload.service;
 				const vehicles = action.payload.vehicles;
 				const vehicle = vehicles.find((v) => v.vehicle_id === "1");
-				const service = services.find((s) => s.service_id === "1");
 				state.order.service = service.name;
 				state.order.servicePrice = Number(service.min_price);
 				state.order.vehicleType = vehicle.type;

@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Skeleton from "react-loading-skeleton";
+import SelectAddress from "../components/SelectAddress";
 import JunkRemoval from "../assets/junk-removal.svg";
 import CardboardRemoval from "../assets/cardboard-removal.svg";
 import DumpsterRental from "../assets/dumpster-rental.svg";
-import { getServices } from "../../features/services/serviceSlice";
+import {
+	getServices,
+	setSelectedService,
+} from "../../features/services/serviceSlice";
 import {
 	setOrder,
 	setOrderService,
@@ -14,7 +18,6 @@ import {
 	setVehicleType,
 } from "../../features/orders/userOrderSlice";
 import { getVehicles } from "../../features/vehicles/vehiclesSlice";
-import SelectAddress from "../components/SelectAddress";
 
 const ChooseService = () => {
 	const { order } = useSelector((state) => state.userOrder);
@@ -69,6 +72,12 @@ const ChooseService = () => {
 							`}
 							onClick={(e) => {
 								dispatch(
+									setSelectedService({
+										name: service.name,
+										min_price: Number(service.min_price),
+									})
+								);
+								dispatch(
 									setOrderService(service.name)
 									// servicePrice: Number(service.min_price),
 								);
@@ -95,6 +104,12 @@ const ChooseService = () => {
 				</div>
 			)}
 			<SelectAddress />
+			<div
+				type="button"
+				className="inline-flex justify-center rounded-md border border-transparent bg-color-accent px-4 py-2 text-sm font-medium text-white hover:bg-yellow-500  cursor-pointer p-10"
+			>
+				Continue
+			</div>
 		</div>
 	);
 };

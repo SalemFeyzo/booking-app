@@ -3,6 +3,10 @@ import servicesService from "./servicesService";
 
 const initialState = {
 	services: [],
+	selectedService: {
+		name: null,
+		min_price: null,
+	},
 	isError: false,
 	isSuccess: false,
 	isLoading: false,
@@ -37,6 +41,33 @@ export const servicesSlice = createSlice({
 			state.isLoading = false;
 			state.message = "";
 		},
+		setSelectedService: (state, action) => {
+			state.selectedService.name = action.payload.name;
+			state.selectedService.min_price = action.payload.min_price;
+		},
+		setServicesPrices: (state, action) => {
+			state.services = state.services.map((service) => {
+				const { junkRemovalPrice, cardboardRemovalPrice, dumpTrailerPrice } =
+					action.payload;
+				return {
+					...service,
+					min_price:
+						service.name === "Junk Removal"
+							? junkRemovalPrice
+							: service.name === "Cardboard Removal"
+							? cardboardRemovalPrice
+							: dumpTrailerPrice,
+				};
+			});
+			const { junkRemovalPrice, cardboardRemovalPrice, dumpTrailerPrice } =
+				action.payload;
+			state.selectedService.min_price =
+				state.selectedService.name === "Junk Removal"
+					? junkRemovalPrice
+					: state.selectedService.name === "Cardboard Removal"
+					? cardboardRemovalPrice
+					: dumpTrailerPrice;
+		},
 	},
 	extraReducers: (builder) => {
 		builder
@@ -47,6 +78,9 @@ export const servicesSlice = createSlice({
 				state.isLoading = false;
 				state.isSuccess = true;
 				state.services = action.payload;
+				const defaultService = action.payload.find((s) => s.service_id === "1");
+				state.selectedService.name = defaultService.name;
+				state.selectedService.min_price = Number(defaultService.min_price);
 			})
 			.addCase(getServices.rejected, (state, action) => {
 				state.isLoading = false;
@@ -57,5 +91,6 @@ export const servicesSlice = createSlice({
 	},
 });
 
-export const { reset } = servicesSlice.actions;
+export const { reset, setSelectedService, setServicesPrices } =
+	servicesSlice.actions;
 export default servicesSlice.reducer;
