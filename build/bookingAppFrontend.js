@@ -7775,9 +7775,9 @@ const App = () => {
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     id: "bookingAppLAyout"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_Layout__WEBPACK_IMPORTED_MODULE_3__["default"], null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "col-span-10  px-10 pt-7 bg-white border-2 border-gray-100 rounded-md shadow-md w-full"
+    className: "col-span-10 row-span-3 px-10 pt-7 bg-white border-2 border-gray-100 rounded-md shadow-md w-full"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_sections_ChooseService__WEBPACK_IMPORTED_MODULE_5__["default"], null)), screenWidth > 770 && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "col-span-2  px-10 pt-7 bg-white border-2 border-gray-100 rounded-md shadow-md w-72 "
+    className: "col-span-2 row-span-2 px-10 pt-7 bg-white border-2 border-gray-100 rounded-md shadow-md w-72 "
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_sections_PriceQuote__WEBPACK_IMPORTED_MODULE_4__["default"], null))));
 };
 
@@ -7861,7 +7861,7 @@ const Layout = _ref => {
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "font-body mx-auto text-color-text  my-3 w-full max-w-max "
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Header__WEBPACK_IMPORTED_MODULE_2__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("main", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "grid grid-cols-1 grid-rows-1 gap-2 md:grid-cols-12"
+    className: "grid grid-cols-1 grid-rows-3 gap-2 md:grid-cols-12"
   }, children)));
 };
 
@@ -8127,7 +8127,9 @@ const ChooseService = () => {
       }));
     }
   }, [dispatch, isSuccessVehicles, isSuccessServices]);
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "pb-16"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
     className: "text-2xl"
   }, "Choose a service"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
     className: "text-lg"
@@ -8156,8 +8158,7 @@ const ChooseService = () => {
         name: service.name,
         min_price: Number(service.min_price)
       }));
-      dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_8__.setOrderService)(service.name) // servicePrice: Number(service.min_price),
-      );
+      dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_8__.setOrderService)(service.name));
       dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_8__.setOrderServicePrice)(Number(service.min_price)));
       dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_8__.restOrderTotal)());
     }
@@ -8166,7 +8167,7 @@ const ChooseService = () => {
     alt: service.name
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("b", null, service.name), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, "$", Number(service.min_price).toFixed(2))))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_SelectAddress__WEBPACK_IMPORTED_MODULE_3__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     type: "button",
-    className: "inline-flex justify-center rounded-md border border-transparent bg-color-accent px-4 py-2 text-sm font-medium text-white hover:bg-yellow-500  cursor-pointer p-10"
+    className: "inline-flex justify-center rounded-md border border-transparent bg-color-accent px-5 py-3 text-lg font-medium text-white hover:bg-yellow-500  cursor-pointer  float-right"
   }, "Continue"));
 };
 

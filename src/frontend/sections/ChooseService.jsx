@@ -43,7 +43,7 @@ const ChooseService = () => {
 		}
 	}, [dispatch, isSuccessVehicles, isSuccessServices]);
 	return (
-		<div>
+		<div className="pb-16">
 			<p className="text-2xl">Choose a service</p>
 			<p className="text-lg">What do you need?</p>
 			{isLoading ? (
@@ -77,10 +77,7 @@ const ChooseService = () => {
 										min_price: Number(service.min_price),
 									})
 								);
-								dispatch(
-									setOrderService(service.name)
-									// servicePrice: Number(service.min_price),
-								);
+								dispatch(setOrderService(service.name));
 								dispatch(setOrderServicePrice(Number(service.min_price)));
 								dispatch(restOrderTotal());
 							}}
@@ -106,7 +103,7 @@ const ChooseService = () => {
 			<SelectAddress />
 			<div
 				type="button"
-				className="inline-flex justify-center rounded-md border border-transparent bg-color-accent px-4 py-2 text-sm font-medium text-white hover:bg-yellow-500  cursor-pointer p-10"
+				className="inline-flex justify-center rounded-md border border-transparent bg-color-accent px-5 py-3 text-lg font-medium text-white hover:bg-yellow-500  cursor-pointer  float-right"
 			>
 				Continue
 			</div>
