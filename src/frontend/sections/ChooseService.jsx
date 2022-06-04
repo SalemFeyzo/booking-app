@@ -18,6 +18,8 @@ import {
 	setVehicleType,
 } from "../../features/orders/userOrderSlice";
 import { getVehicles } from "../../features/vehicles/vehiclesSlice";
+import { setSection } from "../../features/section/sectionSlice";
+import { DATE_AND_TIME } from "../../features/section/sectionConstants";
 
 const ChooseService = () => {
 	const { order } = useSelector((state) => state.userOrder);
@@ -43,11 +45,11 @@ const ChooseService = () => {
 		}
 	}, [dispatch, isSuccessVehicles, isSuccessServices]);
 	return (
-		<div className="pb-16">
+		<div className="pb-20">
 			<p className="text-2xl">Choose a service</p>
 			<p className="text-lg">What do you need?</p>
 			{isLoading ? (
-				<Skeleton count={3} className=" w-full min-w-max" />
+				<Skeleton count={4} className=" w-full " />
 			) : isError ? (
 				<span className="text-red-500 font-bold">{message}</span>
 			) : (
@@ -61,6 +63,7 @@ const ChooseService = () => {
 							justify-center items-center gap-2 
 							cursor-pointer 
 							border-2 
+							shadow-md
 							${
 								order.service === service.name
 									? "border-color-accent text-color-accent hover:bg-yellow-100"
@@ -101,11 +104,16 @@ const ChooseService = () => {
 				</div>
 			)}
 			<SelectAddress />
+
 			<div
+				onClick={(e) => {
+					e.preventDefault();
+					dispatch(setSection(DATE_AND_TIME));
+				}}
 				type="button"
-				className="inline-flex justify-center rounded-md border border-transparent bg-color-accent px-5 py-3 text-lg font-medium text-white hover:bg-yellow-500  cursor-pointer  float-right"
+				className="inline-flex justify-center rounded-md border border-transparent bg-color-accent px-5 py-1 text-lg font-medium text-white hover:bg-yellow-500  cursor-pointer  float-right"
 			>
-				Continue
+				Next
 			</div>
 		</div>
 	);

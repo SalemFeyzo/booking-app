@@ -5,6 +5,7 @@ import servicesReducer from "./features/services/serviceSlice";
 import userOrderReducer from "./features/orders/userOrderSlice";
 import vehiclesReducer from "./features/vehicles/vehiclesSlice";
 import addressesReducer from "./features/addresses/addressesSlice";
+import sectionReducer from "./features/section/sectionSlice";
 
 const store = configureStore({
 	reducer: {
@@ -14,6 +15,7 @@ const store = configureStore({
 		userOrder: userOrderReducer,
 		vehicles: vehiclesReducer,
 		addresses: addressesReducer,
+		section: sectionReducer,
 	},
 });
 

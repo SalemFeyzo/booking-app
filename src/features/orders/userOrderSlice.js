@@ -83,6 +83,9 @@ export const userOrderSlice = createSlice({
 		setOrderDate: (state, action) => {
 			state.order.date = action.payload;
 		},
+		setFrequency: (state, action) => {
+			state.order.frequency = action.payload.name;
+		},
 	},
 	extraReducers: (builder) => {
 		builder
@@ -130,5 +133,6 @@ export const {
 	setOrderVehicleTotal,
 	setorderAddress,
 	setOrderDate,
+	setFrequency,
 } = userOrderSlice.actions;
 export default userOrderSlice.reducer;

@@ -90,7 +90,7 @@ const SelectAddress = () => {
 	return (
 		<div className="my-5 md:min-w-fit">
 			{isLoading ? (
-				<Skeleton count={4} />
+				<Skeleton count={5} />
 			) : isError ? (
 				<span>{message}</span>
 			) : (
@@ -102,6 +102,7 @@ const SelectAddress = () => {
 						</label>
 
 						<Select
+							className="shadow-md"
 							options={options}
 							id="address"
 							name="address"

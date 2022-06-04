@@ -5023,6 +5023,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "reset": function() { return /* binding */ reset; },
 /* harmony export */   "restOrderTotal": function() { return /* binding */ restOrderTotal; },
+/* harmony export */   "setFrequency": function() { return /* binding */ setFrequency; },
 /* harmony export */   "setOrder": function() { return /* binding */ setOrder; },
 /* harmony export */   "setOrderDate": function() { return /* binding */ setOrderDate; },
 /* harmony export */   "setOrderService": function() { return /* binding */ setOrderService; },
@@ -5099,6 +5100,9 @@ const userOrderSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createSl
     },
     setOrderDate: (state, action) => {
       state.order.date = action.payload;
+    },
+    setFrequency: (state, action) => {
+      state.order.frequency = action.payload.name;
     }
   },
   extraReducers: builder => {
@@ -5130,9 +5134,68 @@ const {
   restOrderTotal,
   setOrderVehicleTotal,
   setorderAddress,
-  setOrderDate
+  setOrderDate,
+  setFrequency
 } = userOrderSlice.actions;
 /* harmony default export */ __webpack_exports__["default"] = (userOrderSlice.reducer);
+
+/***/ }),
+
+/***/ "./src/features/section/sectionConstants.js":
+/*!**************************************************!*\
+  !*** ./src/features/section/sectionConstants.js ***!
+  \**************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "CHOOSE_SERVICE": function() { return /* binding */ CHOOSE_SERVICE; },
+/* harmony export */   "CONTACT_INFO": function() { return /* binding */ CONTACT_INFO; },
+/* harmony export */   "DATE_AND_TIME": function() { return /* binding */ DATE_AND_TIME; },
+/* harmony export */   "ORDER_DESCRIPTION": function() { return /* binding */ ORDER_DESCRIPTION; },
+/* harmony export */   "REVIEW_YOUR_ORDER": function() { return /* binding */ REVIEW_YOUR_ORDER; }
+/* harmony export */ });
+const CHOOSE_SERVICE = "CHOOSE_SERVICE";
+const DATE_AND_TIME = "DATE_AND_TIME";
+const ORDER_DESCRIPTION = "ORDER_DESCRIPTION";
+const CONTACT_INFO = "CONTACT_INFO";
+const REVIEW_YOUR_ORDER = "REVIEW_YOUR_ORDER";
+
+/***/ }),
+
+/***/ "./src/features/section/sectionSlice.js":
+/*!**********************************************!*\
+  !*** ./src/features/section/sectionSlice.js ***!
+  \**********************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "sectionSlice": function() { return /* binding */ sectionSlice; },
+/* harmony export */   "setSection": function() { return /* binding */ setSection; }
+/* harmony export */ });
+/* harmony import */ var _reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @reduxjs/toolkit */ "./node_modules/@reduxjs/toolkit/dist/redux-toolkit.esm.js");
+/* harmony import */ var _sectionConstants__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./sectionConstants */ "./src/features/section/sectionConstants.js");
+
+
+const initialState = {
+  section: _sectionConstants__WEBPACK_IMPORTED_MODULE_0__.CHOOSE_SERVICE
+};
+const sectionSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__.createSlice)({
+  name: "frontend-section",
+  initialState,
+  reducers: {
+    setSection: (state, action) => {
+      state.section = action.payload;
+    }
+  }
+});
+const {
+  setSection
+} = sectionSlice.actions;
+/* harmony default export */ __webpack_exports__["default"] = (sectionSlice.reducer);
 
 /***/ }),
 
@@ -5363,13 +5426,14 @@ const {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @reduxjs/toolkit */ "./node_modules/@reduxjs/toolkit/dist/redux-toolkit.esm.js");
+/* harmony import */ var _reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @reduxjs/toolkit */ "./node_modules/@reduxjs/toolkit/dist/redux-toolkit.esm.js");
 /* harmony import */ var _features_orders_ordersSlice__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./features/orders/ordersSlice */ "./src/features/orders/ordersSlice.js");
 /* harmony import */ var _features_backend_pages_pagesSlice__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./features/backend-pages/pagesSlice */ "./src/features/backend-pages/pagesSlice.js");
 /* harmony import */ var _features_services_serviceSlice__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./features/services/serviceSlice */ "./src/features/services/serviceSlice.js");
 /* harmony import */ var _features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./features/orders/userOrderSlice */ "./src/features/orders/userOrderSlice.js");
 /* harmony import */ var _features_vehicles_vehiclesSlice__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./features/vehicles/vehiclesSlice */ "./src/features/vehicles/vehiclesSlice.js");
 /* harmony import */ var _features_addresses_addressesSlice__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./features/addresses/addressesSlice */ "./src/features/addresses/addressesSlice.js");
+/* harmony import */ var _features_section_sectionSlice__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./features/section/sectionSlice */ "./src/features/section/sectionSlice.js");
 
 
 
@@ -5377,14 +5441,16 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const store = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_6__.configureStore)({
+
+const store = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_7__.configureStore)({
   reducer: {
     orders: _features_orders_ordersSlice__WEBPACK_IMPORTED_MODULE_0__["default"],
     backendPage: _features_backend_pages_pagesSlice__WEBPACK_IMPORTED_MODULE_1__["default"],
     services: _features_services_serviceSlice__WEBPACK_IMPORTED_MODULE_2__["default"],
     userOrder: _features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_3__["default"],
     vehicles: _features_vehicles_vehiclesSlice__WEBPACK_IMPORTED_MODULE_4__["default"],
-    addresses: _features_addresses_addressesSlice__WEBPACK_IMPORTED_MODULE_5__["default"]
+    addresses: _features_addresses_addressesSlice__WEBPACK_IMPORTED_MODULE_5__["default"],
+    section: _features_section_sectionSlice__WEBPACK_IMPORTED_MODULE_6__["default"]
   }
 });
 /* harmony default export */ __webpack_exports__["default"] = (store);

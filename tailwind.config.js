@@ -13,6 +13,9 @@ module.exports = {
 				"color-b09c1d7": "#EFBE38",
 			},
 		},
+		transitionProperty: {
+			width: "width",
+		},
 	},
 	plugins: [],
 };

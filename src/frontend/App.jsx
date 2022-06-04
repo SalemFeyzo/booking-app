@@ -1,13 +1,23 @@
 import { __ } from "@wordpress/i18n";
-import { useState, useEffect, useLayoutEffect } from "react";
+import { Transition } from "@headlessui/react";
+import { useState, useLayoutEffect } from "react";
+import { useSelector } from "react-redux";
 import Layout from "./components/Layout";
 import PriceQuote from "./sections/PriceQuote";
 import ChooseService from "./sections/ChooseService";
 import DateAndTime from "./sections/DateAndTime";
+import {
+	CHOOSE_SERVICE,
+	DATE_AND_TIME,
+	ORDER_DESCRIPTION,
+	CONTACT_INFO,
+	REVIEW_YOUR_ORDER,
+} from "../features/section/sectionConstants";
+import ProgressBar from "./components/ProgressBar";
 
 const App = () => {
 	const [screenWidth, setScreenWidth] = useState(window.innerWidth);
-
+	const { section } = useSelector((state) => state.section);
 	useLayoutEffect(() => {
 		window.addEventListener("resize", () => {
 			setScreenWidth(window.innerWidth);
@@ -20,15 +30,49 @@ const App = () => {
 	}, []);
 
 	return (
-		<div id="bookingAppLAyout">
+		<div id="bookingAppLAyout" className="w-full h-full">
 			<Layout>
-				<div className="col-span-10 row-span-3 px-10 pt-7 bg-white border-2 border-gray-100 rounded-md shadow-md w-full">
-					<ChooseService />
-					<DateAndTime />
+				<div className="flex flex-col justify-between gap-2 w-full md:w-2/3">
+					<Transition show={section === CHOOSE_SERVICE}>
+						{section === CHOOSE_SERVICE && (
+							<div className="px-10 pt-7 bg-white border-2 border-gray-100 rounded-md shadow-md ">
+								<Transition.Child
+									enter="transition-opacity ease-linear duration-300"
+									enterFrom="opacity-0"
+									enterTo="opacity-100"
+									leave="transition-opacity ease-linear duration-300"
+									leaveFrom="opacity-100"
+									leaveTo="opacity-0"
+								>
+									<ChooseService />
+								</Transition.Child>
+							</div>
+						)}
+					</Transition>
+					<Transition show={section === DATE_AND_TIME}>
+						{section === DATE_AND_TIME && (
+							<div className="px-10 pt-7 bg-white border-2 border-gray-100 rounded-md shadow-md ">
+								<Transition.Child
+									enter="transition-opacity ease-linear duration-300"
+									enterFrom="opacity-0"
+									enterTo="opacity-100"
+									leave="transition-opacity ease-linear duration-300"
+									leaveFrom="opacity-100"
+									leaveTo="opacity-0"
+								>
+									<DateAndTime />
+								</Transition.Child>
+							</div>
+						)}
+					</Transition>
 				</div>
 				{screenWidth > 770 && (
-					<div className="col-span-2 row-span-2 px-10 pt-7 bg-white border-2 border-gray-100 rounded-md shadow-md w-80 ">
-						<PriceQuote />
+					<div className="flex flex-col  w-1/3 h-[25rem]">
+						<span>Your progress</span>
+						<ProgressBar />
+						<div className="w-[100%] h-[100%] px-10 pt-7 bg-white border-2 border-gray-100 rounded-md shadow-md ">
+							<PriceQuote />
+						</div>
 					</div>
 				)}
 			</Layout>

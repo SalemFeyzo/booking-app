@@ -3,12 +3,10 @@ import Header from "./Header";
 
 const Layout = ({ children }) => {
 	return (
-		<div className="font-body mx-auto text-color-text  my-3 w-full max-w-max ">
+		<div className="font-body mx-auto text-color-text  my-3 w-full p-5  h-full md:w-[70rem]">
 			<Header />
 			<main>
-				<div className="grid grid-cols-1 grid-rows-3 gap-2 md:grid-cols-12">
-					{children}
-				</div>
+				<div className="flex flex-row w-full h-full gap-2 ">{children}</div>
 			</main>
 		</div>
 	);
