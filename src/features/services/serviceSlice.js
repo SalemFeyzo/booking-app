@@ -4,6 +4,7 @@ import servicesService from "./servicesService";
 const initialState = {
 	services: [],
 	selectedService: {
+		service_id: null,
 		name: null,
 		min_price: null,
 	},
@@ -42,6 +43,7 @@ export const servicesSlice = createSlice({
 			state.message = "";
 		},
 		setSelectedService: (state, action) => {
+			state.selectedService.service_id = action.payload.service_id;
 			state.selectedService.name = action.payload.name;
 			state.selectedService.min_price = action.payload.min_price;
 		},
@@ -79,6 +81,7 @@ export const servicesSlice = createSlice({
 				state.isSuccess = true;
 				state.services = action.payload;
 				const defaultService = action.payload.find((s) => s.service_id === "1");
+				state.selectedService.service_id = defaultService.service_id;
 				state.selectedService.name = defaultService.name;
 				state.selectedService.min_price = Number(defaultService.min_price);
 			})
