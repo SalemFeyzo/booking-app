@@ -76,6 +76,7 @@ const ChooseService = () => {
 							onClick={(e) => {
 								dispatch(
 									setSelectedService({
+										service_id: service.service_id,
 										name: service.name,
 										min_price: Number(service.min_price),
 									})
