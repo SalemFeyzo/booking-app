@@ -6,6 +6,9 @@ import Layout from "./components/Layout";
 import PriceQuote from "./sections/PriceQuote";
 import ChooseService from "./sections/ChooseService";
 import DateAndTime from "./sections/DateAndTime";
+import OrderDescription from "./sections/OrderDescription";
+import ContactInfo from "./sections/ContactInfo";
+import ReviewYourOrder from "./sections/ReviewYourOrder";
 import {
 	CHOOSE_SERVICE,
 	DATE_AND_TIME,
@@ -61,6 +64,54 @@ const App = () => {
 									leaveTo="opacity-0"
 								>
 									<DateAndTime />
+								</Transition.Child>
+							</div>
+						)}
+					</Transition>
+					<Transition show={section === ORDER_DESCRIPTION}>
+						{section === ORDER_DESCRIPTION && (
+							<div className="px-10 pt-7 bg-white border-2 border-gray-100 rounded-md shadow-md ">
+								<Transition.Child
+									enter="transition-opacity ease-linear duration-300"
+									enterFrom="opacity-0"
+									enterTo="opacity-100"
+									leave="transition-opacity ease-linear duration-300"
+									leaveFrom="opacity-100"
+									leaveTo="opacity-0"
+								>
+									<OrderDescription />
+								</Transition.Child>
+							</div>
+						)}
+					</Transition>
+					<Transition show={section === CONTACT_INFO}>
+						{section === CONTACT_INFO && (
+							<div className="px-10 pt-7 bg-white border-2 border-gray-100 rounded-md shadow-md ">
+								<Transition.Child
+									enter="transition-opacity ease-linear duration-300"
+									enterFrom="opacity-0"
+									enterTo="opacity-100"
+									leave="transition-opacity ease-linear duration-300"
+									leaveFrom="opacity-100"
+									leaveTo="opacity-0"
+								>
+									<ContactInfo />
+								</Transition.Child>
+							</div>
+						)}
+					</Transition>
+					<Transition show={section === REVIEW_YOUR_ORDER}>
+						{section === REVIEW_YOUR_ORDER && (
+							<div className="px-10 pt-7 bg-white border-2 border-gray-100 rounded-md shadow-md ">
+								<Transition.Child
+									enter="transition-opacity ease-linear duration-300"
+									enterFrom="opacity-0"
+									enterTo="opacity-100"
+									leave="transition-opacity ease-linear duration-300"
+									leaveFrom="opacity-100"
+									leaveTo="opacity-0"
+								>
+									<ReviewYourOrder />
 								</Transition.Child>
 							</div>
 						)}

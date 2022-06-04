@@ -17,7 +17,13 @@ const ProgressBar = () => {
 						? "w-[20%]"
 						: section === DATE_AND_TIME
 						? "w-[40%]"
-						: "w-[60%]"
+						: section === ORDER_DESCRIPTION
+						? "w-[60%]"
+						: section === CONTACT_INFO
+						? "w-[80%]"
+						: section === REVIEW_YOUR_ORDER
+						? "w-full"
+						: "w-0"
 				} h-full bg-color-accent transition-width transition-slowest ease`}
 			></div>
 		</div>

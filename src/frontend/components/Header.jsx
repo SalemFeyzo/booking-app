@@ -39,7 +39,13 @@ const Header = () => {
 				<h1 className="text-3xl text-color-primary md:text-5xl">
 					{section === CHOOSE_SERVICE
 						? "What are you looking for?"
-						: "Date and Time"}
+						: section === DATE_AND_TIME
+						? "Date and Time"
+						: section === ORDER_DESCRIPTION
+						? "Order Description"
+						: section === CONTACT_INFO
+						? "Address And Contact Info"
+						: "Review Your Order"}
 				</h1>
 			</div>
 			<div className="md:invisible">

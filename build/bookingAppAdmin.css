@@ -556,6 +556,9 @@ Ensure the default browser behavior of the `hidden` attribute.
 .w-\[30\%\] {
   width: 30%;
 }
+.w-0 {
+  width: 0px;
+}
 .max-w-md {
   max-width: 28rem;
 }
