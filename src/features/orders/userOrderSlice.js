@@ -9,7 +9,6 @@ const initialState = {
 		service: null,
 		servicePrice: 0,
 		date: null,
-		time: null,
 		frequency: null,
 		vehicleType: null,
 		vehicleTotal: 0,
@@ -78,6 +77,12 @@ export const userOrderSlice = createSlice({
 		setOrderVehicleTotal: (state, action) => {
 			state.order.vehicleTotal = action.payload;
 		},
+		setorderAddress: (state, action) => {
+			state.order.address = action.payload;
+		},
+		setOrderDate: (state, action) => {
+			state.order.date = action.payload;
+		},
 	},
 	extraReducers: (builder) => {
 		builder
@@ -123,5 +128,7 @@ export const {
 	setOrderServicePrice,
 	restOrderTotal,
 	setOrderVehicleTotal,
+	setorderAddress,
+	setOrderDate,
 } = userOrderSlice.actions;
 export default userOrderSlice.reducer;

@@ -3,8 +3,9 @@ import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import store from "../store";
 import App from "./App";
-import "./bookingAppFrontend.css";
 import "react-loading-skeleton/dist/skeleton.css";
+import "react-datepicker/dist/react-datepicker.css";
+import "./bookingAppFrontend.css";
 
 ReactDOM.render(
 	<Provider store={store}>

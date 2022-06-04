@@ -5024,9 +5024,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "reset": function() { return /* binding */ reset; },
 /* harmony export */   "restOrderTotal": function() { return /* binding */ restOrderTotal; },
 /* harmony export */   "setOrder": function() { return /* binding */ setOrder; },
+/* harmony export */   "setOrderDate": function() { return /* binding */ setOrderDate; },
 /* harmony export */   "setOrderService": function() { return /* binding */ setOrderService; },
 /* harmony export */   "setOrderServicePrice": function() { return /* binding */ setOrderServicePrice; },
 /* harmony export */   "setOrderVehicleTotal": function() { return /* binding */ setOrderVehicleTotal; },
+/* harmony export */   "setorderAddress": function() { return /* binding */ setorderAddress; },
 /* harmony export */   "userOrderSlice": function() { return /* binding */ userOrderSlice; }
 /* harmony export */ });
 /* harmony import */ var _reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @reduxjs/toolkit */ "./node_modules/@reduxjs/toolkit/dist/redux-toolkit.esm.js");
@@ -5040,7 +5042,6 @@ const initialState = {
     service: null,
     servicePrice: 0,
     date: null,
-    time: null,
     frequency: null,
     vehicleType: null,
     vehicleTotal: 0,
@@ -5092,6 +5093,12 @@ const userOrderSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createSl
     },
     setOrderVehicleTotal: (state, action) => {
       state.order.vehicleTotal = action.payload;
+    },
+    setorderAddress: (state, action) => {
+      state.order.address = action.payload;
+    },
+    setOrderDate: (state, action) => {
+      state.order.date = action.payload;
     }
   },
   extraReducers: builder => {
@@ -5121,7 +5128,9 @@ const {
   setOrderService,
   setOrderServicePrice,
   restOrderTotal,
-  setOrderVehicleTotal
+  setOrderVehicleTotal,
+  setorderAddress,
+  setOrderDate
 } = userOrderSlice.actions;
 /* harmony default export */ __webpack_exports__["default"] = (userOrderSlice.reducer);
 

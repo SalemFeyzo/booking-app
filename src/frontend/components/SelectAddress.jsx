@@ -10,6 +10,7 @@ import { setServicesPrices } from "../../features/services/serviceSlice";
 import {
 	setOrderServicePrice,
 	restOrderTotal,
+	setorderAddress,
 } from "../../features/orders/userOrderSlice";
 
 const customStyles = {
@@ -24,7 +25,6 @@ const customStyles = {
 	control: (styles, state) => ({
 		...styles,
 		width: "100%",
-		// backgroundColor: "#ccc",
 		padding: 9,
 		boxShadow: state.isFocused ? "2px solid #E8A901" : "none",
 		border: state.isFocused && "2px solid #E8A901",
@@ -60,7 +60,7 @@ const SelectAddress = () => {
 	}, [dispatch]);
 
 	const options = addresses?.map((address) => {
-		const label = ` ${address.zip} ${address.county}, ${address.city}, USA `;
+		const label = `${address.zip} ${address.county}, ${address.city}`;
 		const value = address.address_id;
 		return { label, value };
 	});
@@ -71,7 +71,7 @@ const SelectAddress = () => {
 			cardboardRemovalPrice: Number(address.cardboard_removal),
 			dumpTrailerPrice: Number(address.dump_trailer),
 		};
-
+		dispatch(setorderAddress(option.label));
 		dispatch(setServicesPrices(prices));
 		dispatch(setSelectedAddress(address));
 
@@ -107,8 +107,7 @@ const SelectAddress = () => {
 							name="address"
 							placeholder="Search places ..."
 							styles={customStyles}
-							isClearable={true}
-							value={options.value}
+							defaultValue={options.value}
 							noOptionsMessage={({ inputValue }) =>
 								!inputValue ? noOptionsText : "Sorry! We don't serve your area."
 							}
