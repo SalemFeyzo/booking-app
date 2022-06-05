@@ -1,1 +1,1 @@
-export const API_URL = `${window.location.origin}/wordpress/wp-json/booking-app/api/v1`;
+export const API_URL = `${window.wpApiSettings?.root}booking-app/api/v1`;

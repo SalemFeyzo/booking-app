@@ -10285,7 +10285,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "API_URL": function() { return /* binding */ API_URL; }
 /* harmony export */ });
-const API_URL = `${window.location.origin}/wordpress/wp-json/booking-app/api/v1`;
+var _window$wpApiSettings;
+
+const API_URL = `${(_window$wpApiSettings = window.wpApiSettings) === null || _window$wpApiSettings === void 0 ? void 0 : _window$wpApiSettings.root}booking-app/api/v1`;
 
 /***/ }),
 
