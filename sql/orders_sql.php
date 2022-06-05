@@ -4,8 +4,8 @@ $sql = "CREATE TABLE $table_name (
         order_id mediumint(9) NOT NULL AUTO_INCREMENT,
         service varchar(120) NOT NULL,
         date varchar(120) NOT NULL,
-        time varchar(120) NOT NULL,
         frequency varchar(120) NOT NULL,
+        items LONGTEXT NOT NULL,
         vehicle varchar(120) NOT NULL,
         stairs varchar(120) NOT NULL,
         dismantling varchar(120) NOT NULL,
@@ -18,5 +18,8 @@ $sql = "CREATE TABLE $table_name (
         mobile_number varchar(120) NOT NULL,
         total varchar(120) NOT NULL,
         view mediumint(9) DEFAULT 0,
+        canceled mediumint(9) DEFAULT 0,
+        delivered mediumint(9) DEFAULT 0,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         PRIMARY KEY (order_id)
       ) $charset_collate;";

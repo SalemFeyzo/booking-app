@@ -36,7 +36,7 @@ const Header = () => {
 				</div>
 
 				<p className="text-md">{order.service}</p>
-				<h1 className="text-3xl text-color-primary md:text-5xl">
+				<h1 className="text-2xl text-color-primary md:text-5xl">
 					{section === CHOOSE_SERVICE
 						? "What are you looking for?"
 						: section === DATE_AND_TIME

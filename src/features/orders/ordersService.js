@@ -1,6 +1,5 @@
 import axios from "axios";
-
-const API_URL = "api";
+import { API_URL } from "../API_URL";
 
 const getOrders = async () => {
 	return API_URL;

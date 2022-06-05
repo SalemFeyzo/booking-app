@@ -10274,6 +10274,21 @@ const NEW_OTHER = "NEW_OTHER";
 
 /***/ }),
 
+/***/ "./src/features/API_URL.js":
+/*!*********************************!*\
+  !*** ./src/features/API_URL.js ***!
+  \*********************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "API_URL": function() { return /* binding */ API_URL; }
+/* harmony export */ });
+const API_URL = `${window.location.origin}/wordpress/wp-json/booking-app/api/v1`;
+
+/***/ }),
+
 /***/ "./src/features/addresses/addressesService.js":
 /*!****************************************************!*\
   !*** ./src/features/addresses/addressesService.js ***!
@@ -10284,13 +10299,14 @@ const NEW_OTHER = "NEW_OTHER";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _API_URL__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../API_URL */ "./src/features/API_URL.js");
 
-const API_URL = `${window.location.origin}/wordpress/wp-json/booking-app/api/v1`;
+
 
 const getAddresses = async () => {
   const {
     data
-  } = await axios__WEBPACK_IMPORTED_MODULE_0___default().get(`${API_URL}/addresses`);
+  } = await axios__WEBPACK_IMPORTED_MODULE_0___default().get(`${_API_URL__WEBPACK_IMPORTED_MODULE_1__.API_URL}/addresses`);
   return data;
 };
 
@@ -10430,11 +10446,12 @@ const {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _API_URL__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../API_URL */ "./src/features/API_URL.js");
 
-const API_URL = "api";
+
 
 const getOrders = async () => {
-  return API_URL;
+  return _API_URL__WEBPACK_IMPORTED_MODULE_1__.API_URL;
 };
 
 const ordersService = {
@@ -10684,7 +10701,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const initialState = {
-  section: _sectionConstants__WEBPACK_IMPORTED_MODULE_0__.CHOOSE_SERVICE
+  section: _sectionConstants__WEBPACK_IMPORTED_MODULE_0__.CHOOSE_SERVICE // section: "ORDER_DESCRIPTION",
+
 };
 const sectionSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__.createSlice)({
   name: "frontend-section",
@@ -10699,6 +10717,101 @@ const {
   setSection
 } = sectionSlice.actions;
 /* harmony default export */ __webpack_exports__["default"] = (sectionSlice.reducer);
+
+/***/ }),
+
+/***/ "./src/features/service-items/serviceItemsService.js":
+/*!***********************************************************!*\
+  !*** ./src/features/service-items/serviceItemsService.js ***!
+  \***********************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _API_URL__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../API_URL */ "./src/features/API_URL.js");
+
+
+
+const getServiceItems = async service_id => {
+  const {
+    data
+  } = await axios__WEBPACK_IMPORTED_MODULE_0___default().get(`${_API_URL__WEBPACK_IMPORTED_MODULE_1__.API_URL}/service_items?service_id=${service_id}`);
+  return data;
+};
+
+const serviceItemsService = {
+  getServiceItems
+};
+/* harmony default export */ __webpack_exports__["default"] = (serviceItemsService);
+
+/***/ }),
+
+/***/ "./src/features/service-items/serviceItemsSlice.js":
+/*!*********************************************************!*\
+  !*** ./src/features/service-items/serviceItemsSlice.js ***!
+  \*********************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "getServiceItems": function() { return /* binding */ getServiceItems; },
+/* harmony export */   "reset": function() { return /* binding */ reset; },
+/* harmony export */   "serviceItemsSlice": function() { return /* binding */ serviceItemsSlice; }
+/* harmony export */ });
+/* harmony import */ var _reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @reduxjs/toolkit */ "./node_modules/@reduxjs/toolkit/dist/redux-toolkit.esm.js");
+/* harmony import */ var _serviceItemsService__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./serviceItemsService */ "./src/features/service-items/serviceItemsService.js");
+
+
+const initialState = {
+  items: [],
+  isError: false,
+  isSuccess: false,
+  isLoading: false,
+  message: ""
+}; //get service items
+
+const getServiceItems = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__.createAsyncThunk)("serviceItems/getServiceItems", async (__, thunkAPI) => {
+  try {
+    const service_id = await thunkAPI.getState().services.selectedService.service_id;
+    return await _serviceItemsService__WEBPACK_IMPORTED_MODULE_0__["default"].getServiceItems(service_id);
+  } catch (error) {
+    const message = error.response && error.response.data && error.response.data.message || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+const serviceItemsSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__.createSlice)({
+  name: "serviceItems",
+  initialState,
+  reducers: {
+    reset: state => {
+      state.isError = false;
+      state.isSuccess = false;
+      state.isLoading = false;
+      state.message = "";
+    }
+  },
+  extraReducers: builder => {
+    builder.addCase(getServiceItems.pending, state => {
+      state.isLoading = true;
+    }).addCase(getServiceItems.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.isSuccess = true;
+      state.items = action.payload;
+    }).addCase(getServiceItems.rejected, (state, action) => {
+      state.isLoading = false;
+      state.isError = true;
+      state.message = action.payload;
+      state.items = [];
+    });
+  }
+});
+const {
+  reset
+} = serviceItemsSlice.actions;
+/* harmony default export */ __webpack_exports__["default"] = (serviceItemsSlice.reducer);
 
 /***/ }),
 
@@ -10724,6 +10837,7 @@ __webpack_require__.r(__webpack_exports__);
 const initialState = {
   services: [],
   selectedService: {
+    service_id: null,
     name: null,
     min_price: null
   },
@@ -10752,6 +10866,7 @@ const servicesSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__.createSli
       state.message = "";
     },
     setSelectedService: (state, action) => {
+      state.selectedService.service_id = action.payload.service_id;
       state.selectedService.name = action.payload.name;
       state.selectedService.min_price = action.payload.min_price;
     },
@@ -10782,6 +10897,7 @@ const servicesSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__.createSli
       state.isSuccess = true;
       state.services = action.payload;
       const defaultService = action.payload.find(s => s.service_id === "1");
+      state.selectedService.service_id = defaultService.service_id;
       state.selectedService.name = defaultService.name;
       state.selectedService.min_price = Number(defaultService.min_price);
     }).addCase(getServices.rejected, (state, action) => {
@@ -10811,13 +10927,14 @@ const {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _API_URL__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../API_URL */ "./src/features/API_URL.js");
 
-const API_URL = `${window.location.origin}/wordpress/wp-json/booking-app/api/v1`;
+
 
 const getServices = async () => {
   const {
     data
-  } = await axios__WEBPACK_IMPORTED_MODULE_0___default().get(`${API_URL}/services`);
+  } = await axios__WEBPACK_IMPORTED_MODULE_0___default().get(`${_API_URL__WEBPACK_IMPORTED_MODULE_1__.API_URL}/services`);
   return data;
 };
 
@@ -10838,13 +10955,14 @@ const servicesService = {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _API_URL__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../API_URL */ "./src/features/API_URL.js");
 
-const API_URL = `${window.location.origin}/wordpress/wp-json/booking-app/api/v1`;
+
 
 const getVehicles = async () => {
   const {
     data
-  } = await axios__WEBPACK_IMPORTED_MODULE_0___default().get(`${API_URL}/vehicles`);
+  } = await axios__WEBPACK_IMPORTED_MODULE_0___default().get(`${_API_URL__WEBPACK_IMPORTED_MODULE_1__.API_URL}/vehicles`);
   return data;
 };
 
@@ -10980,7 +11098,7 @@ const App = () => {
     id: "bookingAppLAyout",
     className: "w-full h-full"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_Layout__WEBPACK_IMPORTED_MODULE_4__["default"], null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "flex flex-col justify-between gap-2 w-full md:w-2/3"
+    className: "flex flex-col justify-between gap-2 w-full md:w-[75%]"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_headlessui_react__WEBPACK_IMPORTED_MODULE_13__.Transition, {
     show: section === _features_section_sectionConstants__WEBPACK_IMPORTED_MODULE_11__.CHOOSE_SERVICE
   }, section === _features_section_sectionConstants__WEBPACK_IMPORTED_MODULE_11__.CHOOSE_SERVICE && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -11037,7 +11155,7 @@ const App = () => {
     leaveFrom: "opacity-100",
     leaveTo: "opacity-0"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_sections_ReviewYourOrder__WEBPACK_IMPORTED_MODULE_10__["default"], null))))), screenWidth > 770 && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "flex flex-col  w-1/3 h-[25rem]"
+    className: "flex flex-col  w-[37%] h-[25rem]"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, "Your progress"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_ProgressBar__WEBPACK_IMPORTED_MODULE_12__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "w-[100%] h-[100%] px-10 pt-7 bg-white border-2 border-gray-100 rounded-md shadow-md "
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_sections_PriceQuote__WEBPACK_IMPORTED_MODULE_5__["default"], null)))));
@@ -11178,7 +11296,7 @@ const Header = () => {
   }, "Price Quote ", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_6__.FaChevronCircleDown, null)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, "$", order.total)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
     className: "text-md"
   }, order.service), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h1", {
-    className: "text-3xl text-color-primary md:text-5xl"
+    className: "text-2xl text-color-primary md:text-5xl"
   }, section === _features_section_sectionConstants__WEBPACK_IMPORTED_MODULE_4__.CHOOSE_SERVICE ? "What are you looking for?" : section === _features_section_sectionConstants__WEBPACK_IMPORTED_MODULE_4__.DATE_AND_TIME ? "Date and Time" : section === _features_section_sectionConstants__WEBPACK_IMPORTED_MODULE_4__.ORDER_DESCRIPTION ? "Order Description" : section === _features_section_sectionConstants__WEBPACK_IMPORTED_MODULE_4__.CONTACT_INFO ? "Address And Contact Info" : "Review Your Order")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "md:invisible"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_ProgressBar__WEBPACK_IMPORTED_MODULE_5__["default"], null)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_PriceQuoteModal__WEBPACK_IMPORTED_MODULE_3__["default"], {
@@ -11213,7 +11331,7 @@ const Layout = _ref => {
     children
   } = _ref;
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "font-body mx-auto text-color-text  my-3 w-full p-5  h-full md:w-[70rem]"
+    className: "font-body mx-auto text-color-text  my-3 w-full p-5  h-full md:w-[75rem]"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Header__WEBPACK_IMPORTED_MODULE_2__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("main", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "flex flex-row w-full h-full gap-2 "
   }, children)));
@@ -11453,6 +11571,112 @@ const SelectAddress = () => {
 
 /***/ }),
 
+/***/ "./src/frontend/components/SelectItem.jsx":
+/*!************************************************!*\
+  !*** ./src/frontend/components/SelectItem.jsx ***!
+  \************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var react_select__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react-select */ "./node_modules/react-select/dist/react-select.esm.js");
+/* harmony import */ var react_loading_skeleton__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react-loading-skeleton */ "./node_modules/react-loading-skeleton/dist/index.mjs");
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
+/* harmony import */ var _features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../features/orders/userOrderSlice */ "./src/features/orders/userOrderSlice.js");
+/* harmony import */ var _features_service_items_serviceItemsSlice__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../features/service-items/serviceItemsSlice */ "./src/features/service-items/serviceItemsSlice.js");
+
+
+
+
+
+
+
+
+const SelectItem = () => {
+  const dispatch = (0,react_redux__WEBPACK_IMPORTED_MODULE_2__.useDispatch)();
+  const {
+    isError,
+    isLoading,
+    isSuccess,
+    message,
+    items
+  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_2__.useSelector)(state => state.serviceItems);
+  (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
+    dispatch((0,_features_service_items_serviceItemsSlice__WEBPACK_IMPORTED_MODULE_4__.getServiceItems)());
+  }, [dispatch]);
+  const options = items === null || items === void 0 ? void 0 : items.map(i => {
+    const label = i.name;
+    const value = i.item_id;
+    return {
+      label,
+      value
+    };
+  });
+
+  const selectOrderItems = option => {
+    dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_3__.restOrderTotal)());
+  };
+
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "my-5 md:min-w-fit"
+  }, isLoading ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_loading_skeleton__WEBPACK_IMPORTED_MODULE_5__["default"], {
+    count: 2
+  }) : isError ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, message) : (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("form", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_select__WEBPACK_IMPORTED_MODULE_6__["default"], {
+    className: "shadow-md",
+    options: options,
+    placeholder: "Search items ...",
+    styles: customStyles,
+    defaultValue: options.value,
+    noOptionsMessage: _ref => {
+      let {
+        inputValue
+      } = _ref;
+      return !inputValue ? noOptionsText : "No options.";
+    },
+    onChange: selectOrderItems
+  })));
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (SelectItem);
+const customStyles = {
+  menu: (provided, state) => ({ ...provided,
+    width: "100%",
+    borderBottom: "1px dotted pink",
+    color: state.selectProps.menuColor,
+    padding: 10
+  }),
+  control: (styles, state) => ({ ...styles,
+    width: "100%",
+    padding: 9,
+    boxShadow: state.isFocused ? "2px solid #E8A901" : "none",
+    border: state.isFocused && "2px solid #E8A901",
+    "&:hover": {
+      border: state.isFocused && "2px solid #E8A901",
+      boxShadow: state.isFocused ? "2px solid #E8A901" : "none"
+    }
+  }),
+  option: (styles, state) => ({ ...styles,
+    backgroundColor: state.isSelected && "#E8A901",
+    "&:hover": {
+      backgroundColor: state.isSelected ? "#E8A901" : "#fffee6"
+    }
+  }),
+  singleValue: (provided, state) => {
+    const opacity = state.isDisabled ? 0.5 : 1;
+    const transition = "opacity 300ms";
+    return { ...provided,
+      opacity,
+      transition
+    };
+  }
+};
+
+/***/ }),
+
 /***/ "./src/frontend/sections/ChooseService.jsx":
 /*!*************************************************!*\
   !*** ./src/frontend/sections/ChooseService.jsx ***!
@@ -11545,6 +11769,7 @@ const ChooseService = () => {
 							`,
     onClick: e => {
       dispatch((0,_features_services_serviceSlice__WEBPACK_IMPORTED_MODULE_7__.setSelectedService)({
+        service_id: service.service_id,
         name: service.name,
         min_price: Number(service.min_price)
       }));
@@ -11692,6 +11917,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
 /* harmony import */ var _features_section_sectionConstants__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../features/section/sectionConstants */ "./src/features/section/sectionConstants.js");
 /* harmony import */ var _features_section_sectionSlice__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../features/section/sectionSlice */ "./src/features/section/sectionSlice.js");
+/* harmony import */ var _components_SelectItem__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../components/SelectItem */ "./src/frontend/components/SelectItem.jsx");
+
 
 
 
@@ -11699,7 +11926,9 @@ __webpack_require__.r(__webpack_exports__);
 
 const OrderDescription = () => {
   const dispatch = (0,react_redux__WEBPACK_IMPORTED_MODULE_1__.useDispatch)();
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "text-2xl"
+  }, "Please select all of the items and the number of items that need to be removed for your booking"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Please note, our warriors will ONLY pick up the items that you selected and paid for."), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "If you have unlisted items, we may reach out to you for an updated price quote after reviewing your booking.")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_SelectItem__WEBPACK_IMPORTED_MODULE_4__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "flex flex-row justify-between items-center my-5"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     onClick: e => dispatch((0,_features_section_sectionSlice__WEBPACK_IMPORTED_MODULE_3__.setSection)(_features_section_sectionConstants__WEBPACK_IMPORTED_MODULE_2__.DATE_AND_TIME)),
@@ -11813,7 +12042,7 @@ const ReviewYourOrder = () => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @reduxjs/toolkit */ "./node_modules/@reduxjs/toolkit/dist/redux-toolkit.esm.js");
+/* harmony import */ var _reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @reduxjs/toolkit */ "./node_modules/@reduxjs/toolkit/dist/redux-toolkit.esm.js");
 /* harmony import */ var _features_orders_ordersSlice__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./features/orders/ordersSlice */ "./src/features/orders/ordersSlice.js");
 /* harmony import */ var _features_backend_pages_pagesSlice__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./features/backend-pages/pagesSlice */ "./src/features/backend-pages/pagesSlice.js");
 /* harmony import */ var _features_services_serviceSlice__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./features/services/serviceSlice */ "./src/features/services/serviceSlice.js");
@@ -11821,6 +12050,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _features_vehicles_vehiclesSlice__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./features/vehicles/vehiclesSlice */ "./src/features/vehicles/vehiclesSlice.js");
 /* harmony import */ var _features_addresses_addressesSlice__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./features/addresses/addressesSlice */ "./src/features/addresses/addressesSlice.js");
 /* harmony import */ var _features_section_sectionSlice__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./features/section/sectionSlice */ "./src/features/section/sectionSlice.js");
+/* harmony import */ var _features_service_items_serviceItemsSlice__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./features/service-items/serviceItemsSlice */ "./src/features/service-items/serviceItemsSlice.js");
 
 
 
@@ -11829,7 +12059,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const store = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_7__.configureStore)({
+
+const store = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_8__.configureStore)({
   reducer: {
     orders: _features_orders_ordersSlice__WEBPACK_IMPORTED_MODULE_0__["default"],
     backendPage: _features_backend_pages_pagesSlice__WEBPACK_IMPORTED_MODULE_1__["default"],
@@ -11837,7 +12068,8 @@ const store = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_7__.configureStore)({
     userOrder: _features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_3__["default"],
     vehicles: _features_vehicles_vehiclesSlice__WEBPACK_IMPORTED_MODULE_4__["default"],
     addresses: _features_addresses_addressesSlice__WEBPACK_IMPORTED_MODULE_5__["default"],
-    section: _features_section_sectionSlice__WEBPACK_IMPORTED_MODULE_6__["default"]
+    section: _features_section_sectionSlice__WEBPACK_IMPORTED_MODULE_6__["default"],
+    serviceItems: _features_service_items_serviceItemsSlice__WEBPACK_IMPORTED_MODULE_7__["default"]
   }
 });
 /* harmony default export */ __webpack_exports__["default"] = (store);

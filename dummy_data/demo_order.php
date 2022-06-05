@@ -5,9 +5,9 @@ if (!defined("ABSPATH")) {
 
 $demo_order = [
     'service' => 'Junk Removal',
-    'date' => '12/5/2022',
-    'time' => '09:00',
-    'frequency' => 'One time',
+    'date' => '12/5/2022 09:00',
+    'frequency' => 'Once',
+    'items' => '[{item: "Some item", price: "15"}]',
     'vehicle' => 'Truck',
     'stairs' => '2',
     'dismantling' => '3',

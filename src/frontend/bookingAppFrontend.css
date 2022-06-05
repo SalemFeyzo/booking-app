@@ -10,19 +10,14 @@ input[type="password"],
 input[type="search"],
 input[type="reset"],
 input[type="tel"],
-select,
 textarea {
-	color: #666;
-	padding: 1.2em;
 	height: auto;
 	outline: none !important;
-	border-width: 2px !important;
-	border-style: solid !important;
-	border-color: #eaeaea !important;
 	border-radius: 4px !important;
 	background: white !important;
-	box-shadow: none;
-	box-sizing: border-box;
+	/* box-shadow: none; */
+	/* box-sizing: border-box; */
+	margin-left: 0%;
 	transition: all 0.2s linear;
 }
 input[type="text"]:focus,
@@ -33,11 +28,7 @@ input[type="password"]:focus,
 input[type="search"]:focus,
 input[type="reset"]:focus,
 input[type="tel"]:focus,
-select:focus,
 textarea:focus {
-	border-width: 2px !important;
-	border-style: solid !important;
-	border-color: #e8a901 !important;
 	outline: none !important;
 }
 
@@ -48,8 +39,6 @@ input[type="password"],
 input[type="search"],
 input[type="tel"],
 textarea {
-	color: #666;
-	border: 1px solid #ccc !important;
 	border-radius: 2px;
 	-webkit-appearance: none;
 }

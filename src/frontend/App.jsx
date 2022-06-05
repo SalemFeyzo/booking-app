@@ -35,7 +35,7 @@ const App = () => {
 	return (
 		<div id="bookingAppLAyout" className="w-full h-full">
 			<Layout>
-				<div className="flex flex-col justify-between gap-2 w-full md:w-2/3">
+				<div className="flex flex-col justify-between gap-2 w-full md:w-[75%]">
 					<Transition show={section === CHOOSE_SERVICE}>
 						{section === CHOOSE_SERVICE && (
 							<div className="px-10 pt-7 bg-white border-2 border-gray-100 rounded-md shadow-md ">
@@ -118,7 +118,7 @@ const App = () => {
 					</Transition>
 				</div>
 				{screenWidth > 770 && (
-					<div className="flex flex-col  w-1/3 h-[25rem]">
+					<div className="flex flex-col  w-[37%] h-[25rem]">
 						<span>Your progress</span>
 						<ProgressBar />
 						<div className="w-[100%] h-[100%] px-10 pt-7 bg-white border-2 border-gray-100 rounded-md shadow-md ">

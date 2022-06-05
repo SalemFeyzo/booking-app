@@ -33,7 +33,6 @@ class BookingApp
 		register_activation_hook(__FILE__, array($this, 'create_addresses_table'));
 		register_activation_hook(__FILE__, array($this, 'create_service_items_table'));
 		register_activation_hook(__FILE__, array($this, 'create_orders_table'));
-		register_activation_hook(__FILE__, array($this, 'create_order_items_table'));
 	}
 
 	function onInit()
@@ -286,31 +285,6 @@ class BookingApp
 			}
 		}
 	}
-
-	function create_order_items_table()
-	{
-		global $wpdb;
-		$charset_collate = $wpdb->get_charset_collate();
-		$table_name = $wpdb->prefix . 'booking_app_order_items';
-		$items_table_name = $wpdb->prefix . 'booking_app_items';
-		$order_table_name = $wpdb->prefix . 'booking_app_orders';
-		require_once ABSPATH . "wp-content/plugins/booking-app/sql/order_items_sql.php";
-		$query = $wpdb->prepare('SHOW TABLES LIKE %s', $wpdb->esc_like($table_name));
-		//checking if the table exists if not go ahead and create it & insert the default data
-		if (!$wpdb->get_var($query) == $table_name) {
-			require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-			dbDelta($sql);
-			//Adding default data
-			require_once ABSPATH . "wp-content/plugins/booking-app/dummy_data/order_items.php";
-			foreach ($order_items as
-				$key => $order_item) {
-				$wpdb->insert(
-					$table_name,
-					$order_item,
-				);
-			}
-		}
-	}
 }
 
 
@@ -325,3 +299,6 @@ $vehicles = new VehiclesRoutes();
 //Addresses Routes
 require_once ABSPATH . "wp-content/plugins/booking-app/api/addresses_routes.php";
 $addresses = new AddressesRoutes();
+//Service items Routes
+require_once ABSPATH . "wp-content/plugins/booking-app/api/service_items_routes.php";
+$service_items = new ServiceItemsRoutes();

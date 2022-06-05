@@ -3,6 +3,7 @@ import { CHOOSE_SERVICE } from "./sectionConstants";
 
 const initialState = {
 	section: CHOOSE_SERVICE,
+	// section: "ORDER_DESCRIPTION",
 };
 
 export const sectionSlice = createSlice({
