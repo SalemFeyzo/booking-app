@@ -22,6 +22,7 @@ import { setSection } from "../../features/section/sectionSlice";
 import { DATE_AND_TIME } from "../../features/section/sectionConstants";
 
 const ChooseService = () => {
+	const [errorMessage, setErrorMessage] = useState(null);
 	const { order } = useSelector((state) => state.userOrder);
 	const dispatch = useDispatch();
 	const {
@@ -44,6 +45,7 @@ const ChooseService = () => {
 			dispatch(setOrder({ ...order }));
 		}
 	}, [dispatch, isSuccessVehicles, isSuccessServices]);
+	console.log(errorMessage);
 	return (
 		<div className="pb-20">
 			<p className="text-2xl">Choose a service</p>
@@ -104,15 +106,22 @@ const ChooseService = () => {
 					))}
 				</div>
 			)}
-			<SelectAddress />
-
+			<SelectAddress
+				errorMessage={errorMessage}
+				setErrorMessage={setErrorMessage}
+			/>
 			<div
 				onClick={(e) => {
 					e.preventDefault();
 					dispatch(setSection(DATE_AND_TIME));
+					// if (order.address !== null) {
+					// 	dispatch(setSection(DATE_AND_TIME));
+					// } else {
+					// 	setErrorMessage("This field is required");
+					// }
 				}}
 				type="button"
-				className="inline-flex justify-center rounded-md border border-transparent bg-color-accent px-5 py-1 text-lg font-medium text-white hover:bg-yellow-500  cursor-pointer  float-right"
+				className={`inline-flex justify-center rounded-md border border-transparent bg-color-accent text-white hover:bg-yellow-500 cursor-pointer px-5 py-1 text-lg font-medium   float-right`}
 			>
 				Next
 			</div>

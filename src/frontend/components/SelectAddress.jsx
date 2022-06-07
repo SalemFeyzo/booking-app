@@ -1,5 +1,5 @@
-import { useEffect } from "react";
-import Select from "react-select";
+import { useState, useEffect } from "react";
+import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import Skeleton from "react-loading-skeleton";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -13,43 +13,73 @@ import {
 	setorderAddress,
 } from "../../features/orders/userOrderSlice";
 
-const customStyles = {
-	menu: (provided, state) => ({
-		...provided,
-		width: "100%",
-		borderBottom: "1px dotted pink",
-		color: state.selectProps.menuColor,
-		padding: 10,
-	}),
+const SelectAddress = ({ errorMessage, setErrorMessage }) => {
+	const [value, setValue] = useState(null);
+	const [successMessage, setSuccessMessage] = useState(null);
+	const customStyles = {
+		menu: (provided, state) => ({
+			...provided,
+			width: "100%",
+			borderBottom: "1px dotted pink",
+			color: state.selectProps.menuColor,
+			padding: 10,
+		}),
 
-	control: (styles, state) => ({
-		...styles,
-		width: "100%",
-		padding: 9,
-		boxShadow: state.isFocused ? "2px solid #E8A901" : "none",
-		border: state.isFocused && "2px solid #E8A901",
-		"&:hover": {
-			border: state.isFocused && "2px solid #E8A901",
-			boxShadow: state.isFocused ? "2px solid #E8A901" : "none",
+		control: (styles, state) => ({
+			...styles,
+			width: "100%",
+			padding: 9,
+			boxShadow:
+				state.isFocused && !errorMessage
+					? "2px solid #E8A901"
+					: state.isFocused && errorMessage
+					? "2px solid #ff3333"
+					: errorMessage && !state.isFocused
+					? "2px solid #ff3333"
+					: "none",
+			border:
+				state.isFocused && !errorMessage
+					? "2px solid #E8A901"
+					: state.isFocused && errorMessage
+					? "2px solid #ff3333"
+					: errorMessage && !state.isFocused
+					? "2px solid #ff3333"
+					: "",
+			"&:hover": {
+				border:
+					state.isFocused && !errorMessage
+						? "2px solid #E8A901"
+						: state.isFocused && errorMessage
+						? "2px solid #ff3333"
+						: errorMessage && !state.isFocused
+						? "2px solid #ff3333"
+						: "",
+				boxShadow:
+					state.isFocused && !errorMessage
+						? "2px solid #E8A901"
+						: state.isFocused && errorMessage
+						? "2px solid #ff3333"
+						: errorMessage && !state.isFocused
+						? "2px solid #ff3333"
+						: "none",
+			},
+		}),
+		option: (styles, state) => ({
+			...styles,
+			backgroundColor: state.isSelected && "#E8A901",
+			"&:hover": {
+				backgroundColor: state.isSelected ? "#E8A901" : "#fffee6",
+			},
+		}),
+
+		singleValue: (provided, state) => {
+			const opacity = state.isDisabled ? 0.5 : 1;
+			const transition = "opacity 300ms";
+
+			return { ...provided, opacity, transition };
 		},
-	}),
-	option: (styles, state) => ({
-		...styles,
-		backgroundColor: state.isSelected && "#E8A901",
-		"&:hover": {
-			backgroundColor: state.isSelected ? "#E8A901" : "#fffee6",
-		},
-	}),
+	};
 
-	singleValue: (provided, state) => {
-		const opacity = state.isDisabled ? 0.5 : 1;
-		const transition = "opacity 300ms";
-
-		return { ...provided, opacity, transition };
-	},
-};
-
-const SelectAddress = () => {
 	const dispatch = useDispatch();
 	const { addresses, isLoading, isSuccess, isError, message, selectedAddress } =
 		useSelector((state) => state.addresses);
@@ -59,36 +89,41 @@ const SelectAddress = () => {
 		dispatch(getAddresses());
 	}, [dispatch]);
 
-	const options = addresses?.map((address) => {
-		const label = `${address.zip} ${address.county}, ${address.city}`;
-		const value = address.address_id;
-		return { label, value };
-	});
 	const selectOrderAddress = (option) => {
-		const address = addresses.find((a) => a.address_id === option.value);
-		const prices = {
-			junkRemovalPrice: Number(address.junk_removal),
-			cardboardRemovalPrice: Number(address.cardboard_removal),
-			dumpTrailerPrice: Number(address.dump_trailer),
-		};
-		dispatch(setorderAddress(option.label));
-		dispatch(setServicesPrices(prices));
-		dispatch(setSelectedAddress(address));
-
-		dispatch(
-			setOrderServicePrice(
-				selectedService.name === "Junk Removal"
-					? prices.junkRemovalPrice
-					: selectedService.name === "Cardboard Removal"
-					? prices.cardboardRemovalPrice
-					: prices.dumpTrailerPrice
-			)
+		setValue(option);
+		const address = addresses.find((a) =>
+			a.zip === option.value.terms[0].value ? option.value.terms[0].value : null
 		);
-		dispatch(restOrderTotal());
-	};
 
+		if (address) {
+			const prices = {
+				junkRemovalPrice: Number(address.junk_removal),
+				cardboardRemovalPrice: Number(address.cardboard_removal),
+				dumpTrailerPrice: Number(address.dump_trailer),
+			};
+			dispatch(setorderAddress(option.label));
+			dispatch(setServicesPrices(prices));
+			dispatch(setSelectedAddress(address));
+
+			dispatch(
+				setOrderServicePrice(
+					selectedService.name === "Junk Removal"
+						? prices.junkRemovalPrice
+						: selectedService.name === "Cardboard Removal"
+						? prices.cardboardRemovalPrice
+						: prices.dumpTrailerPrice
+				)
+			);
+			dispatch(restOrderTotal());
+			setErrorMessage(null);
+			setSuccessMessage("We serve in this area");
+		} else {
+			setSuccessMessage(null);
+			setErrorMessage("We don't serve in this area");
+		}
+	};
 	return (
-		<div className="my-5 md:min-w-fit">
+		<div className="my-5">
 			{isLoading ? (
 				<Skeleton count={5} />
 			) : isError ? (
@@ -96,25 +131,29 @@ const SelectAddress = () => {
 			) : (
 				<>
 					<p>Check if we serve in your area</p>
-					<form>
-						<label className="focus:text-color-accent" htmlFor="address">
-							Enter Your ZIP Code:
-						</label>
-
-						<Select
-							className="shadow-md"
-							options={options}
-							id="address"
-							name="address"
-							placeholder="Search places ..."
-							styles={customStyles}
-							defaultValue={options.value}
-							noOptionsMessage={({ inputValue }) =>
-								!inputValue ? noOptionsText : "Sorry! We don't serve your area."
-							}
-							onChange={selectOrderAddress}
-						/>
-					</form>
+					{errorMessage && <span className="text-red-500">{errorMessage}</span>}
+					{successMessage && (
+						<span className="text-color-accent">{successMessage}</span>
+					)}
+					<GooglePlacesAutocomplete
+						apiKey="AIzaSyCF_b0avoAPa-h76ELIZcudKMzrvxhAbBM"
+						selectProps={{
+							value,
+							onChange: selectOrderAddress, //setValue ,
+							styles: customStyles,
+							placeholder: "Search places...",
+							loadingMessage: () => "Searching...",
+							isClearable: true,
+							className: "shadow-md",
+						}}
+						apiOptions={{ language: "en" }}
+						autocompletionRequest={{
+							componentRestrictions: {
+								country: ["us"],
+							},
+							// types: ["postal_code", "postal_town"],
+						}}
+					/>
 				</>
 			)}
 		</div>
