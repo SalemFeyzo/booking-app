@@ -1389,9 +1389,6 @@ Ensure the default browser behavior of the `hidden` attribute.
 .cursor-pointer {
   cursor: pointer;
 }
-.cursor-not-allowed {
-  cursor: not-allowed;
-}
 .resize {
   resize: both;
 }
@@ -1705,7 +1702,6 @@ textarea {
 	background-color: #e8a901;
 	border-bottom: 0px solid #aeaeae;
 	border-top-left-radius: 0.3rem;
-	padding: 8px 0;
 	position: relative;
 }
 
@@ -1721,7 +1717,6 @@ textarea {
 .react-datepicker__year-text--selected,
 .react-datepicker__year-text--in-selecting-range,
 .react-datepicker__year-text--in-range {
-	border-radius: 0.3rem;
 	background-color: #e8a901;
 	color: #ffffff;
 }
@@ -1730,8 +1725,6 @@ textarea {
 .react-datepicker-year-header {
 	margin-top: 0;
 	color: white;
-	font-weight: bold;
-	font-size: 0.944rem;
 }
 .react-datepicker__day-name,
 .react-datepicker__time-name {

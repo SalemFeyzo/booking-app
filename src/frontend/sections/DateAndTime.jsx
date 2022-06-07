@@ -15,19 +15,21 @@ const DateAndTime = () => {
 	const [startDate, setStartDate] = useState(
 		setHours(setMinutes(new Date(), 30), 16)
 	);
+	const [errorMessage, setErrorMessage] = useState(null);
 	const dispatch = useDispatch();
 
 	useEffect(() => {
 		dispatch(setOrderDate(startDate.toISOString()));
 	}, [dispatch]);
-
+	console.log(errorMessage);
 	return (
 		<div>
 			<div>
 				<p className="text-2xl">Pickup a Date And Time</p>
 			</div>
+			{errorMessage && <span className="text-red-500">{errorMessage} </span>}
 			<DatePicker
-				className="w-full shadow-md"
+				className="w-full "
 				showTimeSelect
 				minDate={new Date()}
 				selected={startDate}
@@ -67,7 +69,15 @@ const DateAndTime = () => {
 					Back
 				</div>
 				<div
-					onClick={(e) => dispatch(setSection(ORDER_DESCRIPTION))}
+					onClick={(e) => {
+						const now = setHours(setMinutes(new Date(), 30), 16);
+						if (startDate.toISOString() <= now.toISOString()) {
+							setErrorMessage("field is required");
+						} else {
+							setErrorMessage(null);
+							dispatch(setSection(ORDER_DESCRIPTION));
+						}
+					}}
 					type="button"
 					className="inline-flex justify-center rounded-md border border-transparent bg-color-accent px-5 py-1 text-lg font-medium text-white hover:bg-yellow-500  cursor-pointer"
 				>

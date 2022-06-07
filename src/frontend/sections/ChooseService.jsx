@@ -45,7 +45,7 @@ const ChooseService = () => {
 			dispatch(setOrder({ ...order }));
 		}
 	}, [dispatch, isSuccessVehicles, isSuccessServices]);
-	console.log(errorMessage);
+
 	return (
 		<div className="pb-20">
 			<p className="text-2xl">Choose a service</p>

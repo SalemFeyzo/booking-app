@@ -11757,7 +11757,6 @@ const ChooseService = () => {
       }));
     }
   }, [dispatch, isSuccessVehicles, isSuccessServices]);
-  console.log(errorMessage);
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "pb-20"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
@@ -11890,14 +11889,18 @@ __webpack_require__.r(__webpack_exports__);
 
 const DateAndTime = () => {
   const [startDate, setStartDate] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)((0,date_fns_setHours__WEBPACK_IMPORTED_MODULE_7__["default"])((0,date_fns_setMinutes__WEBPACK_IMPORTED_MODULE_8__["default"])(new Date(), 30), 16));
+  const [errorMessage, setErrorMessage] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(null);
   const dispatch = (0,react_redux__WEBPACK_IMPORTED_MODULE_2__.useDispatch)();
   (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
     dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_3__.setOrderDate)(startDate.toISOString()));
   }, [dispatch]);
+  console.log(errorMessage);
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
     className: "text-2xl"
-  }, "Pickup a Date And Time")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)((react_datepicker__WEBPACK_IMPORTED_MODULE_9___default()), {
-    className: "w-full shadow-md",
+  }, "Pickup a Date And Time")), errorMessage && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "text-red-500"
+  }, errorMessage, " "), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)((react_datepicker__WEBPACK_IMPORTED_MODULE_9___default()), {
+    className: "w-full ",
     showTimeSelect: true,
     minDate: new Date(),
     selected: startDate,
@@ -11919,7 +11922,16 @@ const DateAndTime = () => {
     type: "button",
     className: "inline-flex justify-center rounded-md border-2 border-color-accent  px-5 py-1 text-lg font-medium text-color-accent hover:bg-yellow-200  cursor-pointer"
   }, "Back"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    onClick: e => dispatch((0,_features_section_sectionSlice__WEBPACK_IMPORTED_MODULE_4__.setSection)(_features_section_sectionConstants__WEBPACK_IMPORTED_MODULE_5__.ORDER_DESCRIPTION)),
+    onClick: e => {
+      const now = (0,date_fns_setHours__WEBPACK_IMPORTED_MODULE_7__["default"])((0,date_fns_setMinutes__WEBPACK_IMPORTED_MODULE_8__["default"])(new Date(), 30), 16);
+
+      if (startDate.toISOString() <= now.toISOString()) {
+        setErrorMessage("field is required");
+      } else {
+        setErrorMessage(null);
+        dispatch((0,_features_section_sectionSlice__WEBPACK_IMPORTED_MODULE_4__.setSection)(_features_section_sectionConstants__WEBPACK_IMPORTED_MODULE_5__.ORDER_DESCRIPTION));
+      }
+    },
     type: "button",
     className: "inline-flex justify-center rounded-md border border-transparent bg-color-accent px-5 py-1 text-lg font-medium text-white hover:bg-yellow-500  cursor-pointer"
   }, "Next")));
