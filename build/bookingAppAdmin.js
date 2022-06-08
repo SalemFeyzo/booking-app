@@ -5048,6 +5048,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "setOrderService": function() { return /* binding */ setOrderService; },
 /* harmony export */   "setOrderServicePrice": function() { return /* binding */ setOrderServicePrice; },
 /* harmony export */   "setOrderVehicleTotal": function() { return /* binding */ setOrderVehicleTotal; },
+/* harmony export */   "setVehicleType": function() { return /* binding */ setVehicleType; },
 /* harmony export */   "setorderAddress": function() { return /* binding */ setorderAddress; },
 /* harmony export */   "userOrderSlice": function() { return /* binding */ userOrderSlice; }
 /* harmony export */ });
@@ -5151,6 +5152,7 @@ const {
   setOrderService,
   setOrderServicePrice,
   restOrderTotal,
+  setVehicleType,
   setOrderVehicleTotal,
   setorderAddress,
   setOrderDate,

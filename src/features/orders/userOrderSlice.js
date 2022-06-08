@@ -130,6 +130,7 @@ export const {
 	setOrderService,
 	setOrderServicePrice,
 	restOrderTotal,
+	setVehicleType,
 	setOrderVehicleTotal,
 	setorderAddress,
 	setOrderDate,

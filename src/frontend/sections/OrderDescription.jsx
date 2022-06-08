@@ -1,13 +1,22 @@
 import { useDispatch, useSelector } from "react-redux";
+import pickup from "../assets/pickup.svg";
+import truck from "../assets/truck.svg";
 import {
 	DATE_AND_TIME,
 	CONTACT_INFO,
 } from "../../features/section/sectionConstants";
 import { setSection } from "../../features/section/sectionSlice";
 import SelectItem from "../components/SelectItem";
+import {
+	restOrderTotal,
+	setOrderVehicleTotal,
+	setVehicleType,
+} from "../../features/orders/userOrderSlice";
 
 const OrderDescription = () => {
 	const dispatch = useDispatch();
+	const { order } = useSelector((state) => state.userOrder);
+	const { vehicles } = useSelector((state) => state.vehicles);
 
 	return (
 		<div>
@@ -26,6 +35,43 @@ const OrderDescription = () => {
 				</p>
 			</div>
 			<SelectItem />
+			<p className="text-2xl">Choose a vehicle</p>
+			<p>Make your best guess. We will review every order.</p>
+			<div className="flex flex-col md:flex-row gap-2">
+				{vehicles.map((vehicle) => (
+					<div
+						id="booking-app-service"
+						key={vehicle.vehicle_id}
+						className={`
+							flex flex-row 
+							justify-center items-center gap-2 
+							cursor-pointer 
+							border-2 
+							shadow-md
+							${
+								order.vehicleType === vehicle.type
+									? "border-color-accent text-color-accent hover:bg-yellow-100"
+									: "border-gray-200 hover:bg-gray-100"
+							}
+							rounded-md 
+							p-4
+							px-10
+							`}
+						onClick={(e) => {
+							dispatch(setVehicleType(vehicle.type));
+							dispatch(setOrderVehicleTotal(Number(vehicle.price)));
+							dispatch(restOrderTotal());
+						}}
+					>
+						<img
+							src={vehicle.vehicle_id === "1" ? pickup : truck}
+							alt={vehicle.type}
+						/>
+						<b>{vehicle.type}</b>
+						<span>${Number(vehicle.price).toFixed(2)}</span>
+					</div>
+				))}
+			</div>
 			<div className="flex flex-row justify-between items-center my-5">
 				<div
 					onClick={(e) => dispatch(setSection(DATE_AND_TIME))}
