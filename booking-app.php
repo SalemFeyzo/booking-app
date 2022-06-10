@@ -302,3 +302,9 @@ $addresses = new AddressesRoutes();
 //Service items Routes
 require_once ABSPATH . "wp-content/plugins/booking-app/api/service_items_routes.php";
 $service_items = new ServiceItemsRoutes();
+//Service Dismantling Routes
+require_once ABSPATH . "wp-content/plugins/booking-app/api/dismantling_routes.php";
+$dismantling = new DismantlingRoutes();
+//Service Stairs Routes
+require_once ABSPATH . "wp-content/plugins/booking-app/api/stairs_routes.php";
+$stairs = new StairsRoutes();
