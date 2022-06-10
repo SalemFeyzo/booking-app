@@ -11346,11 +11346,16 @@ const {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "decrementItemNumber": function() { return /* binding */ decrementItemNumber; },
+/* harmony export */   "deleteItem": function() { return /* binding */ deleteItem; },
+/* harmony export */   "incrementItemNumber": function() { return /* binding */ incrementItemNumber; },
 /* harmony export */   "reset": function() { return /* binding */ reset; },
 /* harmony export */   "restOrderTotal": function() { return /* binding */ restOrderTotal; },
 /* harmony export */   "setFrequency": function() { return /* binding */ setFrequency; },
+/* harmony export */   "setItemsTotal": function() { return /* binding */ setItemsTotal; },
 /* harmony export */   "setOrder": function() { return /* binding */ setOrder; },
 /* harmony export */   "setOrderDate": function() { return /* binding */ setOrderDate; },
+/* harmony export */   "setOrderItems": function() { return /* binding */ setOrderItems; },
 /* harmony export */   "setOrderService": function() { return /* binding */ setOrderService; },
 /* harmony export */   "setOrderServicePrice": function() { return /* binding */ setOrderServicePrice; },
 /* harmony export */   "setOrderVehicleTotal": function() { return /* binding */ setOrderVehicleTotal; },
@@ -11370,6 +11375,8 @@ const initialState = {
     servicePrice: 0,
     date: null,
     frequency: null,
+    items: [],
+    itemsTotal: 0,
     vehicleType: null,
     vehicleTotal: 0,
     stairsNumber: 0,
@@ -11413,7 +11420,7 @@ const userOrderSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createSl
       state.order.servicePrice = action.payload;
     },
     restOrderTotal: (state, action) => {
-      state.order.total = state.order.service == "Dump Trailer" ? (state.order.servicePrice + state.order.stairsTotal + state.order.dismantlingTotal).toFixed(2) : (state.order.servicePrice + state.order.vehicleTotal + state.order.stairsTotal + state.order.dismantlingTotal).toFixed(2);
+      state.order.total = state.order.service == "Dump Trailer" ? (state.order.servicePrice + state.order.stairsTotal + state.order.dismantlingTotal + state.order.itemsTotal).toFixed(2) : (state.order.servicePrice + state.order.vehicleTotal + state.order.stairsTotal + state.order.dismantlingTotal + state.order.itemsTotal).toFixed(2);
     },
     setVehicleType: (state, action) => {
       state.order.vehicleType = action.payload;
@@ -11429,6 +11436,32 @@ const userOrderSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createSl
     },
     setFrequency: (state, action) => {
       state.order.frequency = action.payload.name;
+    },
+    setOrderItems: (state, action) => {
+      state.order.total = Number(state.order.total) + action.payload.total;
+      state.order.items.push(action.payload);
+    },
+    incrementItemNumber: (state, action) => {
+      const item = state.order.items.find(i => i.id === action.payload);
+      item.number += 1;
+      item.total = item.price * item.number;
+    },
+    decrementItemNumber: (state, action) => {
+      const item = state.order.items.find(i => i.id === action.payload);
+
+      if (item.number > 0) {
+        item.number -= 1;
+        item.total = item.price * item.number;
+      }
+    },
+    deleteItem: (state, action) => {
+      const item = state.order.items.find(i => i.id === action.payload);
+      state.order.items = state.order.items.filter(i => i.id !== item.id);
+    },
+    setItemsTotal: (state, action) => {
+      state.order.itemsTotal = state.order.items.reduce((sum, item) => {
+        return sum + item.total;
+      }, 0);
     }
   },
   extraReducers: builder => {
@@ -11462,7 +11495,12 @@ const {
   setOrderVehicleTotal,
   setorderAddress,
   setOrderDate,
-  setFrequency
+  setFrequency,
+  setOrderItems,
+  incrementItemNumber,
+  decrementItemNumber,
+  deleteItem,
+  setItemsTotal
 } = userOrderSlice.actions;
 /* harmony default export */ __webpack_exports__["default"] = (userOrderSlice.reducer);
 
@@ -11501,6 +11539,7 @@ const REVIEW_YOUR_ORDER = "REVIEW_YOUR_ORDER";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "sectionSlice": function() { return /* binding */ sectionSlice; },
+/* harmony export */   "setBackTo": function() { return /* binding */ setBackTo; },
 /* harmony export */   "setSection": function() { return /* binding */ setSection; }
 /* harmony export */ });
 /* harmony import */ var _reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @reduxjs/toolkit */ "./node_modules/@reduxjs/toolkit/dist/redux-toolkit.esm.js");
@@ -11508,8 +11547,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const initialState = {
-  section: _sectionConstants__WEBPACK_IMPORTED_MODULE_0__.CHOOSE_SERVICE // section: "ORDER_DESCRIPTION",
-
+  section: _sectionConstants__WEBPACK_IMPORTED_MODULE_0__.CHOOSE_SERVICE,
+  backTo: null
 };
 const sectionSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__.createSlice)({
   name: "frontend-section",
@@ -11517,11 +11556,15 @@ const sectionSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__.createSlic
   reducers: {
     setSection: (state, action) => {
       state.section = action.payload;
+    },
+    setBackTo: (state, action) => {
+      state.backTo = action.payload;
     }
   }
 });
 const {
-  setSection
+  setSection,
+  setBackTo
 } = sectionSlice.actions;
 /* harmony default export */ __webpack_exports__["default"] = (sectionSlice.reducer);
 
@@ -11566,7 +11609,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "getServiceItems": function() { return /* binding */ getServiceItems; },
 /* harmony export */   "reset": function() { return /* binding */ reset; },
-/* harmony export */   "serviceItemsSlice": function() { return /* binding */ serviceItemsSlice; }
+/* harmony export */   "serviceItemsSlice": function() { return /* binding */ serviceItemsSlice; },
+/* harmony export */   "setOptions": function() { return /* binding */ setOptions; }
 /* harmony export */ });
 /* harmony import */ var _reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @reduxjs/toolkit */ "./node_modules/@reduxjs/toolkit/dist/redux-toolkit.esm.js");
 /* harmony import */ var _serviceItemsService__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./serviceItemsService */ "./src/features/service-items/serviceItemsService.js");
@@ -11577,7 +11621,8 @@ const initialState = {
   isError: false,
   isSuccess: false,
   isLoading: false,
-  message: ""
+  message: "",
+  options: []
 }; //get service items
 
 const getServiceItems = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__.createAsyncThunk)("serviceItems/getServiceItems", async (__, thunkAPI) => {
@@ -11598,6 +11643,9 @@ const serviceItemsSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__.creat
       state.isSuccess = false;
       state.isLoading = false;
       state.message = "";
+    },
+    setOptions: (state, action) => {
+      state.options = action.payload;
     }
   },
   extraReducers: builder => {
@@ -11616,7 +11664,8 @@ const serviceItemsSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__.creat
   }
 });
 const {
-  reset
+  reset,
+  setOptions
 } = serviceItemsSlice.actions;
 /* harmony default export */ __webpack_exports__["default"] = (serviceItemsSlice.reducer);
 
@@ -12264,11 +12313,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var react_google_places_autocomplete__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-google-places-autocomplete */ "./node_modules/react-google-places-autocomplete/build/index.es.js");
-/* harmony import */ var react_loading_skeleton__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react-loading-skeleton */ "./node_modules/react-loading-skeleton/dist/index.mjs");
+/* harmony import */ var react_loading_skeleton__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! react-loading-skeleton */ "./node_modules/react-loading-skeleton/dist/index.mjs");
 /* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
 /* harmony import */ var _features_addresses_addressesSlice__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../features/addresses/addressesSlice */ "./src/features/addresses/addressesSlice.js");
 /* harmony import */ var _features_services_serviceSlice__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../features/services/serviceSlice */ "./src/features/services/serviceSlice.js");
 /* harmony import */ var _features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../features/orders/userOrderSlice */ "./src/features/orders/userOrderSlice.js");
+/* harmony import */ var _features_section_sectionConstants__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../features/section/sectionConstants */ "./src/features/section/sectionConstants.js");
+
 
 
 
@@ -12329,9 +12380,12 @@ const SelectAddress = _ref => {
   const {
     selectedService
   } = (0,react_redux__WEBPACK_IMPORTED_MODULE_3__.useSelector)(state => state.services);
+  const {
+    backTo
+  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_3__.useSelector)(state => state.section);
   (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
-    dispatch((0,_features_addresses_addressesSlice__WEBPACK_IMPORTED_MODULE_4__.getAddresses)());
-  }, [dispatch]);
+    if (!backTo || backTo !== _features_section_sectionConstants__WEBPACK_IMPORTED_MODULE_7__.CHOOSE_SERVICE) dispatch((0,_features_addresses_addressesSlice__WEBPACK_IMPORTED_MODULE_4__.getAddresses)());
+  }, [dispatch, backTo]);
 
   const selectOrderAddress = option => {
     setValue(option);
@@ -12358,7 +12412,7 @@ const SelectAddress = _ref => {
 
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "my-5"
-  }, isLoading ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_loading_skeleton__WEBPACK_IMPORTED_MODULE_7__["default"], {
+  }, isLoading ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_loading_skeleton__WEBPACK_IMPORTED_MODULE_8__["default"], {
     count: 5
   }) : isError ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, message) : (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Check if we serve in your area"), errorMessage && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "text-red-500"
@@ -12404,11 +12458,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var react_select__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react-select */ "./node_modules/react-select/dist/react-select.esm.js");
-/* harmony import */ var react_loading_skeleton__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react-loading-skeleton */ "./node_modules/react-loading-skeleton/dist/index.mjs");
+/* harmony import */ var react_select__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react-select */ "./node_modules/react-select/dist/react-select.esm.js");
+/* harmony import */ var react_loading_skeleton__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react-loading-skeleton */ "./node_modules/react-loading-skeleton/dist/index.mjs");
 /* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
+/* harmony import */ var react_icons_fa__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! react-icons/fa */ "./node_modules/react-icons/fa/index.esm.js");
 /* harmony import */ var _features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../features/orders/userOrderSlice */ "./src/features/orders/userOrderSlice.js");
 /* harmony import */ var _features_service_items_serviceItemsSlice__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../features/service-items/serviceItemsSlice */ "./src/features/service-items/serviceItemsSlice.js");
+/* harmony import */ var _features_section_sectionConstants__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../features/section/sectionConstants */ "./src/features/section/sectionConstants.js");
+
+
+
 
 
 
@@ -12420,33 +12479,62 @@ __webpack_require__.r(__webpack_exports__);
 const SelectItem = () => {
   const dispatch = (0,react_redux__WEBPACK_IMPORTED_MODULE_2__.useDispatch)();
   const {
+    backTo
+  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_2__.useSelector)(state => state.section);
+  const {
     isError,
     isLoading,
     isSuccess,
     message,
-    items
+    items,
+    options
   } = (0,react_redux__WEBPACK_IMPORTED_MODULE_2__.useSelector)(state => state.serviceItems);
+  const {
+    order
+  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_2__.useSelector)(state => state.userOrder);
   (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
-    dispatch((0,_features_service_items_serviceItemsSlice__WEBPACK_IMPORTED_MODULE_4__.getServiceItems)());
-  }, [dispatch]);
-  const options = items === null || items === void 0 ? void 0 : items.map(i => {
-    const label = i.name;
-    const value = i.item_id;
-    return {
-      label,
-      value
-    };
-  });
+    if (!backTo || backTo !== _features_section_sectionConstants__WEBPACK_IMPORTED_MODULE_5__.ORDER_DESCRIPTION && backTo !== _features_section_sectionConstants__WEBPACK_IMPORTED_MODULE_5__.DATE_AND_TIME) {
+      dispatch((0,_features_service_items_serviceItemsSlice__WEBPACK_IMPORTED_MODULE_4__.getServiceItems)());
+    }
+  }, [dispatch, backTo]);
+  (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
+    const initOptions = items === null || items === void 0 ? void 0 : items.map(i => {
+      const label = i.name;
+      const value = i.item_id;
+      return {
+        label,
+        value
+      };
+    });
+
+    if (!backTo || backTo !== _features_section_sectionConstants__WEBPACK_IMPORTED_MODULE_5__.ORDER_DESCRIPTION && backTo !== _features_section_sectionConstants__WEBPACK_IMPORTED_MODULE_5__.DATE_AND_TIME) {
+      dispatch((0,_features_service_items_serviceItemsSlice__WEBPACK_IMPORTED_MODULE_4__.setOptions)(initOptions));
+    }
+  }, [items, backTo]);
 
   const selectOrderItems = option => {
-    dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_3__.restOrderTotal)());
+    dispatch((0,_features_service_items_serviceItemsSlice__WEBPACK_IMPORTED_MODULE_4__.setOptions)(options.filter(o => o.value !== option.value)));
+    const selectedItem = items.find(i => i.item_id === option.value);
+
+    if (selectedItem) {
+      dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_3__.setOrderItems)({
+        id: selectedItem.item_id,
+        name: selectedItem.name,
+        number: 1,
+        price: Number(selectedItem.price),
+        total: Number(selectedItem.price)
+      }));
+      dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_3__.setItemsTotal)());
+      dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_3__.restOrderTotal)());
+    }
   };
 
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "my-5 md:min-w-fit"
-  }, isLoading ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_loading_skeleton__WEBPACK_IMPORTED_MODULE_5__["default"], {
+  }, isLoading ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_loading_skeleton__WEBPACK_IMPORTED_MODULE_6__["default"], {
     count: 2
-  }) : isError ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, message) : (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("form", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_select__WEBPACK_IMPORTED_MODULE_6__["default"], {
+  }) : isError ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, message) : (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("form", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_select__WEBPACK_IMPORTED_MODULE_7__["default"], {
+    isClearable: false,
     className: "shadow-md",
     options: options,
     placeholder: "Search items ...",
@@ -12459,7 +12547,50 @@ const SelectItem = () => {
       return !inputValue ? noOptionsText : "No options.";
     },
     onChange: selectOrderItems
-  })));
+  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, order.items.map(i => (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    key: i.id,
+    className: "flex flex-col justify-between items-center border-2 my-2 border-gray-200 rounded-md p-4 md:flex-row gap-3 shadow-md"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "w-full md:w-[70%]"
+  }, i.name, " ($", i.price, " per item)"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "flex flex-row justify-center items-center w-full gap-5 md:w-[30%] md:justify-between md:gap-0"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, "Total: $", i.total), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "text-xl text-red-500 cursor-pointer",
+    onClick: e => {
+      dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_3__.decrementItemNumber)(i.id));
+
+      if (i.number <= 1) {
+        dispatch((0,_features_service_items_serviceItemsSlice__WEBPACK_IMPORTED_MODULE_4__.setOptions)([...options, {
+          label: i.name,
+          value: i.id
+        }]));
+        dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_3__.deleteItem)(i.id));
+        dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_3__.setItemsTotal)());
+        dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_3__.restOrderTotal)());
+      }
+
+      dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_3__.setItemsTotal)());
+      dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_3__.restOrderTotal)());
+    }
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_8__.FaMinusCircle, null)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, i.number), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "text-xl text-green-500 cursor-pointer",
+    onClick: e => {
+      dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_3__.incrementItemNumber)(i.id));
+      dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_3__.setItemsTotal)());
+      dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_3__.restOrderTotal)());
+    }
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_8__.FaPlusCircle, null)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "text-xl text-red-500 cursor-pointer",
+    onClick: e => {
+      dispatch((0,_features_service_items_serviceItemsSlice__WEBPACK_IMPORTED_MODULE_4__.setOptions)([...options, {
+        label: i.name,
+        value: i.id
+      }]));
+      dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_3__.deleteItem)(i.id));
+      dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_3__.setItemsTotal)());
+      dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_3__.restOrderTotal)());
+    }
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_8__.FaTrash, null))))))));
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (SelectItem);
@@ -12481,9 +12612,10 @@ const customStyles = {
     }
   }),
   option: (styles, state) => ({ ...styles,
-    backgroundColor: state.isSelected && "#E8A901",
+    backgroundColor: state.isSelected && "white",
+    color: state.isSelected && "#7A7A7A",
     "&:hover": {
-      backgroundColor: state.isSelected ? "#E8A901" : "#fffee6"
+      backgroundColor: state.isSelected ? "#fffee6" : "#fffee6"
     }
   }),
   singleValue: (provided, state) => {
@@ -12552,16 +12684,21 @@ const ChooseService = () => {
     vehicles,
     isSuccess: isSuccessVehicles
   } = (0,react_redux__WEBPACK_IMPORTED_MODULE_2__.useSelector)(state => state.vehicles);
+  const {
+    backTo
+  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_2__.useSelector)(state => state.section);
   (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
-    dispatch((0,_features_services_serviceSlice__WEBPACK_IMPORTED_MODULE_7__.getServices)());
-    dispatch((0,_features_vehicles_vehiclesSlice__WEBPACK_IMPORTED_MODULE_9__.getVehicles)());
-  }, [dispatch]);
+    if (!backTo || backTo !== _features_section_sectionConstants__WEBPACK_IMPORTED_MODULE_11__.CHOOSE_SERVICE) {
+      dispatch((0,_features_services_serviceSlice__WEBPACK_IMPORTED_MODULE_7__.getServices)());
+      dispatch((0,_features_vehicles_vehiclesSlice__WEBPACK_IMPORTED_MODULE_9__.getVehicles)());
+    }
+  }, [dispatch, backTo]);
   (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
     if (isSuccessVehicles && isSuccessServices) {
-      dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_8__.setOrder)({ ...order
+      if (!backTo || backTo !== _features_section_sectionConstants__WEBPACK_IMPORTED_MODULE_11__.CHOOSE_SERVICE) dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_8__.setOrder)({ ...order
       }));
     }
-  }, [dispatch, isSuccessVehicles, isSuccessServices]);
+  }, [dispatch, isSuccessVehicles, isSuccessServices, backTo]);
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "pb-20"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
@@ -12646,7 +12783,10 @@ const ContactInfo = () => {
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, "ContactInfo", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "flex flex-row justify-between items-center my-5"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    onClick: e => dispatch((0,_features_section_sectionSlice__WEBPACK_IMPORTED_MODULE_3__.setSection)(_features_section_sectionConstants__WEBPACK_IMPORTED_MODULE_2__.ORDER_DESCRIPTION)),
+    onClick: e => {
+      dispatch((0,_features_section_sectionSlice__WEBPACK_IMPORTED_MODULE_3__.setBackTo)(_features_section_sectionConstants__WEBPACK_IMPORTED_MODULE_2__.ORDER_DESCRIPTION));
+      dispatch((0,_features_section_sectionSlice__WEBPACK_IMPORTED_MODULE_3__.setSection)(_features_section_sectionConstants__WEBPACK_IMPORTED_MODULE_2__.ORDER_DESCRIPTION));
+    },
     type: "button",
     className: "inline-flex justify-center rounded-md border-2 border-color-accent  px-5 py-1 text-lg font-medium text-color-accent hover:bg-yellow-200  cursor-pointer"
   }, "Back"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -12696,10 +12836,14 @@ const DateAndTime = () => {
   const [startDate, setStartDate] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)((0,date_fns_setHours__WEBPACK_IMPORTED_MODULE_7__["default"])((0,date_fns_setMinutes__WEBPACK_IMPORTED_MODULE_8__["default"])(new Date(), 30), 16));
   const [errorMessage, setErrorMessage] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(null);
   const dispatch = (0,react_redux__WEBPACK_IMPORTED_MODULE_2__.useDispatch)();
+  const {
+    backTo
+  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_2__.useSelector)(state => state.section);
   (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
-    dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_3__.setOrderDate)(startDate.toISOString()));
-  }, [dispatch]);
-  console.log(errorMessage);
+    if (!backTo || backTo !== _features_section_sectionConstants__WEBPACK_IMPORTED_MODULE_5__.ORDER_DESCRIPTION && backTo !== _features_section_sectionConstants__WEBPACK_IMPORTED_MODULE_5__.DATE_AND_TIME) {
+      dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_3__.setOrderDate)(startDate.toISOString()));
+    }
+  }, [dispatch, backTo]);
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
     className: "text-2xl"
   }, "Pickup a Date And Time")), errorMessage && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
@@ -12723,7 +12867,10 @@ const DateAndTime = () => {
   }, "Frequency"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_Frequency__WEBPACK_IMPORTED_MODULE_6__["default"], null)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "flex flex-row justify-between items-center my-5"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    onClick: e => dispatch((0,_features_section_sectionSlice__WEBPACK_IMPORTED_MODULE_4__.setSection)(_features_section_sectionConstants__WEBPACK_IMPORTED_MODULE_5__.CHOOSE_SERVICE)),
+    onClick: e => {
+      dispatch((0,_features_section_sectionSlice__WEBPACK_IMPORTED_MODULE_4__.setBackTo)(_features_section_sectionConstants__WEBPACK_IMPORTED_MODULE_5__.CHOOSE_SERVICE));
+      dispatch((0,_features_section_sectionSlice__WEBPACK_IMPORTED_MODULE_4__.setSection)(_features_section_sectionConstants__WEBPACK_IMPORTED_MODULE_5__.CHOOSE_SERVICE));
+    },
     type: "button",
     className: "inline-flex justify-center rounded-md border-2 border-color-accent  px-5 py-1 text-lg font-medium text-color-accent hover:bg-yellow-200  cursor-pointer"
   }, "Back"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -12811,7 +12958,10 @@ const OrderDescription = () => {
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("b", null, vehicle.type), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, "$", Number(vehicle.price).toFixed(2))))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "flex flex-row justify-between items-center my-5"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    onClick: e => dispatch((0,_features_section_sectionSlice__WEBPACK_IMPORTED_MODULE_5__.setSection)(_features_section_sectionConstants__WEBPACK_IMPORTED_MODULE_4__.DATE_AND_TIME)),
+    onClick: e => {
+      dispatch((0,_features_section_sectionSlice__WEBPACK_IMPORTED_MODULE_5__.setBackTo)(_features_section_sectionConstants__WEBPACK_IMPORTED_MODULE_4__.DATE_AND_TIME));
+      dispatch((0,_features_section_sectionSlice__WEBPACK_IMPORTED_MODULE_5__.setSection)(_features_section_sectionConstants__WEBPACK_IMPORTED_MODULE_4__.DATE_AND_TIME));
+    },
     type: "button",
     className: "inline-flex justify-center rounded-md border-2 border-color-accent  px-5 py-1 text-lg font-medium text-color-accent hover:bg-yellow-200  cursor-pointer"
   }, "Back"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -12860,7 +13010,11 @@ const PriceQuote = () => {
     className: " m-1"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "flex flex-row justify-between items-center border-b-2 border-gray-100 w-full "
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, "Vehicle Size: ", order.vehicleType), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, "$", order.vehicleTotal.toFixed(2))))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("b", {
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, "Vehicle Size: ", order.vehicleType), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, "$", order.vehicleTotal.toFixed(2)))), order.itemsTotal ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", {
+    className: " m-1"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "flex flex-row justify-between items-center border-b-2 border-gray-100 w-full "
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, "Items Total: "), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, "$", order.itemsTotal.toFixed(2)))) : ""), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("b", {
     className: "text-md text-color-accent"
   }, "Booking Details:"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("ul", {
     className: "divide-y text-sm"

@@ -5040,11 +5040,16 @@ const {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "decrementItemNumber": function() { return /* binding */ decrementItemNumber; },
+/* harmony export */   "deleteItem": function() { return /* binding */ deleteItem; },
+/* harmony export */   "incrementItemNumber": function() { return /* binding */ incrementItemNumber; },
 /* harmony export */   "reset": function() { return /* binding */ reset; },
 /* harmony export */   "restOrderTotal": function() { return /* binding */ restOrderTotal; },
 /* harmony export */   "setFrequency": function() { return /* binding */ setFrequency; },
+/* harmony export */   "setItemsTotal": function() { return /* binding */ setItemsTotal; },
 /* harmony export */   "setOrder": function() { return /* binding */ setOrder; },
 /* harmony export */   "setOrderDate": function() { return /* binding */ setOrderDate; },
+/* harmony export */   "setOrderItems": function() { return /* binding */ setOrderItems; },
 /* harmony export */   "setOrderService": function() { return /* binding */ setOrderService; },
 /* harmony export */   "setOrderServicePrice": function() { return /* binding */ setOrderServicePrice; },
 /* harmony export */   "setOrderVehicleTotal": function() { return /* binding */ setOrderVehicleTotal; },
@@ -5064,6 +5069,8 @@ const initialState = {
     servicePrice: 0,
     date: null,
     frequency: null,
+    items: [],
+    itemsTotal: 0,
     vehicleType: null,
     vehicleTotal: 0,
     stairsNumber: 0,
@@ -5107,7 +5114,7 @@ const userOrderSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createSl
       state.order.servicePrice = action.payload;
     },
     restOrderTotal: (state, action) => {
-      state.order.total = state.order.service == "Dump Trailer" ? (state.order.servicePrice + state.order.stairsTotal + state.order.dismantlingTotal).toFixed(2) : (state.order.servicePrice + state.order.vehicleTotal + state.order.stairsTotal + state.order.dismantlingTotal).toFixed(2);
+      state.order.total = state.order.service == "Dump Trailer" ? (state.order.servicePrice + state.order.stairsTotal + state.order.dismantlingTotal + state.order.itemsTotal).toFixed(2) : (state.order.servicePrice + state.order.vehicleTotal + state.order.stairsTotal + state.order.dismantlingTotal + state.order.itemsTotal).toFixed(2);
     },
     setVehicleType: (state, action) => {
       state.order.vehicleType = action.payload;
@@ -5123,6 +5130,32 @@ const userOrderSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createSl
     },
     setFrequency: (state, action) => {
       state.order.frequency = action.payload.name;
+    },
+    setOrderItems: (state, action) => {
+      state.order.total = Number(state.order.total) + action.payload.total;
+      state.order.items.push(action.payload);
+    },
+    incrementItemNumber: (state, action) => {
+      const item = state.order.items.find(i => i.id === action.payload);
+      item.number += 1;
+      item.total = item.price * item.number;
+    },
+    decrementItemNumber: (state, action) => {
+      const item = state.order.items.find(i => i.id === action.payload);
+
+      if (item.number > 0) {
+        item.number -= 1;
+        item.total = item.price * item.number;
+      }
+    },
+    deleteItem: (state, action) => {
+      const item = state.order.items.find(i => i.id === action.payload);
+      state.order.items = state.order.items.filter(i => i.id !== item.id);
+    },
+    setItemsTotal: (state, action) => {
+      state.order.itemsTotal = state.order.items.reduce((sum, item) => {
+        return sum + item.total;
+      }, 0);
     }
   },
   extraReducers: builder => {
@@ -5156,7 +5189,12 @@ const {
   setOrderVehicleTotal,
   setorderAddress,
   setOrderDate,
-  setFrequency
+  setFrequency,
+  setOrderItems,
+  incrementItemNumber,
+  decrementItemNumber,
+  deleteItem,
+  setItemsTotal
 } = userOrderSlice.actions;
 /* harmony default export */ __webpack_exports__["default"] = (userOrderSlice.reducer);
 
@@ -5195,6 +5233,7 @@ const REVIEW_YOUR_ORDER = "REVIEW_YOUR_ORDER";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "sectionSlice": function() { return /* binding */ sectionSlice; },
+/* harmony export */   "setBackTo": function() { return /* binding */ setBackTo; },
 /* harmony export */   "setSection": function() { return /* binding */ setSection; }
 /* harmony export */ });
 /* harmony import */ var _reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @reduxjs/toolkit */ "./node_modules/@reduxjs/toolkit/dist/redux-toolkit.esm.js");
@@ -5202,8 +5241,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const initialState = {
-  section: _sectionConstants__WEBPACK_IMPORTED_MODULE_0__.CHOOSE_SERVICE // section: "ORDER_DESCRIPTION",
-
+  section: _sectionConstants__WEBPACK_IMPORTED_MODULE_0__.CHOOSE_SERVICE,
+  backTo: null
 };
 const sectionSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__.createSlice)({
   name: "frontend-section",
@@ -5211,11 +5250,15 @@ const sectionSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__.createSlic
   reducers: {
     setSection: (state, action) => {
       state.section = action.payload;
+    },
+    setBackTo: (state, action) => {
+      state.backTo = action.payload;
     }
   }
 });
 const {
-  setSection
+  setSection,
+  setBackTo
 } = sectionSlice.actions;
 /* harmony default export */ __webpack_exports__["default"] = (sectionSlice.reducer);
 
@@ -5260,7 +5303,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "getServiceItems": function() { return /* binding */ getServiceItems; },
 /* harmony export */   "reset": function() { return /* binding */ reset; },
-/* harmony export */   "serviceItemsSlice": function() { return /* binding */ serviceItemsSlice; }
+/* harmony export */   "serviceItemsSlice": function() { return /* binding */ serviceItemsSlice; },
+/* harmony export */   "setOptions": function() { return /* binding */ setOptions; }
 /* harmony export */ });
 /* harmony import */ var _reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @reduxjs/toolkit */ "./node_modules/@reduxjs/toolkit/dist/redux-toolkit.esm.js");
 /* harmony import */ var _serviceItemsService__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./serviceItemsService */ "./src/features/service-items/serviceItemsService.js");
@@ -5271,7 +5315,8 @@ const initialState = {
   isError: false,
   isSuccess: false,
   isLoading: false,
-  message: ""
+  message: "",
+  options: []
 }; //get service items
 
 const getServiceItems = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__.createAsyncThunk)("serviceItems/getServiceItems", async (__, thunkAPI) => {
@@ -5292,6 +5337,9 @@ const serviceItemsSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__.creat
       state.isSuccess = false;
       state.isLoading = false;
       state.message = "";
+    },
+    setOptions: (state, action) => {
+      state.options = action.payload;
     }
   },
   extraReducers: builder => {
@@ -5310,7 +5358,8 @@ const serviceItemsSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__.creat
   }
 });
 const {
-  reset
+  reset,
+  setOptions
 } = serviceItemsSlice.actions;
 /* harmony default export */ __webpack_exports__["default"] = (serviceItemsSlice.reducer);
 

@@ -19,7 +19,10 @@ import {
 } from "../../features/orders/userOrderSlice";
 import { getVehicles } from "../../features/vehicles/vehiclesSlice";
 import { setSection } from "../../features/section/sectionSlice";
-import { DATE_AND_TIME } from "../../features/section/sectionConstants";
+import {
+	CHOOSE_SERVICE,
+	DATE_AND_TIME,
+} from "../../features/section/sectionConstants";
 
 const ChooseService = () => {
 	const [errorMessage, setErrorMessage] = useState(null);
@@ -35,16 +38,19 @@ const ChooseService = () => {
 	const { vehicles, isSuccess: isSuccessVehicles } = useSelector(
 		(state) => state.vehicles
 	);
-
+	const { backTo } = useSelector((state) => state.section);
 	useEffect(() => {
-		dispatch(getServices());
-		dispatch(getVehicles());
-	}, [dispatch]);
+		if (!backTo || backTo !== CHOOSE_SERVICE) {
+			dispatch(getServices());
+			dispatch(getVehicles());
+		}
+	}, [dispatch, backTo]);
 	useEffect(() => {
 		if (isSuccessVehicles && isSuccessServices) {
-			dispatch(setOrder({ ...order }));
+			if (!backTo || backTo !== CHOOSE_SERVICE)
+				dispatch(setOrder({ ...order }));
 		}
-	}, [dispatch, isSuccessVehicles, isSuccessServices]);
+	}, [dispatch, isSuccessVehicles, isSuccessServices, backTo]);
 
 	return (
 		<div className="pb-20">

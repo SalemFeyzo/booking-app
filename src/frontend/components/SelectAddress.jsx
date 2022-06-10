@@ -12,6 +12,7 @@ import {
 	restOrderTotal,
 	setorderAddress,
 } from "../../features/orders/userOrderSlice";
+import { CHOOSE_SERVICE } from "../../features/section/sectionConstants";
 
 const SelectAddress = ({ errorMessage, setErrorMessage }) => {
 	const [value, setValue] = useState(null);
@@ -84,10 +85,10 @@ const SelectAddress = ({ errorMessage, setErrorMessage }) => {
 	const { addresses, isLoading, isSuccess, isError, message, selectedAddress } =
 		useSelector((state) => state.addresses);
 	const { selectedService } = useSelector((state) => state.services);
-
+	const { backTo } = useSelector((state) => state.section);
 	useEffect(() => {
-		dispatch(getAddresses());
-	}, [dispatch]);
+		if (!backTo || backTo !== CHOOSE_SERVICE) dispatch(getAddresses());
+	}, [dispatch, backTo]);
 
 	const selectOrderAddress = (option) => {
 		setValue(option);

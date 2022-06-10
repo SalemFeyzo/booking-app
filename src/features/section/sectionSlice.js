@@ -3,7 +3,7 @@ import { CHOOSE_SERVICE } from "./sectionConstants";
 
 const initialState = {
 	section: CHOOSE_SERVICE,
-	// section: "ORDER_DESCRIPTION",
+	backTo: null,
 };
 
 export const sectionSlice = createSlice({
@@ -13,8 +13,11 @@ export const sectionSlice = createSlice({
 		setSection: (state, action) => {
 			state.section = action.payload;
 		},
+		setBackTo: (state, action) => {
+			state.backTo = action.payload;
+		},
 	},
 });
 
-export const { setSection } = sectionSlice.actions;
+export const { setSection, setBackTo } = sectionSlice.actions;
 export default sectionSlice.reducer;

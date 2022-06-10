@@ -10,6 +10,8 @@ const initialState = {
 		servicePrice: 0,
 		date: null,
 		frequency: null,
+		items: [],
+		itemsTotal: 0,
 		vehicleType: null,
 		vehicleTotal: 0,
 		stairsNumber: 0,
@@ -62,13 +64,15 @@ export const userOrderSlice = createSlice({
 					? (
 							state.order.servicePrice +
 							state.order.stairsTotal +
-							state.order.dismantlingTotal
+							state.order.dismantlingTotal +
+							state.order.itemsTotal
 					  ).toFixed(2)
 					: (
 							state.order.servicePrice +
 							state.order.vehicleTotal +
 							state.order.stairsTotal +
-							state.order.dismantlingTotal
+							state.order.dismantlingTotal +
+							state.order.itemsTotal
 					  ).toFixed(2);
 		},
 		setVehicleType: (state, action) => {
@@ -85,6 +89,32 @@ export const userOrderSlice = createSlice({
 		},
 		setFrequency: (state, action) => {
 			state.order.frequency = action.payload.name;
+		},
+		setOrderItems: (state, action) => {
+			state.order.total = Number(state.order.total) + action.payload.total;
+			state.order.items.push(action.payload);
+		},
+		incrementItemNumber: (state, action) => {
+			const item = state.order.items.find((i) => i.id === action.payload);
+			item.number += 1;
+			item.total = item.price * item.number;
+		},
+		decrementItemNumber: (state, action) => {
+			const item = state.order.items.find((i) => i.id === action.payload);
+
+			if (item.number > 0) {
+				item.number -= 1;
+				item.total = item.price * item.number;
+			}
+		},
+		deleteItem: (state, action) => {
+			const item = state.order.items.find((i) => i.id === action.payload);
+			state.order.items = state.order.items.filter((i) => i.id !== item.id);
+		},
+		setItemsTotal: (state, action) => {
+			state.order.itemsTotal = state.order.items.reduce((sum, item) => {
+				return sum + item.total;
+			}, 0);
 		},
 	},
 	extraReducers: (builder) => {
@@ -135,5 +165,10 @@ export const {
 	setorderAddress,
 	setOrderDate,
 	setFrequency,
+	setOrderItems,
+	incrementItemNumber,
+	decrementItemNumber,
+	deleteItem,
+	setItemsTotal,
 } = userOrderSlice.actions;
 export default userOrderSlice.reducer;

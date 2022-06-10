@@ -25,6 +25,16 @@ const PriceQuote = () => {
 							</div>
 						</li>
 					)}
+					{order.itemsTotal ? (
+						<li className=" m-1">
+							<div className="flex flex-row justify-between items-center border-b-2 border-gray-100 w-full ">
+								<span>Items Total: </span>
+								<span>${order.itemsTotal.toFixed(2)}</span>
+							</div>
+						</li>
+					) : (
+						""
+					)}
 				</ul>
 				<li>
 					<b className="text-md text-color-accent">Booking Details:</b>

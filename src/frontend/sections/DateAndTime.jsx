@@ -4,10 +4,11 @@ import setHours from "date-fns/setHours";
 import setMinutes from "date-fns/setMinutes";
 import { useDispatch, useSelector } from "react-redux";
 import { setOrderDate } from "../../features/orders/userOrderSlice";
-import { setSection } from "../../features/section/sectionSlice";
+import { setBackTo, setSection } from "../../features/section/sectionSlice";
 import {
 	CHOOSE_SERVICE,
 	ORDER_DESCRIPTION,
+	DATE_AND_TIME,
 } from "../../features/section/sectionConstants";
 import Frequency from "../components/Frequency";
 
@@ -17,11 +18,14 @@ const DateAndTime = () => {
 	);
 	const [errorMessage, setErrorMessage] = useState(null);
 	const dispatch = useDispatch();
+	const { backTo } = useSelector((state) => state.section);
 
 	useEffect(() => {
-		dispatch(setOrderDate(startDate.toISOString()));
-	}, [dispatch]);
-	console.log(errorMessage);
+		if (!backTo || (backTo !== ORDER_DESCRIPTION && backTo !== DATE_AND_TIME)) {
+			dispatch(setOrderDate(startDate.toISOString()));
+		}
+	}, [dispatch, backTo]);
+
 	return (
 		<div>
 			<div>
@@ -62,7 +66,10 @@ const DateAndTime = () => {
 			</div>
 			<div className="flex flex-row justify-between items-center my-5">
 				<div
-					onClick={(e) => dispatch(setSection(CHOOSE_SERVICE))}
+					onClick={(e) => {
+						dispatch(setBackTo(CHOOSE_SERVICE));
+						dispatch(setSection(CHOOSE_SERVICE));
+					}}
 					type="button"
 					className="inline-flex justify-center rounded-md border-2 border-color-accent  px-5 py-1 text-lg font-medium text-color-accent hover:bg-yellow-200  cursor-pointer"
 				>

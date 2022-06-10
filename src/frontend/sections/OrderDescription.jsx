@@ -5,7 +5,7 @@ import {
 	DATE_AND_TIME,
 	CONTACT_INFO,
 } from "../../features/section/sectionConstants";
-import { setSection } from "../../features/section/sectionSlice";
+import { setBackTo, setSection } from "../../features/section/sectionSlice";
 import SelectItem from "../components/SelectItem";
 import {
 	restOrderTotal,
@@ -74,7 +74,10 @@ const OrderDescription = () => {
 			</div>
 			<div className="flex flex-row justify-between items-center my-5">
 				<div
-					onClick={(e) => dispatch(setSection(DATE_AND_TIME))}
+					onClick={(e) => {
+						dispatch(setBackTo(DATE_AND_TIME));
+						dispatch(setSection(DATE_AND_TIME));
+					}}
 					type="button"
 					className="inline-flex justify-center rounded-md border-2 border-color-accent  px-5 py-1 text-lg font-medium text-color-accent hover:bg-yellow-200  cursor-pointer"
 				>

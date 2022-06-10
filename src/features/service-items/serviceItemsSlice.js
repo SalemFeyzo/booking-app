@@ -7,6 +7,7 @@ const initialState = {
 	isSuccess: false,
 	isLoading: false,
 	message: "",
+	options: [],
 };
 
 //get service items
@@ -39,6 +40,9 @@ export const serviceItemsSlice = createSlice({
 			state.isLoading = false;
 			state.message = "";
 		},
+		setOptions: (state, action) => {
+			state.options = action.payload;
+		},
 	},
 	extraReducers: (builder) => {
 		builder
@@ -59,5 +63,5 @@ export const serviceItemsSlice = createSlice({
 	},
 });
 
-export const { reset } = serviceItemsSlice.actions;
+export const { reset, setOptions } = serviceItemsSlice.actions;
 export default serviceItemsSlice.reducer;
