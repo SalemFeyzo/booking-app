@@ -1334,6 +1334,9 @@ Ensure the default browser behavior of the `hidden` attribute.
 .h-\[15rem\] {
   height: 15rem;
 }
+.h-60 {
+  height: 15rem;
+}
 .min-h-full {
   min-height: 100%;
 }
@@ -1837,6 +1840,15 @@ body .wp-block-file .wp-block-file__button:focus {
 .hover\:bg-gray-100:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(243 244 246 / var(--tw-bg-opacity));
+}
+
+.focus\:border-2:focus {
+  border-width: 2px;
+}
+
+.focus\:border-color-accent:focus {
+  --tw-border-opacity: 1;
+  border-color: rgb(232 169 1 / var(--tw-border-opacity));
 }
 
 .focus\:outline-none:focus {

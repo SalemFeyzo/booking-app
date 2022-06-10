@@ -11241,6 +11241,99 @@ const {
 
 /***/ }),
 
+/***/ "./src/features/dismantling/dismantlingService.js":
+/*!********************************************************!*\
+  !*** ./src/features/dismantling/dismantlingService.js ***!
+  \********************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _API_URL__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../API_URL */ "./src/features/API_URL.js");
+
+
+
+const getDismantling = async () => {
+  const {
+    data
+  } = await axios__WEBPACK_IMPORTED_MODULE_0___default().get(`${_API_URL__WEBPACK_IMPORTED_MODULE_1__.API_URL}/dismantling`);
+  return data;
+};
+
+const dismantlingService = {
+  getDismantling
+};
+/* harmony default export */ __webpack_exports__["default"] = (dismantlingService);
+
+/***/ }),
+
+/***/ "./src/features/dismantling/dismantlingSlice.js":
+/*!******************************************************!*\
+  !*** ./src/features/dismantling/dismantlingSlice.js ***!
+  \******************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "getDismantlingPrice": function() { return /* binding */ getDismantlingPrice; },
+/* harmony export */   "ordersSlice": function() { return /* binding */ ordersSlice; },
+/* harmony export */   "reset": function() { return /* binding */ reset; }
+/* harmony export */ });
+/* harmony import */ var _reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @reduxjs/toolkit */ "./node_modules/@reduxjs/toolkit/dist/redux-toolkit.esm.js");
+/* harmony import */ var _dismantlingService__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./dismantlingService */ "./src/features/dismantling/dismantlingService.js");
+
+
+const initialState = {
+  dismantlingPrice: null,
+  isError: false,
+  isSuccess: false,
+  isLoading: false,
+  message: ""
+};
+const getDismantlingPrice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__.createAsyncThunk)("dismantling/getDismantlingPrice", async (__, thunkAPI) => {
+  try {
+    return await _dismantlingService__WEBPACK_IMPORTED_MODULE_0__["default"].getDismantling();
+  } catch (error) {
+    const message = error.response && error.response.data && error.response.data.message || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+const ordersSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__.createSlice)({
+  name: "dismantling",
+  initialState,
+  reducers: {
+    reset: state => {
+      state.isError = false;
+      state.isSuccess = false;
+      state.isLoading = false;
+      state.message = "";
+    }
+  },
+  extraReducers: builder => {
+    builder.addCase(getDismantlingPrice.pending, state => {
+      state.isLoading = true;
+    }).addCase(getDismantlingPrice.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.isSuccess = true;
+      state.dismantlingPrice = Number(action.payload[0].price);
+    }).addCase(getDismantlingPrice.rejected, (state, action) => {
+      state.isLoading = false;
+      state.isError = true;
+      state.message = action.payload;
+      state.dismantlingPrice = null;
+    });
+  }
+});
+const {
+  reset
+} = ordersSlice.actions;
+/* harmony default export */ __webpack_exports__["default"] = (ordersSlice.reducer);
+
+/***/ }),
+
 /***/ "./src/features/orders/ordersService.js":
 /*!**********************************************!*\
   !*** ./src/features/orders/ordersService.js ***!
@@ -11346,11 +11439,16 @@ const {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "decrementDismantlingNumber": function() { return /* binding */ decrementDismantlingNumber; },
 /* harmony export */   "decrementItemNumber": function() { return /* binding */ decrementItemNumber; },
+/* harmony export */   "decrementStairsNumber": function() { return /* binding */ decrementStairsNumber; },
 /* harmony export */   "deleteItem": function() { return /* binding */ deleteItem; },
+/* harmony export */   "incrementDismantlingNumber": function() { return /* binding */ incrementDismantlingNumber; },
 /* harmony export */   "incrementItemNumber": function() { return /* binding */ incrementItemNumber; },
+/* harmony export */   "incrementStairsNumber": function() { return /* binding */ incrementStairsNumber; },
 /* harmony export */   "reset": function() { return /* binding */ reset; },
 /* harmony export */   "restOrderTotal": function() { return /* binding */ restOrderTotal; },
+/* harmony export */   "setDismantlingTotal": function() { return /* binding */ setDismantlingTotal; },
 /* harmony export */   "setFrequency": function() { return /* binding */ setFrequency; },
 /* harmony export */   "setItemsTotal": function() { return /* binding */ setItemsTotal; },
 /* harmony export */   "setOrder": function() { return /* binding */ setOrder; },
@@ -11359,6 +11457,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "setOrderService": function() { return /* binding */ setOrderService; },
 /* harmony export */   "setOrderServicePrice": function() { return /* binding */ setOrderServicePrice; },
 /* harmony export */   "setOrderVehicleTotal": function() { return /* binding */ setOrderVehicleTotal; },
+/* harmony export */   "setStairsTotal": function() { return /* binding */ setStairsTotal; },
 /* harmony export */   "setVehicleType": function() { return /* binding */ setVehicleType; },
 /* harmony export */   "setorderAddress": function() { return /* binding */ setorderAddress; },
 /* harmony export */   "userOrderSlice": function() { return /* binding */ userOrderSlice; }
@@ -11462,6 +11561,28 @@ const userOrderSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createSl
       state.order.itemsTotal = state.order.items.reduce((sum, item) => {
         return sum + item.total;
       }, 0);
+    },
+    setDismantlingTotal: (state, action) => {
+      state.order.dismantlingTotal = action.payload * state.order.dismantlingNumber;
+    },
+    setStairsTotal: (state, action) => {
+      state.order.stairsTotal = action.payload * state.order.stairsNumber;
+    },
+    incrementStairsNumber: state => {
+      state.order.stairsNumber += 1;
+    },
+    decrementStairsNumber: state => {
+      if (state.order.stairsNumber > 0) {
+        state.order.stairsNumber -= 1;
+      }
+    },
+    incrementDismantlingNumber: state => {
+      state.order.dismantlingNumber += 1;
+    },
+    decrementDismantlingNumber: state => {
+      if (state.order.dismantlingNumber > 0) {
+        state.order.dismantlingNumber -= 1;
+      }
     }
   },
   extraReducers: builder => {
@@ -11500,7 +11621,13 @@ const {
   incrementItemNumber,
   decrementItemNumber,
   deleteItem,
-  setItemsTotal
+  setItemsTotal,
+  setDismantlingTotal,
+  setStairsTotal,
+  incrementDismantlingNumber,
+  decrementDismantlingNumber,
+  incrementStairsNumber,
+  decrementStairsNumber
 } = userOrderSlice.actions;
 /* harmony default export */ __webpack_exports__["default"] = (userOrderSlice.reducer);
 
@@ -11801,6 +11928,99 @@ const servicesService = {
 
 /***/ }),
 
+/***/ "./src/features/stairs/stairsService.js":
+/*!**********************************************!*\
+  !*** ./src/features/stairs/stairsService.js ***!
+  \**********************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _API_URL__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../API_URL */ "./src/features/API_URL.js");
+
+
+
+const getStairs = async () => {
+  const {
+    data
+  } = await axios__WEBPACK_IMPORTED_MODULE_0___default().get(`${_API_URL__WEBPACK_IMPORTED_MODULE_1__.API_URL}/stairs`);
+  return data;
+};
+
+const stairsService = {
+  getStairs
+};
+/* harmony default export */ __webpack_exports__["default"] = (stairsService);
+
+/***/ }),
+
+/***/ "./src/features/stairs/stairsSlice.js":
+/*!********************************************!*\
+  !*** ./src/features/stairs/stairsSlice.js ***!
+  \********************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "getStairsPrice": function() { return /* binding */ getStairsPrice; },
+/* harmony export */   "ordersSlice": function() { return /* binding */ ordersSlice; },
+/* harmony export */   "reset": function() { return /* binding */ reset; }
+/* harmony export */ });
+/* harmony import */ var _reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @reduxjs/toolkit */ "./node_modules/@reduxjs/toolkit/dist/redux-toolkit.esm.js");
+/* harmony import */ var _stairsService__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./stairsService */ "./src/features/stairs/stairsService.js");
+
+
+const initialState = {
+  stairsPrice: null,
+  isError: false,
+  isSuccess: false,
+  isLoading: false,
+  message: ""
+};
+const getStairsPrice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__.createAsyncThunk)("stairs/getStairsPrice", async (__, thunkAPI) => {
+  try {
+    return await _stairsService__WEBPACK_IMPORTED_MODULE_0__["default"].getStairs();
+  } catch (error) {
+    const message = error.response && error.response.data && error.response.data.message || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+const ordersSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__.createSlice)({
+  name: "stairs",
+  initialState,
+  reducers: {
+    reset: state => {
+      state.isError = false;
+      state.isSuccess = false;
+      state.isLoading = false;
+      state.message = "";
+    }
+  },
+  extraReducers: builder => {
+    builder.addCase(getStairsPrice.pending, state => {
+      state.isLoading = true;
+    }).addCase(getStairsPrice.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.isSuccess = true;
+      state.stairsPrice = Number(action.payload[0].price);
+    }).addCase(getStairsPrice.rejected, (state, action) => {
+      state.isLoading = false;
+      state.isError = true;
+      state.message = action.payload;
+      state.stairsPrice = null;
+    });
+  }
+});
+const {
+  reset
+} = ordersSlice.actions;
+/* harmony default export */ __webpack_exports__["default"] = (ordersSlice.reducer);
+
+/***/ }),
+
 /***/ "./src/features/vehicles/vehiclesService.js":
 /*!**************************************************!*\
   !*** ./src/features/vehicles/vehiclesService.js ***!
@@ -12018,6 +12238,106 @@ const App = () => {
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (App);
+
+/***/ }),
+
+/***/ "./src/frontend/components/DismantlingAndStairs.jsx":
+/*!**********************************************************!*\
+  !*** ./src/frontend/components/DismantlingAndStairs.jsx ***!
+  \**********************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var react_icons_fa__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react-icons/fa */ "./node_modules/react-icons/fa/index.esm.js");
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
+/* harmony import */ var _features_section_sectionConstants__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../features/section/sectionConstants */ "./src/features/section/sectionConstants.js");
+/* harmony import */ var _features_dismantling_dismantlingSlice__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../features/dismantling/dismantlingSlice */ "./src/features/dismantling/dismantlingSlice.js");
+/* harmony import */ var _features_stairs_stairsSlice__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../features/stairs/stairsSlice */ "./src/features/stairs/stairsSlice.js");
+/* harmony import */ var _features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../features/orders/userOrderSlice */ "./src/features/orders/userOrderSlice.js");
+
+
+
+
+
+
+
+
+
+
+const DismantlingAndStairs = () => {
+  const dispatch = (0,react_redux__WEBPACK_IMPORTED_MODULE_2__.useDispatch)();
+  const {
+    backTo
+  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_2__.useSelector)(state => state.section);
+  const {
+    dismantlingPrice
+  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_2__.useSelector)(state => state.dismantling);
+  const {
+    stairsPrice
+  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_2__.useSelector)(state => state.stairs);
+  const {
+    order
+  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_2__.useSelector)(state => state.userOrder);
+  (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
+    if (!backTo || backTo !== _features_section_sectionConstants__WEBPACK_IMPORTED_MODULE_3__.ORDER_DESCRIPTION && backTo !== _features_section_sectionConstants__WEBPACK_IMPORTED_MODULE_3__.DATE_AND_TIME) {
+      dispatch((0,_features_dismantling_dismantlingSlice__WEBPACK_IMPORTED_MODULE_4__.getDismantlingPrice)());
+      dispatch((0,_features_stairs_stairsSlice__WEBPACK_IMPORTED_MODULE_5__.getStairsPrice)());
+    }
+  }, [dispatch, backTo]);
+  console.log(typeof stairsPrice);
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "text-2xl"
+  }, "Stairs"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Does the provider need to climb stairs?"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "flex flex-col justify-between items-center border-2 my-2 border-gray-200 rounded-md p-4 md:flex-row gap-3 shadow-md"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "w-full md:w-[70%]"
+  }, "$", stairsPrice, " per flight"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "flex flex-row justify-center items-center w-full gap-5 md:w-[30%] md:justify-between md:gap-0"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, "Total: $", order.stairsTotal), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "text-xl text-color-accent cursor-pointer",
+    onClick: e => {
+      dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_6__.decrementStairsNumber)());
+      dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_6__.setStairsTotal)(stairsPrice));
+      dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_6__.restOrderTotal)());
+    }
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_7__.FaMinusCircle, null)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, order.stairsNumber), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "text-xl text-color-accent cursor-pointer",
+    onClick: e => {
+      dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_6__.incrementStairsNumber)());
+      dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_6__.setStairsTotal)(stairsPrice));
+      dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_6__.restOrderTotal)());
+    }
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_7__.FaPlusCircle, null)))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "text-2xl"
+  }, "Dismantling"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Does one of your items require dismantling?"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "flex flex-col justify-between items-center border-2 my-2 border-gray-200 rounded-md p-4 md:flex-row gap-3 shadow-md"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "w-full md:w-[70%]"
+  }, "$", dismantlingPrice, " per item"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "flex flex-row justify-center items-center w-full gap-5 md:w-[30%] md:justify-between md:gap-0"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, "Total: $", order.dismantlingTotal), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "text-xl text-color-accent cursor-pointer",
+    onClick: e => {
+      dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_6__.decrementDismantlingNumber)());
+      dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_6__.setDismantlingTotal)(dismantlingPrice));
+      dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_6__.restOrderTotal)());
+    }
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_7__.FaMinusCircle, null)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, order.dismantlingNumber), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "text-xl text-color-accent cursor-pointer",
+    onClick: e => {
+      dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_6__.incrementDismantlingNumber)());
+      dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_6__.setDismantlingTotal)(dismantlingPrice));
+      dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_6__.restOrderTotal)());
+    }
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_7__.FaPlusCircle, null)))));
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (DismantlingAndStairs);
 
 /***/ }),
 
@@ -12475,7 +12795,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
 const SelectItem = () => {
   const dispatch = (0,react_redux__WEBPACK_IMPORTED_MODULE_2__.useDispatch)();
   const {
@@ -12555,7 +12874,7 @@ const SelectItem = () => {
   }, i.name, " ($", i.price, " per item)"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "flex flex-row justify-center items-center w-full gap-5 md:w-[30%] md:justify-between md:gap-0"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, "Total: $", i.total), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
-    className: "text-xl text-red-500 cursor-pointer",
+    className: "text-xl text-color-accent cursor-pointer",
     onClick: e => {
       dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_3__.decrementItemNumber)(i.id));
 
@@ -12573,7 +12892,7 @@ const SelectItem = () => {
       dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_3__.restOrderTotal)());
     }
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_8__.FaMinusCircle, null)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, i.number), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
-    className: "text-xl text-green-500 cursor-pointer",
+    className: "text-xl text-color-accent cursor-pointer",
     onClick: e => {
       dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_3__.incrementItemNumber)(i.id));
       dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_3__.setItemsTotal)());
@@ -12590,7 +12909,7 @@ const SelectItem = () => {
       dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_3__.setItemsTotal)());
       dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_3__.restOrderTotal)());
     }
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_8__.FaTrash, null))))))));
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_8__.FaRegTrashAlt, null))))))));
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (SelectItem);
@@ -12910,6 +13229,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _features_section_sectionSlice__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../features/section/sectionSlice */ "./src/features/section/sectionSlice.js");
 /* harmony import */ var _components_SelectItem__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../components/SelectItem */ "./src/frontend/components/SelectItem.jsx");
 /* harmony import */ var _features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../features/orders/userOrderSlice */ "./src/features/orders/userOrderSlice.js");
+/* harmony import */ var _components_DismantlingAndStairs__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../components/DismantlingAndStairs */ "./src/frontend/components/DismantlingAndStairs.jsx");
+
 
 
 
@@ -12955,7 +13276,15 @@ const OrderDescription = () => {
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("img", {
     src: vehicle.vehicle_id === "1" ? _assets_pickup_svg__WEBPACK_IMPORTED_MODULE_2__["default"] : _assets_truck_svg__WEBPACK_IMPORTED_MODULE_3__["default"],
     alt: vehicle.type
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("b", null, vehicle.type), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, "$", Number(vehicle.price).toFixed(2))))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("b", null, vehicle.type), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, "$", Number(vehicle.price).toFixed(2))))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_DismantlingAndStairs__WEBPACK_IMPORTED_MODULE_8__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "text-2xl"
+  }, "Tell us a bit more"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("textarea", {
+    className: "w-full p-2 rounded-md border-2 border-gray-200 shadow-md focus:border-2 focus:border-color-accent",
+    placeholder: `For example, "1x king-sized mattress that will be located inside the garage", "4x trash bags of food, cardboard, and general house trash will be located on the front lawn." 
+Note: Items you wish to be removed must be itemized and added to the dropdown list of "pickup type" above. If you cannot find an item from the dropdown list, please choose "unlisted" in the dropdown menu, and describe them in this box.`,
+    rows: "7",
+    cols: "50"
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "flex flex-row justify-between items-center my-5"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     onClick: e => {
@@ -13076,7 +13405,7 @@ const ReviewYourOrder = () => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @reduxjs/toolkit */ "./node_modules/@reduxjs/toolkit/dist/redux-toolkit.esm.js");
+/* harmony import */ var _reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @reduxjs/toolkit */ "./node_modules/@reduxjs/toolkit/dist/redux-toolkit.esm.js");
 /* harmony import */ var _features_orders_ordersSlice__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./features/orders/ordersSlice */ "./src/features/orders/ordersSlice.js");
 /* harmony import */ var _features_backend_pages_pagesSlice__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./features/backend-pages/pagesSlice */ "./src/features/backend-pages/pagesSlice.js");
 /* harmony import */ var _features_services_serviceSlice__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./features/services/serviceSlice */ "./src/features/services/serviceSlice.js");
@@ -13085,6 +13414,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _features_addresses_addressesSlice__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./features/addresses/addressesSlice */ "./src/features/addresses/addressesSlice.js");
 /* harmony import */ var _features_section_sectionSlice__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./features/section/sectionSlice */ "./src/features/section/sectionSlice.js");
 /* harmony import */ var _features_service_items_serviceItemsSlice__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./features/service-items/serviceItemsSlice */ "./src/features/service-items/serviceItemsSlice.js");
+/* harmony import */ var _features_dismantling_dismantlingSlice__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./features/dismantling/dismantlingSlice */ "./src/features/dismantling/dismantlingSlice.js");
+/* harmony import */ var _features_stairs_stairsSlice__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./features/stairs/stairsSlice */ "./src/features/stairs/stairsSlice.js");
 
 
 
@@ -13094,7 +13425,9 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const store = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_8__.configureStore)({
+
+
+const store = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_10__.configureStore)({
   reducer: {
     orders: _features_orders_ordersSlice__WEBPACK_IMPORTED_MODULE_0__["default"],
     backendPage: _features_backend_pages_pagesSlice__WEBPACK_IMPORTED_MODULE_1__["default"],
@@ -13103,7 +13436,9 @@ const store = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_8__.configureStore)({
     vehicles: _features_vehicles_vehiclesSlice__WEBPACK_IMPORTED_MODULE_4__["default"],
     addresses: _features_addresses_addressesSlice__WEBPACK_IMPORTED_MODULE_5__["default"],
     section: _features_section_sectionSlice__WEBPACK_IMPORTED_MODULE_6__["default"],
-    serviceItems: _features_service_items_serviceItemsSlice__WEBPACK_IMPORTED_MODULE_7__["default"]
+    serviceItems: _features_service_items_serviceItemsSlice__WEBPACK_IMPORTED_MODULE_7__["default"],
+    stairs: _features_stairs_stairsSlice__WEBPACK_IMPORTED_MODULE_9__["default"],
+    dismantling: _features_dismantling_dismantlingSlice__WEBPACK_IMPORTED_MODULE_8__["default"]
   }
 });
 /* harmony default export */ __webpack_exports__["default"] = (store);

@@ -116,6 +116,29 @@ export const userOrderSlice = createSlice({
 				return sum + item.total;
 			}, 0);
 		},
+		setDismantlingTotal: (state, action) => {
+			state.order.dismantlingTotal =
+				action.payload * state.order.dismantlingNumber;
+		},
+		setStairsTotal: (state, action) => {
+			state.order.stairsTotal = action.payload * state.order.stairsNumber;
+		},
+		incrementStairsNumber: (state) => {
+			state.order.stairsNumber += 1;
+		},
+		decrementStairsNumber: (state) => {
+			if (state.order.stairsNumber > 0) {
+				state.order.stairsNumber -= 1;
+			}
+		},
+		incrementDismantlingNumber: (state) => {
+			state.order.dismantlingNumber += 1;
+		},
+		decrementDismantlingNumber: (state) => {
+			if (state.order.dismantlingNumber > 0) {
+				state.order.dismantlingNumber -= 1;
+			}
+		},
 	},
 	extraReducers: (builder) => {
 		builder
@@ -170,5 +193,11 @@ export const {
 	decrementItemNumber,
 	deleteItem,
 	setItemsTotal,
+	setDismantlingTotal,
+	setStairsTotal,
+	incrementDismantlingNumber,
+	decrementDismantlingNumber,
+	incrementStairsNumber,
+	decrementStairsNumber,
 } = userOrderSlice.actions;
 export default userOrderSlice.reducer;

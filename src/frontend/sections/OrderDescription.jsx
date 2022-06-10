@@ -12,6 +12,7 @@ import {
 	setOrderVehicleTotal,
 	setVehicleType,
 } from "../../features/orders/userOrderSlice";
+import DismantlingAndStairs from "../components/DismantlingAndStairs";
 
 const OrderDescription = () => {
 	const dispatch = useDispatch();
@@ -72,6 +73,15 @@ const OrderDescription = () => {
 					</div>
 				))}
 			</div>
+			<DismantlingAndStairs />
+			<p className="text-2xl">Tell us a bit more</p>
+			<textarea
+				className="w-full p-2 rounded-md border-2 border-gray-200 shadow-md focus:border-2 focus:border-color-accent"
+				placeholder={`For example, "1x king-sized mattress that will be located inside the garage", "4x trash bags of food, cardboard, and general house trash will be located on the front lawn." 
+Note: Items you wish to be removed must be itemized and added to the dropdown list of "pickup type" above. If you cannot find an item from the dropdown list, please choose "unlisted" in the dropdown menu, and describe them in this box.`}
+				rows="7"
+				cols="50"
+			/>
 			<div className="flex flex-row justify-between items-center my-5">
 				<div
 					onClick={(e) => {

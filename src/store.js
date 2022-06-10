@@ -7,6 +7,8 @@ import vehiclesReducer from "./features/vehicles/vehiclesSlice";
 import addressesReducer from "./features/addresses/addressesSlice";
 import sectionReducer from "./features/section/sectionSlice";
 import serviceItemsReducer from "./features/service-items/serviceItemsSlice";
+import dismantlingReducer from "./features/dismantling/dismantlingSlice";
+import stairsReducer from "./features/stairs/stairsSlice";
 
 const store = configureStore({
 	reducer: {
@@ -18,6 +20,8 @@ const store = configureStore({
 		addresses: addressesReducer,
 		section: sectionReducer,
 		serviceItems: serviceItemsReducer,
+		stairs: stairsReducer,
+		dismantling: dismantlingReducer,
 	},
 });
 

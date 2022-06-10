@@ -4935,6 +4935,99 @@ const {
 
 /***/ }),
 
+/***/ "./src/features/dismantling/dismantlingService.js":
+/*!********************************************************!*\
+  !*** ./src/features/dismantling/dismantlingService.js ***!
+  \********************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _API_URL__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../API_URL */ "./src/features/API_URL.js");
+
+
+
+const getDismantling = async () => {
+  const {
+    data
+  } = await axios__WEBPACK_IMPORTED_MODULE_0___default().get(`${_API_URL__WEBPACK_IMPORTED_MODULE_1__.API_URL}/dismantling`);
+  return data;
+};
+
+const dismantlingService = {
+  getDismantling
+};
+/* harmony default export */ __webpack_exports__["default"] = (dismantlingService);
+
+/***/ }),
+
+/***/ "./src/features/dismantling/dismantlingSlice.js":
+/*!******************************************************!*\
+  !*** ./src/features/dismantling/dismantlingSlice.js ***!
+  \******************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "getDismantlingPrice": function() { return /* binding */ getDismantlingPrice; },
+/* harmony export */   "ordersSlice": function() { return /* binding */ ordersSlice; },
+/* harmony export */   "reset": function() { return /* binding */ reset; }
+/* harmony export */ });
+/* harmony import */ var _reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @reduxjs/toolkit */ "./node_modules/@reduxjs/toolkit/dist/redux-toolkit.esm.js");
+/* harmony import */ var _dismantlingService__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./dismantlingService */ "./src/features/dismantling/dismantlingService.js");
+
+
+const initialState = {
+  dismantlingPrice: null,
+  isError: false,
+  isSuccess: false,
+  isLoading: false,
+  message: ""
+};
+const getDismantlingPrice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__.createAsyncThunk)("dismantling/getDismantlingPrice", async (__, thunkAPI) => {
+  try {
+    return await _dismantlingService__WEBPACK_IMPORTED_MODULE_0__["default"].getDismantling();
+  } catch (error) {
+    const message = error.response && error.response.data && error.response.data.message || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+const ordersSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__.createSlice)({
+  name: "dismantling",
+  initialState,
+  reducers: {
+    reset: state => {
+      state.isError = false;
+      state.isSuccess = false;
+      state.isLoading = false;
+      state.message = "";
+    }
+  },
+  extraReducers: builder => {
+    builder.addCase(getDismantlingPrice.pending, state => {
+      state.isLoading = true;
+    }).addCase(getDismantlingPrice.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.isSuccess = true;
+      state.dismantlingPrice = Number(action.payload[0].price);
+    }).addCase(getDismantlingPrice.rejected, (state, action) => {
+      state.isLoading = false;
+      state.isError = true;
+      state.message = action.payload;
+      state.dismantlingPrice = null;
+    });
+  }
+});
+const {
+  reset
+} = ordersSlice.actions;
+/* harmony default export */ __webpack_exports__["default"] = (ordersSlice.reducer);
+
+/***/ }),
+
 /***/ "./src/features/orders/ordersService.js":
 /*!**********************************************!*\
   !*** ./src/features/orders/ordersService.js ***!
@@ -5040,11 +5133,16 @@ const {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "decrementDismantlingNumber": function() { return /* binding */ decrementDismantlingNumber; },
 /* harmony export */   "decrementItemNumber": function() { return /* binding */ decrementItemNumber; },
+/* harmony export */   "decrementStairsNumber": function() { return /* binding */ decrementStairsNumber; },
 /* harmony export */   "deleteItem": function() { return /* binding */ deleteItem; },
+/* harmony export */   "incrementDismantlingNumber": function() { return /* binding */ incrementDismantlingNumber; },
 /* harmony export */   "incrementItemNumber": function() { return /* binding */ incrementItemNumber; },
+/* harmony export */   "incrementStairsNumber": function() { return /* binding */ incrementStairsNumber; },
 /* harmony export */   "reset": function() { return /* binding */ reset; },
 /* harmony export */   "restOrderTotal": function() { return /* binding */ restOrderTotal; },
+/* harmony export */   "setDismantlingTotal": function() { return /* binding */ setDismantlingTotal; },
 /* harmony export */   "setFrequency": function() { return /* binding */ setFrequency; },
 /* harmony export */   "setItemsTotal": function() { return /* binding */ setItemsTotal; },
 /* harmony export */   "setOrder": function() { return /* binding */ setOrder; },
@@ -5053,6 +5151,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "setOrderService": function() { return /* binding */ setOrderService; },
 /* harmony export */   "setOrderServicePrice": function() { return /* binding */ setOrderServicePrice; },
 /* harmony export */   "setOrderVehicleTotal": function() { return /* binding */ setOrderVehicleTotal; },
+/* harmony export */   "setStairsTotal": function() { return /* binding */ setStairsTotal; },
 /* harmony export */   "setVehicleType": function() { return /* binding */ setVehicleType; },
 /* harmony export */   "setorderAddress": function() { return /* binding */ setorderAddress; },
 /* harmony export */   "userOrderSlice": function() { return /* binding */ userOrderSlice; }
@@ -5156,6 +5255,28 @@ const userOrderSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createSl
       state.order.itemsTotal = state.order.items.reduce((sum, item) => {
         return sum + item.total;
       }, 0);
+    },
+    setDismantlingTotal: (state, action) => {
+      state.order.dismantlingTotal = action.payload * state.order.dismantlingNumber;
+    },
+    setStairsTotal: (state, action) => {
+      state.order.stairsTotal = action.payload * state.order.stairsNumber;
+    },
+    incrementStairsNumber: state => {
+      state.order.stairsNumber += 1;
+    },
+    decrementStairsNumber: state => {
+      if (state.order.stairsNumber > 0) {
+        state.order.stairsNumber -= 1;
+      }
+    },
+    incrementDismantlingNumber: state => {
+      state.order.dismantlingNumber += 1;
+    },
+    decrementDismantlingNumber: state => {
+      if (state.order.dismantlingNumber > 0) {
+        state.order.dismantlingNumber -= 1;
+      }
     }
   },
   extraReducers: builder => {
@@ -5194,7 +5315,13 @@ const {
   incrementItemNumber,
   decrementItemNumber,
   deleteItem,
-  setItemsTotal
+  setItemsTotal,
+  setDismantlingTotal,
+  setStairsTotal,
+  incrementDismantlingNumber,
+  decrementDismantlingNumber,
+  incrementStairsNumber,
+  decrementStairsNumber
 } = userOrderSlice.actions;
 /* harmony default export */ __webpack_exports__["default"] = (userOrderSlice.reducer);
 
@@ -5495,6 +5622,99 @@ const servicesService = {
 
 /***/ }),
 
+/***/ "./src/features/stairs/stairsService.js":
+/*!**********************************************!*\
+  !*** ./src/features/stairs/stairsService.js ***!
+  \**********************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _API_URL__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../API_URL */ "./src/features/API_URL.js");
+
+
+
+const getStairs = async () => {
+  const {
+    data
+  } = await axios__WEBPACK_IMPORTED_MODULE_0___default().get(`${_API_URL__WEBPACK_IMPORTED_MODULE_1__.API_URL}/stairs`);
+  return data;
+};
+
+const stairsService = {
+  getStairs
+};
+/* harmony default export */ __webpack_exports__["default"] = (stairsService);
+
+/***/ }),
+
+/***/ "./src/features/stairs/stairsSlice.js":
+/*!********************************************!*\
+  !*** ./src/features/stairs/stairsSlice.js ***!
+  \********************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "getStairsPrice": function() { return /* binding */ getStairsPrice; },
+/* harmony export */   "ordersSlice": function() { return /* binding */ ordersSlice; },
+/* harmony export */   "reset": function() { return /* binding */ reset; }
+/* harmony export */ });
+/* harmony import */ var _reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @reduxjs/toolkit */ "./node_modules/@reduxjs/toolkit/dist/redux-toolkit.esm.js");
+/* harmony import */ var _stairsService__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./stairsService */ "./src/features/stairs/stairsService.js");
+
+
+const initialState = {
+  stairsPrice: null,
+  isError: false,
+  isSuccess: false,
+  isLoading: false,
+  message: ""
+};
+const getStairsPrice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__.createAsyncThunk)("stairs/getStairsPrice", async (__, thunkAPI) => {
+  try {
+    return await _stairsService__WEBPACK_IMPORTED_MODULE_0__["default"].getStairs();
+  } catch (error) {
+    const message = error.response && error.response.data && error.response.data.message || error.message || error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+const ordersSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_1__.createSlice)({
+  name: "stairs",
+  initialState,
+  reducers: {
+    reset: state => {
+      state.isError = false;
+      state.isSuccess = false;
+      state.isLoading = false;
+      state.message = "";
+    }
+  },
+  extraReducers: builder => {
+    builder.addCase(getStairsPrice.pending, state => {
+      state.isLoading = true;
+    }).addCase(getStairsPrice.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.isSuccess = true;
+      state.stairsPrice = Number(action.payload[0].price);
+    }).addCase(getStairsPrice.rejected, (state, action) => {
+      state.isLoading = false;
+      state.isError = true;
+      state.message = action.payload;
+      state.stairsPrice = null;
+    });
+  }
+});
+const {
+  reset
+} = ordersSlice.actions;
+/* harmony default export */ __webpack_exports__["default"] = (ordersSlice.reducer);
+
+/***/ }),
+
 /***/ "./src/features/vehicles/vehiclesService.js":
 /*!**************************************************!*\
   !*** ./src/features/vehicles/vehiclesService.js ***!
@@ -5597,7 +5817,7 @@ const {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @reduxjs/toolkit */ "./node_modules/@reduxjs/toolkit/dist/redux-toolkit.esm.js");
+/* harmony import */ var _reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @reduxjs/toolkit */ "./node_modules/@reduxjs/toolkit/dist/redux-toolkit.esm.js");
 /* harmony import */ var _features_orders_ordersSlice__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./features/orders/ordersSlice */ "./src/features/orders/ordersSlice.js");
 /* harmony import */ var _features_backend_pages_pagesSlice__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./features/backend-pages/pagesSlice */ "./src/features/backend-pages/pagesSlice.js");
 /* harmony import */ var _features_services_serviceSlice__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./features/services/serviceSlice */ "./src/features/services/serviceSlice.js");
@@ -5606,6 +5826,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _features_addresses_addressesSlice__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./features/addresses/addressesSlice */ "./src/features/addresses/addressesSlice.js");
 /* harmony import */ var _features_section_sectionSlice__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./features/section/sectionSlice */ "./src/features/section/sectionSlice.js");
 /* harmony import */ var _features_service_items_serviceItemsSlice__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./features/service-items/serviceItemsSlice */ "./src/features/service-items/serviceItemsSlice.js");
+/* harmony import */ var _features_dismantling_dismantlingSlice__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./features/dismantling/dismantlingSlice */ "./src/features/dismantling/dismantlingSlice.js");
+/* harmony import */ var _features_stairs_stairsSlice__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./features/stairs/stairsSlice */ "./src/features/stairs/stairsSlice.js");
 
 
 
@@ -5615,7 +5837,9 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const store = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_8__.configureStore)({
+
+
+const store = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_10__.configureStore)({
   reducer: {
     orders: _features_orders_ordersSlice__WEBPACK_IMPORTED_MODULE_0__["default"],
     backendPage: _features_backend_pages_pagesSlice__WEBPACK_IMPORTED_MODULE_1__["default"],
@@ -5624,7 +5848,9 @@ const store = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_8__.configureStore)({
     vehicles: _features_vehicles_vehiclesSlice__WEBPACK_IMPORTED_MODULE_4__["default"],
     addresses: _features_addresses_addressesSlice__WEBPACK_IMPORTED_MODULE_5__["default"],
     section: _features_section_sectionSlice__WEBPACK_IMPORTED_MODULE_6__["default"],
-    serviceItems: _features_service_items_serviceItemsSlice__WEBPACK_IMPORTED_MODULE_7__["default"]
+    serviceItems: _features_service_items_serviceItemsSlice__WEBPACK_IMPORTED_MODULE_7__["default"],
+    stairs: _features_stairs_stairsSlice__WEBPACK_IMPORTED_MODULE_9__["default"],
+    dismantling: _features_dismantling_dismantlingSlice__WEBPACK_IMPORTED_MODULE_8__["default"]
   }
 });
 /* harmony default export */ __webpack_exports__["default"] = (store);

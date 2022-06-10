@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Select from "react-select";
 import Skeleton from "react-loading-skeleton";
 import { useDispatch, useSelector } from "react-redux";
-import { FaMinusCircle, FaPlusCircle, FaTrash } from "react-icons/fa";
+import { FaMinusCircle, FaPlusCircle, FaRegTrashAlt } from "react-icons/fa";
 import {
 	restOrderTotal,
 	setOrderItems,
@@ -19,7 +19,6 @@ import {
 	DATE_AND_TIME,
 	ORDER_DESCRIPTION,
 } from "../../features/section/sectionConstants";
-import { Transition } from "@headlessui/react";
 
 const SelectItem = () => {
 	const dispatch = useDispatch();
@@ -100,7 +99,7 @@ const SelectItem = () => {
 								<div className="flex flex-row justify-center items-center w-full gap-5 md:w-[30%] md:justify-between md:gap-0">
 									<span>Total: ${i.total}</span>
 									<span
-										className="text-xl text-red-500 cursor-pointer"
+										className="text-xl text-color-accent cursor-pointer"
 										onClick={(e) => {
 											dispatch(decrementItemNumber(i.id));
 											if (i.number <= 1) {
@@ -122,7 +121,7 @@ const SelectItem = () => {
 									</span>
 									<span>{i.number}</span>
 									<span
-										className="text-xl text-green-500 cursor-pointer"
+										className="text-xl text-color-accent cursor-pointer"
 										onClick={(e) => {
 											dispatch(incrementItemNumber(i.id));
 											dispatch(setItemsTotal());
@@ -142,7 +141,7 @@ const SelectItem = () => {
 											dispatch(restOrderTotal());
 										}}
 									>
-										<FaTrash />
+										<FaRegTrashAlt />
 									</span>
 								</div>
 							</div>
