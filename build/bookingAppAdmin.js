@@ -5142,7 +5142,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "incrementStairsNumber": function() { return /* binding */ incrementStairsNumber; },
 /* harmony export */   "reset": function() { return /* binding */ reset; },
 /* harmony export */   "restOrderTotal": function() { return /* binding */ restOrderTotal; },
+/* harmony export */   "setDescription": function() { return /* binding */ setDescription; },
 /* harmony export */   "setDismantlingTotal": function() { return /* binding */ setDismantlingTotal; },
+/* harmony export */   "setDumpster": function() { return /* binding */ setDumpster; },
 /* harmony export */   "setFrequency": function() { return /* binding */ setFrequency; },
 /* harmony export */   "setItemsTotal": function() { return /* binding */ setItemsTotal; },
 /* harmony export */   "setOrder": function() { return /* binding */ setOrder; },
@@ -5208,6 +5210,9 @@ const userOrderSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createSl
     reset: () => initialState,
     setOrderService: (state, action) => {
       state.order.service = action.payload;
+      state.order.items = [];
+      state.order.itemsTotal = 0;
+      state.order.description = null;
     },
     setOrderServicePrice: (state, action) => {
       state.order.servicePrice = action.payload;
@@ -5277,6 +5282,12 @@ const userOrderSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createSl
       if (state.order.dismantlingNumber > 0) {
         state.order.dismantlingNumber -= 1;
       }
+    },
+    setDescription: (state, action) => {
+      state.order.description = action.payload;
+    },
+    setDumpster: (state, action) => {
+      state.order.items = action.payload;
     }
   },
   extraReducers: builder => {
@@ -5321,7 +5332,9 @@ const {
   incrementDismantlingNumber,
   decrementDismantlingNumber,
   incrementStairsNumber,
-  decrementStairsNumber
+  decrementStairsNumber,
+  setDescription,
+  setDumpster
 } = userOrderSlice.actions;
 /* harmony default export */ __webpack_exports__["default"] = (userOrderSlice.reducer);
 

@@ -20,7 +20,72 @@ import {
 	ORDER_DESCRIPTION,
 } from "../../features/section/sectionConstants";
 
-const SelectItem = () => {
+const SelectItem = ({ itemsError }) => {
+	const customStyles = {
+		menu: (provided, state) => ({
+			...provided,
+			width: "100%",
+			borderBottom: "1px dotted pink",
+			color: state.selectProps.menuColor,
+			padding: 10,
+		}),
+
+		control: (styles, state) => ({
+			...styles,
+			width: "100%",
+			padding: 9,
+			boxShadow:
+				state.isFocused && !itemsError
+					? "2px solid #E8A901"
+					: state.isFocused && itemsError
+					? "2px solid #ff3333"
+					: itemsError && !state.isFocused
+					? "2px solid #ff3333"
+					: "none",
+			border:
+				state.isFocused && !itemsError
+					? "2px solid #E8A901"
+					: state.isFocused && itemsError
+					? "2px solid #ff3333"
+					: itemsError && !state.isFocused
+					? "2px solid #ff3333"
+					: "",
+			"&:hover": {
+				border:
+					state.isFocused && !itemsError
+						? "2px solid #E8A901"
+						: state.isFocused && itemsError
+						? "2px solid #ff3333"
+						: itemsError && !state.isFocused
+						? "2px solid #ff3333"
+						: "",
+				boxShadow:
+					state.isFocused && !itemsError
+						? "2px solid #E8A901"
+						: state.isFocused && itemsError
+						? "2px solid #ff3333"
+						: itemsError && !state.isFocused
+						? "2px solid #ff3333"
+						: "none",
+			},
+		}),
+		option: (styles, state) => ({
+			...styles,
+			backgroundColor: state.isSelected && "white",
+			color: state.isSelected && "#7A7A7A",
+			"&:hover": {
+				backgroundColor: state.isSelected ? "#fffee6" : "#fffee6",
+			},
+		}),
+
+		singleValue: (provided, state) => {
+			const opacity = state.isDisabled ? 0.5 : 1;
+			const transition = "opacity 300ms";
+
+			return { ...provided, opacity, transition };
+		},
+	};
+
 	const dispatch = useDispatch();
 	const { backTo } = useSelector((state) => state.section);
 
@@ -69,9 +134,10 @@ const SelectItem = () => {
 			{isLoading ? (
 				<Skeleton count={2} />
 			) : isError ? (
-				<span>{message}</span>
+				<span className="text-red-500">{message}</span>
 			) : (
 				<>
+					{itemsError && <span>{itemsError}</span>}
 					<form>
 						<Select
 							isClearable={false}
@@ -80,9 +146,6 @@ const SelectItem = () => {
 							placeholder="Search items ..."
 							styles={customStyles}
 							defaultValue={options.value}
-							noOptionsMessage={({ inputValue }) =>
-								!inputValue ? noOptionsText : "No options."
-							}
 							onChange={selectOrderItems}
 						/>
 					</form>
@@ -154,40 +217,3 @@ const SelectItem = () => {
 };
 
 export default SelectItem;
-
-const customStyles = {
-	menu: (provided, state) => ({
-		...provided,
-		width: "100%",
-		borderBottom: "1px dotted pink",
-		color: state.selectProps.menuColor,
-		padding: 10,
-	}),
-
-	control: (styles, state) => ({
-		...styles,
-		width: "100%",
-		padding: 9,
-		boxShadow: state.isFocused ? "2px solid #E8A901" : "none",
-		border: state.isFocused && "2px solid #E8A901",
-		"&:hover": {
-			border: state.isFocused && "2px solid #E8A901",
-			boxShadow: state.isFocused ? "2px solid #E8A901" : "none",
-		},
-	}),
-	option: (styles, state) => ({
-		...styles,
-		backgroundColor: state.isSelected && "white",
-		color: state.isSelected && "#7A7A7A",
-		"&:hover": {
-			backgroundColor: state.isSelected ? "#fffee6" : "#fffee6",
-		},
-	}),
-
-	singleValue: (provided, state) => {
-		const opacity = state.isDisabled ? 0.5 : 1;
-		const transition = "opacity 300ms";
-
-		return { ...provided, opacity, transition };
-	},
-};

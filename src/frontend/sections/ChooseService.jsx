@@ -23,6 +23,7 @@ import {
 	CHOOSE_SERVICE,
 	DATE_AND_TIME,
 } from "../../features/section/sectionConstants";
+import { FaCheck } from "react-icons/fa";
 
 const ChooseService = () => {
 	const [errorMessage, setErrorMessage] = useState(null);
@@ -108,6 +109,11 @@ const ChooseService = () => {
 							/>
 							<b>{service.name}</b>
 							<span>${Number(service.min_price).toFixed(2)}</span>
+							{order.service === service.name && (
+								<span>
+									<FaCheck />
+								</span>
+							)}
 						</div>
 					))}
 				</div>

@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { FaMinusCircle, FaPlusCircle } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
-import Skeleton from "react-loading-skeleton";
 import {
 	DATE_AND_TIME,
 	ORDER_DESCRIPTION,
@@ -30,7 +29,7 @@ const DismantlingAndStairs = () => {
 			dispatch(getStairsPrice());
 		}
 	}, [dispatch, backTo]);
-	console.log(typeof stairsPrice);
+
 	return (
 		<div>
 			<p className="text-2xl">Stairs</p>

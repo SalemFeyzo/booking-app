@@ -54,6 +54,9 @@ export const userOrderSlice = createSlice({
 		reset: () => initialState,
 		setOrderService: (state, action) => {
 			state.order.service = action.payload;
+			state.order.items = [];
+			state.order.itemsTotal = 0;
+			state.order.description = null;
 		},
 		setOrderServicePrice: (state, action) => {
 			state.order.servicePrice = action.payload;
@@ -139,6 +142,12 @@ export const userOrderSlice = createSlice({
 				state.order.dismantlingNumber -= 1;
 			}
 		},
+		setDescription: (state, action) => {
+			state.order.description = action.payload;
+		},
+		setDumpster: (state, action) => {
+			state.order.items = action.payload;
+		},
 	},
 	extraReducers: (builder) => {
 		builder
@@ -199,5 +208,7 @@ export const {
 	decrementDismantlingNumber,
 	incrementStairsNumber,
 	decrementStairsNumber,
+	setDescription,
+	setDumpster,
 } = userOrderSlice.actions;
 export default userOrderSlice.reducer;

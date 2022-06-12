@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import pickup from "../assets/pickup.svg";
 import truck from "../assets/truck.svg";
@@ -13,37 +14,46 @@ import {
 	setVehicleType,
 } from "../../features/orders/userOrderSlice";
 import DismantlingAndStairs from "../components/DismantlingAndStairs";
+import DescriptionInput from "../components/DescriptionInput";
+import DumpsterSize from "../components/DumpsterSize";
+import { FaCheck } from "react-icons/fa";
 
 const OrderDescription = () => {
+	const [descriptionError, setDescriptionError] = useState(null);
+	const [itemsError, setItemsError] = useState(null);
 	const dispatch = useDispatch();
 	const { order } = useSelector((state) => state.userOrder);
 	const { vehicles } = useSelector((state) => state.vehicles);
 
 	return (
 		<div>
-			<div>
-				<p className="text-2xl">
-					Please select all of the items and the number of items that need to be
-					removed for your booking
-				</p>
-				<p>
-					Please note, our warriors will ONLY pick up the items that you
-					selected and paid for.
-				</p>
-				<p>
-					If you have unlisted items, we may reach out to you for an updated
-					price quote after reviewing your booking.
-				</p>
-			</div>
-			<SelectItem />
-			<p className="text-2xl">Choose a vehicle</p>
-			<p>Make your best guess. We will review every order.</p>
-			<div className="flex flex-col md:flex-row gap-2">
-				{vehicles.map((vehicle) => (
-					<div
-						id="booking-app-service"
-						key={vehicle.vehicle_id}
-						className={`
+			{order.service === "Dump Trailer" ? (
+				<DumpsterSize itemsError={itemsError} />
+			) : (
+				<>
+					<div>
+						<p className="text-2xl">
+							Please select all of the items and the number of items that need
+							to be removed for your booking
+						</p>
+						<p>
+							Please note, our warriors will ONLY pick up the items that you
+							selected and paid for.
+						</p>
+						<p>
+							If you have unlisted items, we may reach out to you for an updated
+							price quote after reviewing your booking.
+						</p>
+					</div>
+					<SelectItem itemsError={itemsError} />
+					<p className="text-2xl">Choose a vehicle</p>
+					<p>Make your best guess. We will review every order.</p>
+					<div className="flex flex-col md:flex-row gap-2">
+						{vehicles.map((vehicle) => (
+							<div
+								id="booking-app-service"
+								key={vehicle.vehicle_id}
+								className={`
 							flex flex-row 
 							justify-center items-center gap-2 
 							cursor-pointer 
@@ -58,30 +68,30 @@ const OrderDescription = () => {
 							p-4
 							px-10
 							`}
-						onClick={(e) => {
-							dispatch(setVehicleType(vehicle.type));
-							dispatch(setOrderVehicleTotal(Number(vehicle.price)));
-							dispatch(restOrderTotal());
-						}}
-					>
-						<img
-							src={vehicle.vehicle_id === "1" ? pickup : truck}
-							alt={vehicle.type}
-						/>
-						<b>{vehicle.type}</b>
-						<span>${Number(vehicle.price).toFixed(2)}</span>
+								onClick={(e) => {
+									dispatch(setVehicleType(vehicle.type));
+									dispatch(setOrderVehicleTotal(Number(vehicle.price)));
+									dispatch(restOrderTotal());
+								}}
+							>
+								<img
+									src={vehicle.vehicle_id === "1" ? pickup : truck}
+									alt={vehicle.type}
+								/>
+								<b>{vehicle.type}</b>
+								<span>${Number(vehicle.price).toFixed(2)}</span>
+								{order.vehicleType === vehicle.type && (
+									<span>
+										<FaCheck />
+									</span>
+								)}
+							</div>
+						))}
 					</div>
-				))}
-			</div>
-			<DismantlingAndStairs />
-			<p className="text-2xl">Tell us a bit more</p>
-			<textarea
-				className="w-full p-2 rounded-md border-2 border-gray-200 shadow-md focus:border-2 focus:border-color-accent"
-				placeholder={`For example, "1x king-sized mattress that will be located inside the garage", "4x trash bags of food, cardboard, and general house trash will be located on the front lawn." 
-Note: Items you wish to be removed must be itemized and added to the dropdown list of "pickup type" above. If you cannot find an item from the dropdown list, please choose "unlisted" in the dropdown menu, and describe them in this box.`}
-				rows="7"
-				cols="50"
-			/>
+					<DismantlingAndStairs />
+				</>
+			)}
+			<DescriptionInput descriptionError={descriptionError} />
 			<div className="flex flex-row justify-between items-center my-5">
 				<div
 					onClick={(e) => {
@@ -94,7 +104,15 @@ Note: Items you wish to be removed must be itemized and added to the dropdown li
 					Back
 				</div>
 				<div
-					onClick={(e) => dispatch(setSection(CONTACT_INFO))}
+					onClick={(e) => {
+						if (!order.description) {
+							setDescriptionError("Field required");
+						} else if (order.items.length === 0) {
+							setItemsError("Field required");
+						} else {
+							dispatch(setSection(CONTACT_INFO));
+						}
+					}}
 					type="button"
 					className="inline-flex justify-center rounded-md border border-transparent bg-color-accent px-5 py-1 text-lg font-medium text-white hover:bg-yellow-500  cursor-pointer"
 				>

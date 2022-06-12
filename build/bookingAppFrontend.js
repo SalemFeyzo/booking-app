@@ -11448,7 +11448,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "incrementStairsNumber": function() { return /* binding */ incrementStairsNumber; },
 /* harmony export */   "reset": function() { return /* binding */ reset; },
 /* harmony export */   "restOrderTotal": function() { return /* binding */ restOrderTotal; },
+/* harmony export */   "setDescription": function() { return /* binding */ setDescription; },
 /* harmony export */   "setDismantlingTotal": function() { return /* binding */ setDismantlingTotal; },
+/* harmony export */   "setDumpster": function() { return /* binding */ setDumpster; },
 /* harmony export */   "setFrequency": function() { return /* binding */ setFrequency; },
 /* harmony export */   "setItemsTotal": function() { return /* binding */ setItemsTotal; },
 /* harmony export */   "setOrder": function() { return /* binding */ setOrder; },
@@ -11514,6 +11516,9 @@ const userOrderSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createSl
     reset: () => initialState,
     setOrderService: (state, action) => {
       state.order.service = action.payload;
+      state.order.items = [];
+      state.order.itemsTotal = 0;
+      state.order.description = null;
     },
     setOrderServicePrice: (state, action) => {
       state.order.servicePrice = action.payload;
@@ -11583,6 +11588,12 @@ const userOrderSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createSl
       if (state.order.dismantlingNumber > 0) {
         state.order.dismantlingNumber -= 1;
       }
+    },
+    setDescription: (state, action) => {
+      state.order.description = action.payload;
+    },
+    setDumpster: (state, action) => {
+      state.order.items = action.payload;
     }
   },
   extraReducers: builder => {
@@ -11627,7 +11638,9 @@ const {
   incrementDismantlingNumber,
   decrementDismantlingNumber,
   incrementStairsNumber,
-  decrementStairsNumber
+  decrementStairsNumber,
+  setDescription,
+  setDumpster
 } = userOrderSlice.actions;
 /* harmony default export */ __webpack_exports__["default"] = (userOrderSlice.reducer);
 
@@ -12241,6 +12254,55 @@ const App = () => {
 
 /***/ }),
 
+/***/ "./src/frontend/components/DescriptionInput.jsx":
+/*!******************************************************!*\
+  !*** ./src/frontend/components/DescriptionInput.jsx ***!
+  \******************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
+/* harmony import */ var _features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../features/orders/userOrderSlice */ "./src/features/orders/userOrderSlice.js");
+
+
+
+
+const DescriptionInput = _ref => {
+  let {
+    descriptionError
+  } = _ref;
+  const dispatch = (0,react_redux__WEBPACK_IMPORTED_MODULE_1__.useDispatch)();
+  const {
+    order
+  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_1__.useSelector)(state => state.userOrder);
+
+  const handleChange = e => {
+    dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_2__.setDescription)(e.target.value));
+  };
+
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "mt-3"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "text-2xl"
+  }, "Tell us a bit more"), descriptionError && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "text-red-500"
+  }, descriptionError), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("textarea", {
+    className: `w-full p-2 rounded-md  shadow-md ${descriptionError ? "border-2 border-red-500 focus:border-2 focus:border-red-500" : "border-2 border-gray-200 focus:border-2 focus:border-color-accent"} `,
+    placeholder: `Enter further details ...`,
+    rows: "7",
+    cols: "50",
+    defaultValue: order.description,
+    onChange: handleChange
+  }));
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (DescriptionInput);
+
+/***/ }),
+
 /***/ "./src/frontend/components/DismantlingAndStairs.jsx":
 /*!**********************************************************!*\
   !*** ./src/frontend/components/DismantlingAndStairs.jsx ***!
@@ -12259,7 +12321,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _features_dismantling_dismantlingSlice__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../features/dismantling/dismantlingSlice */ "./src/features/dismantling/dismantlingSlice.js");
 /* harmony import */ var _features_stairs_stairsSlice__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../features/stairs/stairsSlice */ "./src/features/stairs/stairsSlice.js");
 /* harmony import */ var _features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../features/orders/userOrderSlice */ "./src/features/orders/userOrderSlice.js");
-
 
 
 
@@ -12289,7 +12350,6 @@ const DismantlingAndStairs = () => {
       dispatch((0,_features_stairs_stairsSlice__WEBPACK_IMPORTED_MODULE_5__.getStairsPrice)());
     }
   }, [dispatch, backTo]);
-  console.log(typeof stairsPrice);
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
     className: "text-2xl"
   }, "Stairs"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Does the provider need to climb stairs?"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -12338,6 +12398,115 @@ const DismantlingAndStairs = () => {
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (DismantlingAndStairs);
+
+/***/ }),
+
+/***/ "./src/frontend/components/DumpsterSize.jsx":
+/*!**************************************************!*\
+  !*** ./src/frontend/components/DumpsterSize.jsx ***!
+  \**************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var react_icons_fa__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react-icons/fa */ "./node_modules/react-icons/fa/index.esm.js");
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
+/* harmony import */ var _features_service_items_serviceItemsSlice__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../features/service-items/serviceItemsSlice */ "./src/features/service-items/serviceItemsSlice.js");
+/* harmony import */ var _features_section_sectionConstants__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../features/section/sectionConstants */ "./src/features/section/sectionConstants.js");
+/* harmony import */ var _features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../features/orders/userOrderSlice */ "./src/features/orders/userOrderSlice.js");
+/* harmony import */ var react_loading_skeleton__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react-loading-skeleton */ "./node_modules/react-loading-skeleton/dist/index.mjs");
+
+
+
+
+
+
+
+
+
+
+const DumpsterSize = _ref => {
+  let {
+    itemsError
+  } = _ref;
+  const {
+    isError,
+    isLoading,
+    isSuccess,
+    message,
+    items,
+    options
+  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_2__.useSelector)(state => state.serviceItems);
+  const {
+    order
+  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_2__.useSelector)(state => state.userOrder);
+  const dispatch = (0,react_redux__WEBPACK_IMPORTED_MODULE_2__.useDispatch)();
+  const {
+    backTo
+  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_2__.useSelector)(state => state.section);
+  (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
+    if (!backTo || backTo !== _features_section_sectionConstants__WEBPACK_IMPORTED_MODULE_4__.ORDER_DESCRIPTION && backTo !== _features_section_sectionConstants__WEBPACK_IMPORTED_MODULE_4__.DATE_AND_TIME) {
+      dispatch((0,_features_service_items_serviceItemsSlice__WEBPACK_IMPORTED_MODULE_3__.getServiceItems)());
+    }
+  }, [dispatch, backTo]);
+  const plans = items === null || items === void 0 ? void 0 : items.map(i => {
+    const id = i.item_id;
+    const name = i.name;
+    const number = 1;
+    const price = Number(i.price);
+    const total = Number(i.price);
+    return {
+      id,
+      name,
+      number,
+      price,
+      total
+    };
+  });
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "text-2xl"
+  }, "Dumpster size"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Please pick dumpster"), isLoading ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_loading_skeleton__WEBPACK_IMPORTED_MODULE_6__["default"], {
+    count: 8,
+    className: " w-full "
+  }) : isError ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "text-red-500 font-bold"
+  }, message) : (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: " w-full"
+  }, itemsError && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "text-red-500"
+  }, itemsError), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "flex flex-col md:flex-row gap-2 flex-wrap"
+  }, plans.map(plan => {
+    var _order$items$, _order$items$2;
+
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      id: "booking-app-service",
+      key: plan.id,
+      className: `
+							flex flex-row 
+							justify-center items-center gap-2 
+							cursor-pointer 
+							border-2 
+							shadow-md
+							${((_order$items$ = order.items[0]) === null || _order$items$ === void 0 ? void 0 : _order$items$.id) === plan.id ? "border-color-accent text-color-accent hover:bg-yellow-100" : "border-gray-200 hover:bg-gray-100"}
+							rounded-md 
+							p-4
+							px-10
+							`,
+      onClick: e => {
+        dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_5__.setDumpster)([plan]));
+        dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_5__.setItemsTotal)());
+        dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_5__.restOrderTotal)());
+      }
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("b", null, plan.name), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, "$", Number(plan.price).toFixed(2)), ((_order$items$2 = order.items[0]) === null || _order$items$2 === void 0 ? void 0 : _order$items$2.id) === plan.id && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_7__.FaCheck, null)));
+  }))));
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (DumpsterSize);
 
 /***/ }),
 
@@ -12795,7 +12964,43 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const SelectItem = () => {
+const SelectItem = _ref => {
+  let {
+    itemsError
+  } = _ref;
+  const customStyles = {
+    menu: (provided, state) => ({ ...provided,
+      width: "100%",
+      borderBottom: "1px dotted pink",
+      color: state.selectProps.menuColor,
+      padding: 10
+    }),
+    control: (styles, state) => ({ ...styles,
+      width: "100%",
+      padding: 9,
+      boxShadow: state.isFocused && !itemsError ? "2px solid #E8A901" : state.isFocused && itemsError ? "2px solid #ff3333" : itemsError && !state.isFocused ? "2px solid #ff3333" : "none",
+      border: state.isFocused && !itemsError ? "2px solid #E8A901" : state.isFocused && itemsError ? "2px solid #ff3333" : itemsError && !state.isFocused ? "2px solid #ff3333" : "",
+      "&:hover": {
+        border: state.isFocused && !itemsError ? "2px solid #E8A901" : state.isFocused && itemsError ? "2px solid #ff3333" : itemsError && !state.isFocused ? "2px solid #ff3333" : "",
+        boxShadow: state.isFocused && !itemsError ? "2px solid #E8A901" : state.isFocused && itemsError ? "2px solid #ff3333" : itemsError && !state.isFocused ? "2px solid #ff3333" : "none"
+      }
+    }),
+    option: (styles, state) => ({ ...styles,
+      backgroundColor: state.isSelected && "white",
+      color: state.isSelected && "#7A7A7A",
+      "&:hover": {
+        backgroundColor: state.isSelected ? "#fffee6" : "#fffee6"
+      }
+    }),
+    singleValue: (provided, state) => {
+      const opacity = state.isDisabled ? 0.5 : 1;
+      const transition = "opacity 300ms";
+      return { ...provided,
+        opacity,
+        transition
+      };
+    }
+  };
   const dispatch = (0,react_redux__WEBPACK_IMPORTED_MODULE_2__.useDispatch)();
   const {
     backTo
@@ -12852,19 +13057,15 @@ const SelectItem = () => {
     className: "my-5 md:min-w-fit"
   }, isLoading ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_loading_skeleton__WEBPACK_IMPORTED_MODULE_6__["default"], {
     count: 2
-  }) : isError ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, message) : (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("form", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_select__WEBPACK_IMPORTED_MODULE_7__["default"], {
+  }) : isError ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "text-red-500"
+  }, message) : (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, itemsError && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, itemsError), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("form", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_select__WEBPACK_IMPORTED_MODULE_7__["default"], {
     isClearable: false,
     className: "shadow-md",
     options: options,
     placeholder: "Search items ...",
     styles: customStyles,
     defaultValue: options.value,
-    noOptionsMessage: _ref => {
-      let {
-        inputValue
-      } = _ref;
-      return !inputValue ? noOptionsText : "No options.";
-    },
     onChange: selectOrderItems
   })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, order.items.map(i => (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     key: i.id,
@@ -12913,39 +13114,6 @@ const SelectItem = () => {
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (SelectItem);
-const customStyles = {
-  menu: (provided, state) => ({ ...provided,
-    width: "100%",
-    borderBottom: "1px dotted pink",
-    color: state.selectProps.menuColor,
-    padding: 10
-  }),
-  control: (styles, state) => ({ ...styles,
-    width: "100%",
-    padding: 9,
-    boxShadow: state.isFocused ? "2px solid #E8A901" : "none",
-    border: state.isFocused && "2px solid #E8A901",
-    "&:hover": {
-      border: state.isFocused && "2px solid #E8A901",
-      boxShadow: state.isFocused ? "2px solid #E8A901" : "none"
-    }
-  }),
-  option: (styles, state) => ({ ...styles,
-    backgroundColor: state.isSelected && "white",
-    color: state.isSelected && "#7A7A7A",
-    "&:hover": {
-      backgroundColor: state.isSelected ? "#fffee6" : "#fffee6"
-    }
-  }),
-  singleValue: (provided, state) => {
-    const opacity = state.isDisabled ? 0.5 : 1;
-    const transition = "opacity 300ms";
-    return { ...provided,
-      opacity,
-      transition
-    };
-  }
-};
 
 /***/ }),
 
@@ -12972,6 +13140,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _features_vehicles_vehiclesSlice__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../features/vehicles/vehiclesSlice */ "./src/features/vehicles/vehiclesSlice.js");
 /* harmony import */ var _features_section_sectionSlice__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../features/section/sectionSlice */ "./src/features/section/sectionSlice.js");
 /* harmony import */ var _features_section_sectionConstants__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../features/section/sectionConstants */ "./src/features/section/sectionConstants.js");
+/* harmony import */ var react_icons_fa__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! react-icons/fa */ "./node_modules/react-icons/fa/index.esm.js");
+
 
 
 
@@ -13058,7 +13228,7 @@ const ChooseService = () => {
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("img", {
     src: service.name === "Junk Removal" ? _assets_junk_removal_svg__WEBPACK_IMPORTED_MODULE_4__["default"] : service.name === "Cardboard Removal" ? _assets_cardboard_removal_svg__WEBPACK_IMPORTED_MODULE_5__["default"] : service.name === "Dump Trailer" ? _assets_dumpster_rental_svg__WEBPACK_IMPORTED_MODULE_6__["default"] : _assets_junk_removal_svg__WEBPACK_IMPORTED_MODULE_4__["default"],
     alt: service.name
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("b", null, service.name), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, "$", Number(service.min_price).toFixed(2))))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_SelectAddress__WEBPACK_IMPORTED_MODULE_3__["default"], {
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("b", null, service.name), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, "$", Number(service.min_price).toFixed(2)), order.service === service.name && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_13__.FaCheck, null))))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_SelectAddress__WEBPACK_IMPORTED_MODULE_3__["default"], {
     errorMessage: errorMessage,
     setErrorMessage: setErrorMessage
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -13222,14 +13392,23 @@ const DateAndTime = () => {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
-/* harmony import */ var _assets_pickup_svg__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../assets/pickup.svg */ "./src/frontend/assets/pickup.svg");
-/* harmony import */ var _assets_truck_svg__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../assets/truck.svg */ "./src/frontend/assets/truck.svg");
-/* harmony import */ var _features_section_sectionConstants__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../features/section/sectionConstants */ "./src/features/section/sectionConstants.js");
-/* harmony import */ var _features_section_sectionSlice__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../features/section/sectionSlice */ "./src/features/section/sectionSlice.js");
-/* harmony import */ var _components_SelectItem__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../components/SelectItem */ "./src/frontend/components/SelectItem.jsx");
-/* harmony import */ var _features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../features/orders/userOrderSlice */ "./src/features/orders/userOrderSlice.js");
-/* harmony import */ var _components_DismantlingAndStairs__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../components/DismantlingAndStairs */ "./src/frontend/components/DismantlingAndStairs.jsx");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
+/* harmony import */ var _assets_pickup_svg__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../assets/pickup.svg */ "./src/frontend/assets/pickup.svg");
+/* harmony import */ var _assets_truck_svg__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../assets/truck.svg */ "./src/frontend/assets/truck.svg");
+/* harmony import */ var _features_section_sectionConstants__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../features/section/sectionConstants */ "./src/features/section/sectionConstants.js");
+/* harmony import */ var _features_section_sectionSlice__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../features/section/sectionSlice */ "./src/features/section/sectionSlice.js");
+/* harmony import */ var _components_SelectItem__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../components/SelectItem */ "./src/frontend/components/SelectItem.jsx");
+/* harmony import */ var _features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../features/orders/userOrderSlice */ "./src/features/orders/userOrderSlice.js");
+/* harmony import */ var _components_DismantlingAndStairs__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../components/DismantlingAndStairs */ "./src/frontend/components/DismantlingAndStairs.jsx");
+/* harmony import */ var _components_DescriptionInput__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../components/DescriptionInput */ "./src/frontend/components/DescriptionInput.jsx");
+/* harmony import */ var _components_DumpsterSize__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../components/DumpsterSize */ "./src/frontend/components/DumpsterSize.jsx");
+/* harmony import */ var react_icons_fa__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! react-icons/fa */ "./node_modules/react-icons/fa/index.esm.js");
+
+
+
+
 
 
 
@@ -13241,16 +13420,22 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const OrderDescription = () => {
-  const dispatch = (0,react_redux__WEBPACK_IMPORTED_MODULE_1__.useDispatch)();
+  const [descriptionError, setDescriptionError] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(null);
+  const [itemsError, setItemsError] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(null);
+  const dispatch = (0,react_redux__WEBPACK_IMPORTED_MODULE_2__.useDispatch)();
   const {
     order
-  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_1__.useSelector)(state => state.userOrder);
+  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_2__.useSelector)(state => state.userOrder);
   const {
     vehicles
-  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_1__.useSelector)(state => state.vehicles);
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_2__.useSelector)(state => state.vehicles);
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, order.service === "Dump Trailer" ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_DumpsterSize__WEBPACK_IMPORTED_MODULE_11__["default"], {
+    itemsError: itemsError
+  }) : (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
     className: "text-2xl"
-  }, "Please select all of the items and the number of items that need to be removed for your booking"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Please note, our warriors will ONLY pick up the items that you selected and paid for."), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "If you have unlisted items, we may reach out to you for an updated price quote after reviewing your booking.")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_SelectItem__WEBPACK_IMPORTED_MODULE_6__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+  }, "Please select all of the items and the number of items that need to be removed for your booking"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Please note, our warriors will ONLY pick up the items that you selected and paid for."), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "If you have unlisted items, we may reach out to you for an updated price quote after reviewing your booking.")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_SelectItem__WEBPACK_IMPORTED_MODULE_7__["default"], {
+    itemsError: itemsError
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
     className: "text-2xl"
   }, "Choose a vehicle"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Make your best guess. We will review every order."), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "flex flex-col md:flex-row gap-2"
@@ -13269,32 +13454,34 @@ const OrderDescription = () => {
 							px-10
 							`,
     onClick: e => {
-      dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_7__.setVehicleType)(vehicle.type));
-      dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_7__.setOrderVehicleTotal)(Number(vehicle.price)));
-      dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_7__.restOrderTotal)());
+      dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_8__.setVehicleType)(vehicle.type));
+      dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_8__.setOrderVehicleTotal)(Number(vehicle.price)));
+      dispatch((0,_features_orders_userOrderSlice__WEBPACK_IMPORTED_MODULE_8__.restOrderTotal)());
     }
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("img", {
-    src: vehicle.vehicle_id === "1" ? _assets_pickup_svg__WEBPACK_IMPORTED_MODULE_2__["default"] : _assets_truck_svg__WEBPACK_IMPORTED_MODULE_3__["default"],
+    src: vehicle.vehicle_id === "1" ? _assets_pickup_svg__WEBPACK_IMPORTED_MODULE_3__["default"] : _assets_truck_svg__WEBPACK_IMPORTED_MODULE_4__["default"],
     alt: vehicle.type
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("b", null, vehicle.type), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, "$", Number(vehicle.price).toFixed(2))))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_DismantlingAndStairs__WEBPACK_IMPORTED_MODULE_8__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
-    className: "text-2xl"
-  }, "Tell us a bit more"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("textarea", {
-    className: "w-full p-2 rounded-md border-2 border-gray-200 shadow-md focus:border-2 focus:border-color-accent",
-    placeholder: `For example, "1x king-sized mattress that will be located inside the garage", "4x trash bags of food, cardboard, and general house trash will be located on the front lawn." 
-Note: Items you wish to be removed must be itemized and added to the dropdown list of "pickup type" above. If you cannot find an item from the dropdown list, please choose "unlisted" in the dropdown menu, and describe them in this box.`,
-    rows: "7",
-    cols: "50"
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("b", null, vehicle.type), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, "$", Number(vehicle.price).toFixed(2)), order.vehicleType === vehicle.type && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_12__.FaCheck, null))))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_DismantlingAndStairs__WEBPACK_IMPORTED_MODULE_9__["default"], null)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_DescriptionInput__WEBPACK_IMPORTED_MODULE_10__["default"], {
+    descriptionError: descriptionError
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "flex flex-row justify-between items-center my-5"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     onClick: e => {
-      dispatch((0,_features_section_sectionSlice__WEBPACK_IMPORTED_MODULE_5__.setBackTo)(_features_section_sectionConstants__WEBPACK_IMPORTED_MODULE_4__.DATE_AND_TIME));
-      dispatch((0,_features_section_sectionSlice__WEBPACK_IMPORTED_MODULE_5__.setSection)(_features_section_sectionConstants__WEBPACK_IMPORTED_MODULE_4__.DATE_AND_TIME));
+      dispatch((0,_features_section_sectionSlice__WEBPACK_IMPORTED_MODULE_6__.setBackTo)(_features_section_sectionConstants__WEBPACK_IMPORTED_MODULE_5__.DATE_AND_TIME));
+      dispatch((0,_features_section_sectionSlice__WEBPACK_IMPORTED_MODULE_6__.setSection)(_features_section_sectionConstants__WEBPACK_IMPORTED_MODULE_5__.DATE_AND_TIME));
     },
     type: "button",
     className: "inline-flex justify-center rounded-md border-2 border-color-accent  px-5 py-1 text-lg font-medium text-color-accent hover:bg-yellow-200  cursor-pointer"
   }, "Back"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    onClick: e => dispatch((0,_features_section_sectionSlice__WEBPACK_IMPORTED_MODULE_5__.setSection)(_features_section_sectionConstants__WEBPACK_IMPORTED_MODULE_4__.CONTACT_INFO)),
+    onClick: e => {
+      if (!order.description) {
+        setDescriptionError("Field required");
+      } else if (order.items.length === 0) {
+        setItemsError("Field required");
+      } else {
+        dispatch((0,_features_section_sectionSlice__WEBPACK_IMPORTED_MODULE_6__.setSection)(_features_section_sectionConstants__WEBPACK_IMPORTED_MODULE_5__.CONTACT_INFO));
+      }
+    },
     type: "button",
     className: "inline-flex justify-center rounded-md border border-transparent bg-color-accent px-5 py-1 text-lg font-medium text-white hover:bg-yellow-500  cursor-pointer"
   }, "Next")));
