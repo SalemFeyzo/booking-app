@@ -1,6 +1,3 @@
-/*!***********************************************************************************************************************************************************************************************************!*\
-  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[2].use[2]!./node_modules/react-loading-skeleton/dist/skeleton.css ***!
-  \***********************************************************************************************************************************************************************************************************/
 @-webkit-keyframes react-loading-skeleton {
     100% {
         -webkit-transform: translateX(100%);
@@ -65,9 +62,6 @@
             animation-iteration-count: infinite;
 }
 
-/*!*************************************************************************************************************************************************************************************************************!*\
-  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[2].use[2]!./node_modules/react-datepicker/dist/react-datepicker.css ***!
-  \*************************************************************************************************************************************************************************************************************/
 @charset "UTF-8";
 .react-datepicker__year-read-view--down-arrow,
 .react-datepicker__month-read-view--down-arrow,
@@ -814,9 +808,6 @@
   font-size: 1.44rem;
 }
 
-/*!*****************************************************************************************************************************************************************************************!*\
-  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[2].use[2]!./src/frontend/bookingAppFrontend.css ***!
-  \*****************************************************************************************************************************************************************************************/
 /*
 ! tailwindcss v3.0.24 | MIT License | https://tailwindcss.com
 *//*
@@ -1243,17 +1234,6 @@ Ensure the default browser behavior of the `hidden` attribute.
   --tw-backdrop-saturate:  ;
   --tw-backdrop-sepia:  ;
 }
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border-width: 0;
-}
 .fixed {
   position: fixed;
 }
@@ -1352,9 +1332,6 @@ Ensure the default browser behavior of the `hidden` attribute.
 .w-5 {
   width: 1.25rem;
 }
-.w-\[30\%\] {
-  width: 30%;
-}
 .w-\[20\%\] {
   width: 20%;
 }
@@ -1372,9 +1349,6 @@ Ensure the default browser behavior of the `hidden` attribute.
 }
 .max-w-md {
   max-width: 28rem;
-}
-.shrink-0 {
-  flex-shrink: 0;
 }
 .rotate-180 {
   --tw-rotate: 180deg;
@@ -1499,10 +1473,6 @@ Ensure the default browser behavior of the `hidden` attribute.
 .bg-yellow-100 {
   --tw-bg-opacity: 1;
   background-color: rgb(254 249 195 / var(--tw-bg-opacity));
-}
-.bg-yellow-50 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(254 252 232 / var(--tw-bg-opacity));
 }
 .bg-black {
   --tw-bg-opacity: 1;
@@ -1823,6 +1793,11 @@ body .wp-block-file .wp-block-file__button:focus {
   background-color: rgb(254 249 195 / var(--tw-bg-opacity));
 }
 
+.hover\:bg-gray-100:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(243 244 246 / var(--tw-bg-opacity));
+}
+
 .hover\:bg-yellow-200:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(254 240 138 / var(--tw-bg-opacity));
@@ -1831,11 +1806,6 @@ body .wp-block-file .wp-block-file__button:focus {
 .hover\:bg-yellow-500:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(234 179 8 / var(--tw-bg-opacity));
-}
-
-.hover\:bg-gray-100:hover {
-  --tw-bg-opacity: 1;
-  background-color: rgb(243 244 246 / var(--tw-bg-opacity));
 }
 
 .focus\:border-2:focus {
@@ -1903,5 +1873,3 @@ body .wp-block-file .wp-block-file__button:focus {
   }
 }
 
-
-/*# sourceMappingURL=bookingAppFrontend.css.map*/

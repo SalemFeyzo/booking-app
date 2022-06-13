@@ -1,7 +1,5 @@
-import { useState, useEffect } from "react";
-import { RadioGroup } from "@headlessui/react";
 import { FaCheck } from "react-icons/fa";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setFrequency } from "../../features/orders/userOrderSlice";
 const plans = [
 	{
@@ -16,50 +14,46 @@ const plans = [
 ];
 
 export default function Frequency() {
-	const [selected, setSelected] = useState(plans[0]);
 	const dispatch = useDispatch();
-	useEffect(() => {
-		dispatch(setFrequency(selected));
-	}, [dispatch]);
+	const { order } = useSelector((state) => state.userOrder);
 
 	return (
 		<div className="w-full  pb-5">
 			<div className="mx-auto w-full">
-				<RadioGroup value={selected} onChange={setSelected}>
-					<RadioGroup.Label className="sr-only">Frequency</RadioGroup.Label>
-					<div className="flex flex-row justify-between items-center ">
-						{plans.map((plan) => (
-							<RadioGroup.Option
-								key={plan.name}
-								value={plan}
-								onClick={(e) => dispatch(setFrequency(plan))}
-								className={({ active, checked }) =>
-									`${active ? "border-2 border-color-accent" : ""}
-                                    ${
-																			checked
-																				? "bg-yellow-50 text-color-accent border-2 border-color-accent"
-																				: "bg-white"
-																		}
-                                     w-[30%]  flex cursor-pointer rounded-md px-5 py-2 shadow-md focus:outline-none`
-								}
-							>
-								{({ active, checked }) => (
-									<>
-										<div className="flex w-full items-center justify-between">
-											<RadioGroup.Label as="span">{plan.name}</RadioGroup.Label>
+				<div className="flex flex-row justify-between items-center ">
+					{plans.map((plan) => (
+						<div
+							id="booking-app-service"
+							key={plan.name}
+							className={`
+							flex flex-row 
+							justify-center items-center gap-2 
+							cursor-pointer 
+							border-2 
+							shadow-md
+							${
+								order.frequency === plan.name
+									? "border-color-accent text-color-accent hover:bg-yellow-100"
+									: "border-gray-200 hover:bg-gray-100"
+							}
+							rounded-md 
+							p-4
+							px-10
+							`}
+							onClick={(e) => {
+								dispatch(setFrequency(plan));
+							}}
+						>
+							<b>{plan.name}</b>
 
-											{checked && (
-												<div className="shrink-0 ">
-													<FaCheck className=" " />
-												</div>
-											)}
-										</div>
-									</>
-								)}
-							</RadioGroup.Option>
-						))}
-					</div>
-				</RadioGroup>
+							{order.frequency === plan.name && (
+								<span>
+									<FaCheck />
+								</span>
+							)}
+						</div>
+					))}
+				</div>
 			</div>
 		</div>
 	);

@@ -93,7 +93,7 @@ const SelectAddress = ({ errorMessage, setErrorMessage }) => {
 	const selectOrderAddress = (option) => {
 		setValue(option);
 		const address = addresses.find((a) =>
-			a.zip === option.value.terms[0].value ? option.value.terms[0].value : null
+			a.zip === option.value.terms[2].value ? option.value.terms[0].value : null
 		);
 
 		if (address) {
@@ -123,6 +123,7 @@ const SelectAddress = ({ errorMessage, setErrorMessage }) => {
 			setErrorMessage("We don't serve in this area");
 		}
 	};
+	console.log(value);
 	return (
 		<div className="my-5">
 			{isLoading ? (
@@ -152,7 +153,7 @@ const SelectAddress = ({ errorMessage, setErrorMessage }) => {
 							componentRestrictions: {
 								country: ["us"],
 							},
-							// types: ["postal_code", "postal_town"],
+							types: ["(regions)"],
 						}}
 					/>
 				</>

@@ -125,12 +125,12 @@ const ChooseService = () => {
 			<div
 				onClick={(e) => {
 					e.preventDefault();
-					dispatch(setSection(DATE_AND_TIME));
-					// if (order.address !== null) {
-					// 	dispatch(setSection(DATE_AND_TIME));
-					// } else {
-					// 	setErrorMessage("This field is required");
-					// }
+
+					if (order.address !== null) {
+						dispatch(setSection(DATE_AND_TIME));
+					} else {
+						setErrorMessage("This field is required");
+					}
 				}}
 				type="button"
 				className={`inline-flex justify-center rounded-md border border-transparent bg-color-accent text-white hover:bg-yellow-500 cursor-pointer px-5 py-1 text-lg font-medium   float-right`}

@@ -137,7 +137,7 @@ const SelectItem = ({ itemsError }) => {
 				<span className="text-red-500">{message}</span>
 			) : (
 				<>
-					{itemsError && <span>{itemsError}</span>}
+					{itemsError && <span className="text-red-500">{itemsError}</span>}
 					<form>
 						<Select
 							isClearable={false}

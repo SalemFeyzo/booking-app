@@ -9,7 +9,7 @@ const initialState = {
 		service: null,
 		servicePrice: 0,
 		date: null,
-		frequency: null,
+		frequency: "Once",
 		items: [],
 		itemsTotal: 0,
 		vehicleType: null,
